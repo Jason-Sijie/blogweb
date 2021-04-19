@@ -21,4 +21,6 @@
         <property name="suffix" value=".jsp"/>
     </bean>
 
+    <bean name="/myController" class="com.sijie.controller.MyController"/>
+
 </beans>

@@ -12,8 +12,7 @@ spring.jpa.hibernate.ddl-auto = update
 ```
 
 #### TimeZone Issue
-
-
+The timezone of MySQL and Java should be **consistent**. And here we use **GMT** timezone. 
 
 ### Use InnoDB Engine
 - in `hibernate.properties`

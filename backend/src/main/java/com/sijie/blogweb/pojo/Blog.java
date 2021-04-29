@@ -45,11 +45,11 @@ public class Blog {
     @Column(name = "category_name", length = 200, nullable = false)
     private String categoryName;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "gmt_create", nullable = false)
     private Date gmtCreate;
 
-    @Temporal(TemporalType.DATE)
+    @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "gmt_update", nullable = false)
     private Date gmtUpdate;
 

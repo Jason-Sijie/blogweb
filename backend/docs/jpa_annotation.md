@@ -54,10 +54,14 @@ public class Student {
 
 ## Temporal
 
-`@Temporal` maps a Java Date object.
 - `@Temporal(TemporalType.TIMESTAMP)`: `java.sql.Timestamp`
 - `@Temporal(TemporalType.DATE)`: `java.sql.Date`
 - `@Temporal(TemporalType.TIME)`: `java.sql.Time`
+
+`TemporalType.TIMESTAMP` maps a Java `Date` object to MySQL `Datetime` or `TimeStamp`
+
+`TemporalType.DATE` only has the date information, no time. 
+
 
 ## Text
 ```java

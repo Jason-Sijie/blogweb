@@ -10,6 +10,6 @@ import java.util.List;
 @RepositoryRestResource(collectionResourceRel = "blog", path = "blog")
 public interface BlogRepository extends PagingAndSortingRepository<Blog, Long> {
 
-//    List<Blog> findByBlogName(@Param("name") String blogNameValue);
+    List<Blog> findByTitle(@Param("title") String titleValue);
 
 }

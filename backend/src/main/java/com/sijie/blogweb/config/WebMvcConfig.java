@@ -12,6 +12,6 @@ public class WebMvcConfig extends WebMvcConfigurationSupport {
         // map requests /images/** to classpath:/images/
         registry.addResourceHandler("/images/**").addResourceLocations("classpath:/images/");
 
-        super.addResourceHandlers(registry);
+//        super.addResourceHandlers(registry);
     }
 }

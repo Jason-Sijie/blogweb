@@ -8,10 +8,10 @@ const initialState = {
 
 const blogReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "FOO_BLOG":
+    case "BLOG_UPDATE_CURRENT":
       state = {
         ...state,
-        currentBlog: action.blog
+        currentBlog: action.payload
       }
       break;
   }

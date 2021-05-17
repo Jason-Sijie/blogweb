@@ -1,8 +1,9 @@
 import {Component} from "react";
+import { connect } from "react-redux";
 
 import BlogItem from "../components/BlogItem";
-import logo from '../images/logo.svg';
 import './App.css';
+import {getBlogDetailById} from "../actions/blogAction";
 
 
 class App extends Component {
@@ -31,10 +32,26 @@ class App extends Component {
       <div className="App">
         <body>
           <BlogItem blog={this.defaultPost}/>
+          {this.props.blog.currentBlog.title}
+          <button onClick={() => this.props.getBlogDetailById(2)}>get blog</button>
         </body>
       </div>
     );
   }
 }
 
-export default App;
+const mapStateToProps = (state) => {
+  return {
+    blog: state.blogReducer
+  }
+}
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getBlogDetailById: (id) => {
+      getBlogDetailById(id)(dispatch);
+    }
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(App);

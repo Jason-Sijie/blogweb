@@ -14,6 +14,13 @@ const blogReducer = (state = initialState, action) => {
         currentBlog: action.payload
       }
       break;
+    
+    case "BLOG_UPDATE_ALL":
+      state = {
+        ...state,
+        blogs: action.payload
+      }
+      break;
   }
 
   return state;

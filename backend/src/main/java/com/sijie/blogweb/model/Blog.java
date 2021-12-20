@@ -1,4 +1,4 @@
-package com.sijie.blogweb.pojo;
+package com.sijie.blogweb.model;
 
 import lombok.Data;
 
@@ -31,8 +31,8 @@ public class Blog {
     private String content;
 
     // true: pin to the top
-    @Column(name = "pin", nullable = false)
-    private boolean pin;
+    @Column(name = "likes", nullable = false)
+    private long likes;
 
     @Column(name = "views", nullable = false)
     private long views;
@@ -40,14 +40,8 @@ public class Blog {
     @Column(name = "author_id", length = 200, nullable = false)
     private String authorId;
 
-    @Column(name = "author_avatar", length = 500, nullable = false)
-    private String authorAvatar;
-
     @Column(name = "category_id", length = 200, nullable = false)
     private String categoryId;
-
-    @Column(name = "category_name", length = 200, nullable = false)
-    private String categoryName;
 
     @Temporal(TemporalType.TIMESTAMP)
     @Column(name = "gmt_create", nullable = false)

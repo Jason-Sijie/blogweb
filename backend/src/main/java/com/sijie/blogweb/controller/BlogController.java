@@ -1,21 +1,30 @@
 package com.sijie.blogweb.controller;
 
-import com.sijie.blogweb.pojo.Blog;
+import com.sijie.blogweb.exception.ResourceNotFoundException;
+import com.sijie.blogweb.exception.handler.ErrorMessage;
+import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.repository.BlogRepository;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.rest.webmvc.RepositoryRestController;
-import org.springframework.hateoas.EntityModel;
-import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.context.request.WebRequest;
 
+import java.util.Date;
 import java.util.Optional;
 
 @CrossOrigin(origins = "*")
-@RepositoryRestController
-@RequestMapping(value = "/blog")
+@RestController
+@RequestMapping(value = "/blogs")
 public class BlogController {
+    private static Logger logger = LoggerFactory.getLogger(BlogController.class);
 
     private final BlogRepository blogRepository;
 
@@ -24,12 +33,13 @@ public class BlogController {
         this.blogRepository = blogRepository;
     }
 
-    @RequestMapping(value = "/{id}", method = RequestMethod.GET)
-    @ResponseBody
-    public ResponseEntity<?> getBlogDetail(@PathVariable("id") long id) {
+    @GetMapping(value = "/{id}")
+    public Page<Blog> getBlogDetail(@PathVariable("id") long id) {
+        logger.info("Start getBlogDetail");
+
         Optional<Blog> result = blogRepository.findById(id);
-        if (result.isEmpty()) {
-            return ResponseEntity.notFound().build();
+        if (!result.isPresent()) {
+            throw new ResourceNotFoundException("Resource not found");
         }
         Blog resultBlog = blogRepository.findById(id).get();
 
@@ -37,33 +47,8 @@ public class BlogController {
         resultBlog.setViews(resultBlog.getViews() + 1);
         blogRepository.save(resultBlog);
 
-        EntityModel<Blog> resource = EntityModel.of(resultBlog);
-        resource.add(linkTo(methodOn(BlogController.class).getBlogDetail(resultBlog.getId())).withSelfRel());
-        resource.add(linkTo(BlogController.class).withRel("blog"));
-
-        return ResponseEntity.ok(resource);
+        Pageable pageable = PageRequest.of(0, 5);
+        return blogRepository.findAll(pageable);
     }
-
-//    @RequestMapping(value = "/blog", method = RequestMethod.GET)
-//    @ResponseBody
-//    public ResponseEntity<?> getBlogs() {
-//        Iterable<Blog> blogs = blogRepository.findAll();
-//
-//        // add business logic here
-//        //
-//
-//        List<EntityModel<Blog>> resources = new ArrayList<>();
-//        for (Blog blog: blogs) {
-//            EntityModel<Blog> resource = EntityModel.of(blog);
-//            resource.add(linkTo(methodOn(BlogController.class).getBlogDetail(blog.getId())).withSelfRel());
-//            resource.add(linkTo(methodOn(BlogController.class).getBlogs()).withRel("blog"));
-//            resources.add(resource);
-//        }
-//
-//        CollectionModel<EntityModel<Blog>> collection = CollectionModel.of(resources);
-//        collection.add(linkTo(methodOn(BlogController.class).getBlogs()).withSelfRel());
-//
-//        return ResponseEntity.ok(collection);
-//    }
 
 }

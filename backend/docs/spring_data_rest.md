@@ -52,7 +52,7 @@ properties, we can investigate the `RepositoryRestMvcConfiguration` class.
 ```java
 @RepositoryRestResource(collectionResourceRel = "people", path = "people")
 ```
-- The `@RepositoryRestResource` annotation is **not required** for the `spring-boot-starter-data-rest` to create REST API on this
+- The `@RepositoryRestResource` annotation is **not required** by the `spring-boot-starter-data-rest` to create REST API on this
 repository.
 - It only changes the API path from the default `/persons` to `/people`
 
@@ -70,10 +70,11 @@ Create a Controller class with `@RepositoryRestController` not `@RestController`
 And then override the particular methods.
 
 ```java
-import com.sijie.blogweb.pojo.Blog;import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import com.sijie.blogweb.model.Blog;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.hateoas.EntityModel;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RepositoryRestController
@@ -120,11 +121,13 @@ response body with links.
 - Return `NotFound` response by `return ResponseEntity.notFound().build();`, if no blog found for the given id. 
 
 #### Return Collection of Items
+
 ```java
-import com.sijie.blogweb.pojo.Blog;import org.springframework.data.rest.core.annotation.RepositoryRestResource;
+import com.sijie.blogweb.model.Blog;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.hateoas.CollectionModel;
+
 import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.*;
 
 @RepositoryRestController
@@ -141,21 +144,21 @@ public class BlogController {
     @ResponseBody
     public ResponseEntity<?> getBlogs() {
         Iterable<Blog> blogs = blogRepository.findAll();
-    
+
         // add business logic here
         //
-    
+
         List<EntityModel<Blog>> resources = new ArrayList<>();
-        for (Blog blog: blogs) {
+        for (Blog blog : blogs) {
             EntityModel<Blog> resource = EntityModel.of(blog);
             resource.add(linkTo(methodOn(BlogController.class).getBlogDetail(blog.getId())).withSelfRel());
             resource.add(linkTo(methodOn(BlogController.class).getBlogs()).withRel("blog"));
             resources.add(resource);
         }
-    
+
         CollectionModel<EntityModel<Blog>> collection = CollectionModel.of(resources);
         collection.add(linkTo(methodOn(BlogController.class).getBlogs()).withSelfRel());
-    
+
         return ResponseEntity.ok(collection);
     }
 }

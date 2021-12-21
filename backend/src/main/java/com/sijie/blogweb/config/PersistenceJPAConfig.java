@@ -1,13 +1,16 @@
 package com.sijie.blogweb.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.core.env.Environment;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 import org.springframework.orm.jpa.JpaTransactionManager;
+import org.springframework.orm.jpa.JpaVendorAdapter;
 import org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean;
 import org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter;
 import org.springframework.transaction.PlatformTransactionManager;
@@ -25,16 +28,8 @@ import java.util.Properties;
         transactionManagerRef = "transactionManager")
 public class PersistenceJPAConfig {
 
-    @Value("${hibernate.hbm2ddl.auto}")
-    private String hibernate_hbm2ddl_auto;
-    @Value("${hibernate.dialect}")
-    private String hibernate_dialect;
-    @Value("${hibernate.show_sql}")
-    private String hibernate_show_sql;
-    @Value("${hibernate.id.new_generator_mappings}")
-    private String hibernate_id_new_generator_mappings;
-    @Value("${hibernate.dialect.storage_engine}")
-    private String hibernate_dialect_storage_engine;
+    @Autowired
+    private Environment env;
 
     @Bean
     public LocalContainerEntityManagerFactoryBean entityManager() {
@@ -46,11 +41,11 @@ public class PersistenceJPAConfig {
         HibernateJpaVendorAdapter vendorAdapter = new HibernateJpaVendorAdapter();
         entityManagerFactoryBean.setJpaVendorAdapter(vendorAdapter);
         Properties properties = new Properties();
-        properties.put("hibernate.hbm2ddl.auto", hibernate_hbm2ddl_auto);
-        properties.put("hibernate.dialect", hibernate_dialect);
-        properties.put("hibernate.show_sql", hibernate_show_sql);
-        properties.put("hibernate.id.new_generator_mappings", hibernate_id_new_generator_mappings);
-        properties.put("hibernate.dialect.storage_engine", hibernate_dialect_storage_engine);
+        properties.put("hibernate.hbm2ddl.auto", env.getProperty("hibernate.hbm2ddl.auto"));
+        properties.put("hibernate.dialect", env.getProperty("hibernate.dialect"));
+        properties.put("hibernate.show_sql", env.getProperty("hibernate.show_sql"));
+        properties.put("hibernate.id.new_generator_mappings", env.getProperty("hibernate.id.new_generator_mappings"));
+        properties.put("hibernate.dialect.storage_engine", env.getProperty("hibernate.dialect.storage_engine"));
         entityManagerFactoryBean.setJpaProperties(properties);
 
         return entityManagerFactoryBean;

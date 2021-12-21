@@ -1,5 +1,6 @@
 package com.sijie.blogweb.exception.handler;
 
+import com.sijie.blogweb.exception.ResourceAlreadyExistsException;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -21,6 +22,17 @@ public class ControllerExceptionHandler {
         message.setMessage(ex.getMessage());
         message.setDate(new Date());
         message.setStatus(HttpStatus.NOT_FOUND.name());
+        return message;
+    }
+
+    @ExceptionHandler(ResourceAlreadyExistsException.class)
+    @ResponseStatus(value = HttpStatus.CONFLICT)
+    @ResponseBody
+    public ErrorMessage resourceAlreadyExistsException(ResourceNotFoundException ex, WebRequest request) {
+        ErrorMessage message = new ErrorMessage();
+        message.setMessage(ex.getMessage());
+        message.setDate(new Date());
+        message.setStatus(HttpStatus.CONFLICT.name());
         return message;
     }
 }

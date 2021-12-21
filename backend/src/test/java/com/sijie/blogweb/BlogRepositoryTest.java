@@ -10,6 +10,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import javax.sql.DataSource;
 import java.util.Date;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -22,12 +23,20 @@ class BlogRepositoryTest {
 	@Autowired
 	BlogRepository blogRepository;
 
+	@Autowired
+	DataSource dataSource;
+
 	@Test
-	void testBlogCreateAndQueryByBid() {
+	public void testSchemaInit() {
+		logger.debug("DataSource: " + dataSource);
+	}
+
+	@Test
+	public void testBlogCreateAndQueryByBid() {
 		Blog blog = createDummyBlog();
 		blogRepository.save(blog);
 
-		Blog result = blogRepository.findBlogByBid("1");
+		Blog result = blogRepository.findByBid("1");
 		logger.info("The result blog id: " + result.getId() + ", bid: " + result.getBid());
 		assertEquals(blog.getContent(), result.getContent());
 	}

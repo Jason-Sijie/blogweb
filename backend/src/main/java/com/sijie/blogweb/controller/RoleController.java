@@ -54,4 +54,16 @@ public class RoleController {
         return roleRepository.findAll(PageRequest.of(page, size));
     }
 
+    @PutMapping("")
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public Role updateRole(@RequestBody Role inputRole) {
+        logger.info("Start updateRole");
+
+        Role updatedRole = roleHelper.validateAndUpdateRole(inputRole);
+        updatedRole = roleRepository.save(updatedRole);
+
+        logger.info("Update role " + updatedRole);
+        return updatedRole;
+    }
+
 }

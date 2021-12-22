@@ -1,0 +1,71 @@
+package com.sijie.blogweb.helper;
+
+import com.sijie.blogweb.exception.InvalidParameterException;
+import com.sijie.blogweb.exception.ResourceAlreadyExistsException;
+import com.sijie.blogweb.model.Role;
+import com.sijie.blogweb.model.User;
+import com.sijie.blogweb.repository.RoleRepository;
+import com.sijie.blogweb.repository.UserRepository;
+import org.apache.logging.log4j.util.Strings;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.stereotype.Component;
+
+import java.util.HashSet;
+import java.util.Set;
+
+@Component
+@Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+public class UserHelper {
+    private static final Logger logger = LoggerFactory.getLogger(UserHelper.class);
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private RoleRepository roleRepository;
+
+    public User validateAndBuildNewUser(User inputUser, Set<String> roles) {
+        if (Strings.isEmpty(inputUser.getUsername())) {
+            throw new InvalidParameterException("Invalid Parameter: username cannot be empty");
+        }
+        if (Strings.isEmpty(inputUser.getPassword())) {
+            throw new InvalidParameterException("Invalid Parameter: password cannot be empty");
+        }
+        String username = inputUser.getUsername();
+        String password = inputUser.getPassword();
+
+        User internalUser = userRepository.findByUsername(username);
+        if (internalUser != null) {
+            throw new ResourceAlreadyExistsException("User with username: " + username + " already exists");
+        }
+        User newUser = new User();
+        newUser.setUsername(username);
+        newUser.setPassword(passwordEncoder.encode(password));
+
+        Set<Role> attachedRoles = new HashSet<>();
+        for (String roleName: roles) {
+            Role internalRole = roleRepository.findByName(roleName);
+            if (internalRole != null) {
+                attachedRoles.add(internalRole);
+            } else {
+                logger.info("Cannot attach " + roleName + " role to user. Because " + roleName + " role does not exist");
+            }
+        }
+        newUser.setRoles(attachedRoles);
+        return newUser;
+    }
+
+    public User toExternalUser(User internalUser) {
+        User externalUser = new User();
+        externalUser.setId(internalUser.getId());
+        externalUser.setUsername(internalUser.getUsername());
+        externalUser.setRoles(internalUser.getRoles());
+        return externalUser;
+    }
+}

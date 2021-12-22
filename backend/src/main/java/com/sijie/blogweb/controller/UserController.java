@@ -1,20 +1,22 @@
 package com.sijie.blogweb.controller;
 
 import com.google.common.base.MoreObjects;
-import com.sijie.blogweb.exception.InvalidParameterException;
-import com.sijie.blogweb.exception.ResourceAlreadyExistsException;
+import com.sijie.blogweb.helper.UserHelper;
 import com.sijie.blogweb.model.User;
 import com.sijie.blogweb.repository.UserRepository;
-import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/users")
@@ -22,42 +24,29 @@ public class UserController {
     private static Logger logger = LoggerFactory.getLogger(UserController.class);
     private static Integer DEFAULT_PAGE_SIZE = 20;
 
-    @Autowired
-    private PasswordEncoder passwordEncoder;
+    private UserRepository userRepository;
+    private UserHelper userHelper;
 
     @Autowired
-    private UserRepository userRepository;
+    public UserController(UserRepository userRepository,
+                          UserHelper userHelper) {
+        this.userRepository = userRepository;
+        this.userHelper = userHelper;
+    }
 
     @PostMapping("/guest")
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public User registerGuestUser(@RequestBody User inputUser) {
         logger.info("Start registerGuestUser");
 
-        if (Strings.isEmpty(inputUser.getUsername())) {
-            throw new InvalidParameterException("Invalid Parameter: username cannot be empty");
-        }
-        if (Strings.isEmpty(inputUser.getPassword())) {
-            throw new InvalidParameterException("Invalid Parameter: password cannot be empty");
-        }
-        String username = inputUser.getUsername();
-        String password = inputUser.getPassword();
+        Set<String> roles = new HashSet<>();
+        roles.add("GUEST");
 
-        User internalUser = userRepository.findByUsername(username);
-        if (internalUser != null) {
-            throw new ResourceAlreadyExistsException("User with username: " + username + " already exists");
-        }
-        internalUser = new User();
-        internalUser.setUsername(username);
-        internalUser.setPassword(passwordEncoder.encode(password));
+        User newUser = userHelper.validateAndBuildNewUser(inputUser, roles);
+        User internalUser = userRepository.save(newUser);
+        logger.info("Create new user with username: " + internalUser.getUsername());
 
-        internalUser = userRepository.save(internalUser);
-        logger.info("Create new user with username: " + username);
-
-        User externalUser = new User();
-        externalUser.setId(internalUser.getId());
-        externalUser.setUsername(internalUser.getUsername());
-        externalUser.setRoles(internalUser.getRoles());
-        return externalUser;
+        return userHelper.toExternalUser(internalUser);
     }
 
     @GetMapping(value = "")

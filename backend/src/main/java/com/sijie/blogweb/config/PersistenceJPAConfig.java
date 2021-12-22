@@ -50,7 +50,7 @@ public class PersistenceJPAConfig {
     }
 
     @Bean
-    @ConfigurationProperties(prefix="spring.datasource")
+    @ConfigurationProperties(prefix="dev.datasource.mysql")
     public DataSource dataSource() {
         return new DruidDataSource();
     }

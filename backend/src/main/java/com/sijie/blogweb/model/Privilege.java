@@ -11,7 +11,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Entity
-@Table(schema = "blog_web", name = "priviledge")
+@Table(schema = "blog_web", name = "privilege")
 public class Privilege {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

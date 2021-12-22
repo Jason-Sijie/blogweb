@@ -2,9 +2,9 @@ package com.sijie.blogweb.controller;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
+import com.sijie.blogweb.exception.InvalidParameterException;
 import com.sijie.blogweb.exception.ResourceAlreadyExistsException;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
-import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.model.Category;
 import com.sijie.blogweb.repository.CategoryRepository;
 import org.slf4j.Logger;
@@ -16,7 +16,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.security.InvalidParameterException;
 import java.util.Date;
 import java.util.Optional;
 import java.util.UUID;

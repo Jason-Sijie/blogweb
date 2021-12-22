@@ -1,5 +1,6 @@
 package com.sijie.blogweb.helper;
 
+import com.sijie.blogweb.exception.InvalidParameterException;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
 import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.model.Category;
@@ -14,7 +15,6 @@ import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.security.InvalidParameterException;
 import java.util.*;
 
 @Component

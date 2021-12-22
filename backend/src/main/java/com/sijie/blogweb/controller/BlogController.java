@@ -1,6 +1,7 @@
 package com.sijie.blogweb.controller;
 
 import com.google.common.base.MoreObjects;
+import com.sijie.blogweb.exception.InvalidParameterException;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
 import com.sijie.blogweb.helper.BlogHelper;
 import com.sijie.blogweb.model.Blog;
@@ -22,7 +23,7 @@ import java.util.Optional;
 @RequestMapping(value = "/blogs")
 public class BlogController {
     private static Logger logger = LoggerFactory.getLogger(BlogController.class);
-    private static Integer DEFAULT_PAGE_SIZE = 20;
+    private static Integer DEFAULT_PAGE_SIZE = 10;
 
     private final BlogRepository blogRepository;
     private BlogHelper blogHelper;

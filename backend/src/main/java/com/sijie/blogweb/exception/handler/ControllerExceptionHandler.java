@@ -1,5 +1,6 @@
 package com.sijie.blogweb.exception.handler;
 
+import com.sijie.blogweb.exception.InvalidParameterException;
 import com.sijie.blogweb.exception.ResourceAlreadyExistsException;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -28,11 +29,22 @@ public class ControllerExceptionHandler {
     @ExceptionHandler(ResourceAlreadyExistsException.class)
     @ResponseStatus(value = HttpStatus.CONFLICT)
     @ResponseBody
-    public ErrorMessage resourceAlreadyExistsException(ResourceNotFoundException ex, WebRequest request) {
+    public ErrorMessage resourceAlreadyExistsException(ResourceAlreadyExistsException ex, WebRequest request) {
         ErrorMessage message = new ErrorMessage();
         message.setMessage(ex.getMessage());
         message.setDate(new Date());
         message.setStatus(HttpStatus.CONFLICT.name());
+        return message;
+    }
+
+    @ExceptionHandler(InvalidParameterException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorMessage invalidParameterException(InvalidParameterException ex, WebRequest request) {
+        ErrorMessage message = new ErrorMessage();
+        message.setMessage(ex.getMessage());
+        message.setDate(new Date());
+        message.setStatus(HttpStatus.BAD_REQUEST.name());
         return message;
     }
 }

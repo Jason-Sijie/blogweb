@@ -14,3 +14,14 @@ based on it.
 
 Useful blog: https://blog.csdn.net/NDKHBWH/article/details/100074764
 
+
+## JWT
+
+- https://cloud.tencent.com/developer/article/1555599
+- https://www.cnblogs.com/larrydpk/p/14939748.html
+
+### JWT Filter
+
+We need two **Filters** to process the request with JWT
+1. "login" filter to authenticate the username and password. 
+2. "token validation" filter to validate the token in the HTTP request. 

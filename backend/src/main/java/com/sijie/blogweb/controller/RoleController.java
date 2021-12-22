@@ -2,7 +2,6 @@ package com.sijie.blogweb.controller;
 
 import com.google.common.base.MoreObjects;
 import com.sijie.blogweb.helper.RoleHelper;
-import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.model.Role;
 import com.sijie.blogweb.repository.RoleRepository;
 import org.slf4j.Logger;

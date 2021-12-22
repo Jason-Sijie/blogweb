@@ -15,6 +15,7 @@ public class JwtProperties {
     private String secretKey;
     private long validityInMs;
     private String loginUrl;
+    private String type;
 
     public String getSecretKey() {
         return Base64.getEncoder().encodeToString(secretKey.getBytes());

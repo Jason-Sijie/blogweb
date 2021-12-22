@@ -3,12 +3,10 @@ package com.sijie.blogweb.config;
 import com.sijie.blogweb.filter.JwtLoginFilter;
 import com.sijie.blogweb.filter.JwtTokenAuthenticationFilter;
 import com.sijie.blogweb.security.CustomUserDetailsService;
-import com.sijie.blogweb.security.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -24,8 +22,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
-    @Autowired
-    private JwtTokenProvider jwtTokenProvider;
 
     @Value("${jwt.loginUrl}")
     private String jwtLoginUrl;
@@ -40,8 +36,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.headers().frameOptions().disable();
 
-        http.addFilterBefore(new JwtLoginFilter(authenticationManager(), jwtTokenProvider, jwtLoginUrl), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(new JwtTokenAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
     }
 
     @Override
@@ -62,4 +58,13 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return authenticationProvider;
     }
 
+    @Bean
+    public JwtLoginFilter jwtLoginFilter() throws Exception {
+        return new JwtLoginFilter(authenticationManager(), jwtLoginUrl);
+    }
+
+    @Bean
+    public JwtTokenAuthenticationFilter jwtTokenAuthenticationFilter() {
+        return new JwtTokenAuthenticationFilter();
+    }
 }

@@ -81,4 +81,12 @@ public class JwtTokenProvider {
         }
     }
 
+    public long getTimeToExpireInSecond() {
+        return jwtProperties.getValidityInMs();
+    }
+
+    public String getTokenType() {
+        return jwtProperties.getType();
+    }
+
 }

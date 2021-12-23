@@ -5,8 +5,10 @@ import com.sijie.blogweb.exception.ResourceNotFoundException;
 import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.model.Category;
 import com.sijie.blogweb.model.Tag;
+import com.sijie.blogweb.model.User;
 import com.sijie.blogweb.repository.CategoryRepository;
 import com.sijie.blogweb.repository.TagRepository;
+import com.sijie.blogweb.repository.UserRepository;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,6 +30,9 @@ public class BlogHelper {
     @Autowired
     TagRepository tagRepository;
 
+    @Autowired
+    UserRepository userRepository;
+
     public Blog validateAndBuildNewBlog(Blog inputBlog) {
         Blog newBlog = new Blog();
 
@@ -44,7 +49,7 @@ public class BlogHelper {
         newBlog.setDescription(inputBlog.getDescription());
         newBlog.setContent(inputBlog.getContent());
 
-        // TODO: validate author and category
+        // validate category
         if (Strings.isNotEmpty(inputBlog.getCategoryId())) {
             Category category = categoryRepository.findByCid(inputBlog.getCategoryId());
             if (category == null) {
@@ -53,6 +58,17 @@ public class BlogHelper {
             newBlog.setCategoryId(inputBlog.getCategoryId());
         } else {
             logger.debug("New blog does not have a category Id");
+        }
+
+        // validate author
+        if (Strings.isNotEmpty(inputBlog.getAuthorId())) {
+            User user = userRepository.findByUid(inputBlog.getAuthorId());
+            if (user == null) {
+                throw new ResourceNotFoundException("User with uid: " + inputBlog.getAuthorId() + " not found");
+            }
+            newBlog.setAuthorId(inputBlog.getAuthorId());
+        } else {
+            logger.debug("New blog does not have a author Id");
         }
 
         // attach tags

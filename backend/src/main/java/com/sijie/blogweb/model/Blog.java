@@ -54,6 +54,7 @@ public class Blog {
 
     @ManyToMany
     @JoinTable(
+            schema = "blog_web",
             name = "blog_tag",
             joinColumns = @JoinColumn(table = "blog", name = "blog_id"),
             inverseJoinColumns = @JoinColumn(table = "tag", name = "tag_id")

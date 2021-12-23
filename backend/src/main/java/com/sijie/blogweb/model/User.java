@@ -13,6 +13,9 @@ public class User {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
 
+    @Column(name = "bid", length = 36, nullable = false, unique = true)
+    private String uid;
+
     @Column(name = "username", length = 36, nullable = false, unique = true)
     private String username;
 
@@ -21,6 +24,7 @@ public class User {
 
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
+            schema = "blog_web",
             name = "user_role",
             joinColumns = @JoinColumn(name = "user_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id")

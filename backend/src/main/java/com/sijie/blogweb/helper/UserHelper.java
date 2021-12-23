@@ -17,6 +17,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
 @Component
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
@@ -47,6 +48,7 @@ public class UserHelper {
         User newUser = new User();
         newUser.setUsername(username);
         newUser.setPassword(passwordEncoder.encode(password));
+        newUser.setUid(UUID.randomUUID().toString());
 
         Set<Role> attachedRoles = new HashSet<>();
         for (String roleName: roles) {

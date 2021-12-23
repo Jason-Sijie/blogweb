@@ -26,6 +26,7 @@ public class Role {
 
     @ManyToMany
     @JoinTable(
+            schema = "blog_web",
             name = "role_privilege",
             joinColumns = @JoinColumn(name = "role_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "privilege_id", referencedColumnName = "id")

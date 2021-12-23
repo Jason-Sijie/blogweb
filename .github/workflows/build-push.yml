@@ -48,5 +48,4 @@ jobs:
       with:
         push: true
         tags: ysjason/blogweb-backend:latest
-      working-directory: ${{env.backend-dir}}
-
+        context: ${{env.backend-dir}}

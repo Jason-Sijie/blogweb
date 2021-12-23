@@ -1,4 +1,4 @@
-package com.sijie.blogweb.config;
+package com.sijie.blogweb.config.dev;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import org.springframework.beans.factory.annotation.Autowired;

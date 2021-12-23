@@ -23,14 +23,6 @@ class BlogRepositoryTest {
 	@Autowired
 	BlogRepository blogRepository;
 
-	@Autowired
-	DataSource dataSource;
-
-	@Test
-	public void testSchemaInit() {
-		logger.debug("DataSource: " + dataSource);
-	}
-
 	@Test
 	public void testBlogCreateAndQueryByBid() {
 		Blog blog = createDummyBlog();

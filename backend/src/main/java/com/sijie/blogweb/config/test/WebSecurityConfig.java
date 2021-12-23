@@ -1,4 +1,4 @@
-package com.sijie.blogweb.config;
+package com.sijie.blogweb.config.test;
 
 import com.sijie.blogweb.filter.JwtLoginFilter;
 import com.sijie.blogweb.filter.JwtTokenAuthenticationFilter;
@@ -17,11 +17,10 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
-@Profile("dev")
+@Profile("test")
 @Configuration
 @EnableWebSecurity
-public class DevWebSecurityConfig extends WebSecurityConfigurerAdapter {
+public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
     private CustomUserDetailsService userDetailsService;
@@ -32,12 +31,19 @@ public class DevWebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
+                .antMatchers("/h2-console/**").permitAll()
                 .antMatchers("/users/guest").permitAll()
                 .antMatchers(jwtLoginUrl).permitAll()
                 .anyRequest().authenticated();
 
+        // csrf
+        http.csrf().ignoringAntMatchers("/h2-console/**");
+
         // disable session
         http.sessionManagement().disable();
+
+        // enable iframe, for h2 console
+        http.headers().frameOptions().sameOrigin();
 
         // add jwt filters
         http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class)

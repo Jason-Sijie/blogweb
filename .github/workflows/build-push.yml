@@ -13,7 +13,7 @@ jobs:
       contents: read
       packages: write
     env:
-      backend-dir: ./backend
+      backend-dir: ${{github.workspace}}/backend
 
     steps:
     - uses: actions/checkout@v2

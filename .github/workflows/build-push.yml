@@ -6,12 +6,14 @@ on:
       - master
 
 jobs:
-  build:
+  build-backend:
 
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+    env:
+      backend-dir: ./backend
 
     steps:
     - uses: actions/checkout@v2
@@ -25,22 +27,28 @@ jobs:
 
     - name: Test and Build with Maven
       run: ./mvmw package -Ptest
+      working-directory: ${{env.backend-dir}}
 
     - name: Untar target jar
       run: mkdir -p target/dependency && (cd target/dependency; jar -xf ../*.jar)
+      working-directory: ${{env.backend-dir}}
 
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
-    
+      working-directory: ${{env.backend-dir}}
+
     - name: Login to DockerHub
       uses: docker/login-action@v1 
       with:
         username: ${{ secrets.DOCKERHUB_USERNAME }}
         password: ${{ secrets.DOCKERHUB_TOKEN }}
-    
+      working-directory: ${{env.backend-dir}}
+
     - name: Build and push
       id: docker_build
       uses: docker/build-push-action@v2
       with:
         push: true
         tags: ysjason/blogweb-backend:latest
+      working-directory: ${{env.backend-dir}}
+

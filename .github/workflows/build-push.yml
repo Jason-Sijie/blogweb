@@ -26,7 +26,7 @@ jobs:
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
     - name: Test and Build with Maven
-      run: ./mvmw package -Ptest
+      run: ./mvnw package -Ptest
       working-directory: ${{env.backend-dir}}
 
     - name: Untar target jar

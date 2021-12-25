@@ -17,7 +17,6 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-
 @Profile("dev")
 @Configuration
 @EnableWebSecurity
@@ -34,12 +33,16 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.authorizeRequests()
                 .antMatchers("/users/guest").permitAll()
                 .antMatchers(jwtLoginUrl).permitAll()
-                .anyRequest().authenticated();
+                .anyRequest().authenticated()
+                .and().httpBasic();
 
         // disable session
         http.sessionManagement().disable();
 
+        // csrf
+        // by default it allows [TRACE, HEAD, GET, OPTIONS]
         http.csrf().disable();
+        http.cors();
 
         // add jwt filters
         http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class)

@@ -43,8 +43,6 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
                 if (auth != null) {
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
-            } else {
-                throw new JwtAuthenticationAbsenceException("Jwt authentication absence");
             }
         } catch (AuthenticationException e) {
             ErrorMessage message = new ErrorMessage();

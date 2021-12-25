@@ -1,10 +1,18 @@
-# How to configure CSRF in Spring Security
+# How to configure CORS in Spring Security
 
 
-## Understand what is CSRF attach
+## Understand what is Cross Site attach
 https://www.baeldung.com/spring-security-csrf
 
-## Configure CSRF in Spring Security
-https://www.baeldung.com/spring-security-cors-preflight
+## Configure CORS & CSRF in Spring Security
+
+CORS is **DIFFERENT** from CSRF!!
+```java
+http.csrf().disable();
+http.cors();
+```
 
 By default, the CSRF protection is enabled by Spring Security. 
+
+### CORS
+https://www.baeldung.com/spring-security-cors-preflight

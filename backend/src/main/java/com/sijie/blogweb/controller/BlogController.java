@@ -4,6 +4,7 @@ import com.google.common.base.MoreObjects;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
 import com.sijie.blogweb.helper.BlogHelper;
 import com.sijie.blogweb.model.Blog;
+import com.sijie.blogweb.repository.BlogContentRepository;
 import com.sijie.blogweb.repository.BlogRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,10 +27,14 @@ public class BlogController {
 
     private final BlogRepository blogRepository;
     private final BlogHelper blogHelper;
+    private final BlogContentRepository blogContentRepository;
 
     @Autowired
-    public BlogController(BlogRepository blogRepository, BlogHelper blogHelper) {
+    public BlogController(BlogRepository blogRepository,
+                          BlogContentRepository blogContentRepository,
+                          BlogHelper blogHelper) {
         this.blogRepository = blogRepository;
+        this.blogContentRepository = blogContentRepository;
         this.blogHelper = blogHelper;
     }
 
@@ -39,10 +44,13 @@ public class BlogController {
         logger.info("Start createNewBlog");
 
         Blog newBlog = blogHelper.validateAndBuildNewBlog(inputBlog);
+
+        // persist to both data sources
         Blog internalBlog = blogRepository.save(newBlog);
+        blogContentRepository.setBlogContent(newBlog.getBid(), newBlog.getContent());
 
         logger.info("Create new Blog: " + internalBlog);
-        return newBlog;
+        return internalBlog;
     }
 
     @GetMapping(value = "/{id}")
@@ -55,6 +63,7 @@ public class BlogController {
             throw new ResourceNotFoundException("Blog with id: " + id + " not found");
         }
         Blog resultBlog = result.get();
+        resultBlog.setContent(blogContentRepository.getBlogContent(resultBlog.getBid()));
 
         // increment views
         resultBlog.setViews(resultBlog.getViews() + 1);
@@ -72,6 +81,7 @@ public class BlogController {
         if (result == null) {
             throw new ResourceNotFoundException("Blog with bid: " + bid + " not found");
         }
+        result.setContent(blogContentRepository.getBlogContent(result.getBid()));
 
         // increment views
         result.setViews(result.getViews() + 1);

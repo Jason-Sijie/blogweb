@@ -69,7 +69,7 @@ public class UserHelper {
 
     public User toExternalUser(User internalUser) {
         User externalUser = new User();
-        externalUser.setId(internalUser.getId());
+        externalUser.setUid(internalUser.getUid());
         externalUser.setUsername(internalUser.getUsername());
         externalUser.setRoles(internalUser.getRoles());
         return externalUser;

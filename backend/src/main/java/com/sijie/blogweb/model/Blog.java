@@ -23,13 +23,10 @@ public class Blog {
     @Column(name = "title", length = 256, nullable = false)
     private String title;
 
-    // longtext
-    @Lob
-    @Column(name = "description", nullable = false)
+    @Column(name = "description", length = 1024, nullable = false)
     private String description;
 
-    @Lob
-    @Column(name = "content", nullable = false)
+    @Transient
     private String content;
 
     @Column(name = "likes", nullable = false)

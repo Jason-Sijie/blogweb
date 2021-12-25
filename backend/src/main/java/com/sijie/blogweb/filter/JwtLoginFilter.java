@@ -76,6 +76,7 @@ public class JwtLoginFilter extends AbstractAuthenticationProcessingFilter {
         message.setDate(new Date());
 
         response.setStatus(HttpStatus.FORBIDDEN.value());
+        response.setContentType("application/json");
         PrintWriter out = response.getWriter();
         out.write(new ObjectMapper().writeValueAsString(message));
         out.flush();

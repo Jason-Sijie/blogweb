@@ -9,12 +9,15 @@ import com.sijie.blogweb.model.User;
 import com.sijie.blogweb.repository.CategoryRepository;
 import com.sijie.blogweb.repository.TagRepository;
 import com.sijie.blogweb.repository.UserRepository;
+import com.sijie.blogweb.security.CustomUserDetails;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -63,12 +66,15 @@ public class BlogHelper {
         }
 
         // validate author
-        if (Strings.isNotEmpty(inputBlog.getAuthorId())) {
-            User user = userRepository.findByUid(inputBlog.getAuthorId());
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        String uid = userDetails.getUid();
+
+        if (Strings.isNotEmpty(uid)) {
+            User user = userRepository.findByUid(uid);
             if (user == null) {
-                throw new ResourceNotFoundException("User with uid: " + inputBlog.getAuthorId() + " not found");
+                throw new ResourceNotFoundException("User with uid: " + uid + " not found");
             }
-            newBlog.setAuthorId(inputBlog.getAuthorId());
+            newBlog.setAuthorId(uid);
         } else {
             logger.debug("New blog does not have a author Id");
         }

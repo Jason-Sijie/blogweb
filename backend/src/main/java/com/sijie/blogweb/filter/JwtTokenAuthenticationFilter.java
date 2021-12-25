@@ -2,11 +2,13 @@ package com.sijie.blogweb.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.sijie.blogweb.exception.InvalidJwtAuthenticationException;
+import com.sijie.blogweb.exception.JwtAuthenticationAbsenceException;
 import com.sijie.blogweb.exception.handler.ErrorMessage;
 import com.sijie.blogweb.security.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.GenericFilterBean;
 
@@ -41,13 +43,16 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
                 if (auth != null) {
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
+            } else {
+                throw new JwtAuthenticationAbsenceException("Jwt authentication absence");
             }
-        } catch (InvalidJwtAuthenticationException e) {
+        } catch (AuthenticationException e) {
             ErrorMessage message = new ErrorMessage();
-            message.setMessage("Invalid token");
+            message.setMessage("Authentication failure: Invalid token");
             message.setStatus(HttpStatus.UNAUTHORIZED.name());
             message.setDate(new Date());
 
+            response.setContentType("application/json");
             response.setStatus(HttpStatus.UNAUTHORIZED.value());
             response.getWriter().write(new ObjectMapper().writeValueAsString(message));
             response.getWriter().flush();

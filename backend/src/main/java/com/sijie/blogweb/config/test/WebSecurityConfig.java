@@ -37,7 +37,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated();
 
         // csrf
-        http.csrf().ignoringAntMatchers("/h2-console/**");
+        http.csrf().disable();
 
         // disable session
         http.sessionManagement().disable();

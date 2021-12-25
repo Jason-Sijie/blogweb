@@ -24,12 +24,16 @@ import java.util.UUID;
 public class UserHelper {
     private static final Logger logger = LoggerFactory.getLogger(UserHelper.class);
 
+    private final PasswordEncoder passwordEncoder;
+    private final UserRepository userRepository;
+    private final RoleRepository roleRepository;
+
     @Autowired
-    private PasswordEncoder passwordEncoder;
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleRepository roleRepository;
+    public UserHelper(PasswordEncoder passwordEncoder, UserRepository userRepository, RoleRepository roleRepository) {
+        this.passwordEncoder = passwordEncoder;
+        this.userRepository = userRepository;
+        this.roleRepository = roleRepository;
+    }
 
     public User validateAndBuildNewUser(User inputUser, Set<String> roles) {
         if (Strings.isEmpty(inputUser.getUsername())) {

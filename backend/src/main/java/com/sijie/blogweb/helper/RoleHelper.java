@@ -20,11 +20,14 @@ import java.util.Set;
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class RoleHelper {
 
-    @Autowired
-    private PrivilegeRepository privilegeRepository;
+    private final PrivilegeRepository privilegeRepository;
+    private final RoleRepository roleRepository;
 
     @Autowired
-    private RoleRepository roleRepository;
+    public RoleHelper(PrivilegeRepository privilegeRepository, RoleRepository roleRepository) {
+        this.privilegeRepository = privilegeRepository;
+        this.roleRepository = roleRepository;
+    }
 
     public Role validateAndBuildNewRole(Role inputRole) {
         if (Strings.isEmpty(inputRole.getName())) {

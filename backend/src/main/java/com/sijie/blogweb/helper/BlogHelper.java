@@ -24,14 +24,16 @@ import java.util.*;
 public class BlogHelper {
     private static Logger logger = LoggerFactory.getLogger(BlogHelper.class);
 
-    @Autowired
-    CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
+    private final TagRepository tagRepository;
+    private final UserRepository userRepository;
 
     @Autowired
-    TagRepository tagRepository;
-
-    @Autowired
-    UserRepository userRepository;
+    public BlogHelper(CategoryRepository categoryRepository, TagRepository tagRepository, UserRepository userRepository) {
+        this.categoryRepository = categoryRepository;
+        this.tagRepository = tagRepository;
+        this.userRepository = userRepository;
+    }
 
     public Blog validateAndBuildNewBlog(Blog inputBlog) {
         Blog newBlog = new Blog();
@@ -72,18 +74,7 @@ public class BlogHelper {
         }
 
         // attach tags
-        Set<Tag> resultTags = new HashSet<>();
-        for (Tag tagExternal: inputBlog.getTags()) {
-            if (Strings.isNotEmpty(tagExternal.getName())) {
-                Tag tagInternal = tagRepository.findByName(tagExternal.getName());
-                if (tagInternal == null) {
-                    // create new tag
-                    tagExternal.setBlogs(new HashSet<>());
-                    tagInternal = tagRepository.save(tagExternal);
-                }
-                resultTags.add(tagInternal);
-            }
-        }
+        Set<Tag> resultTags = translateExternalTagsToInternalTags(inputBlog.getTags());
         newBlog.setTags(resultTags);
 
         newBlog.setBid(UUID.randomUUID().toString());
@@ -121,8 +112,16 @@ public class BlogHelper {
         }
 
         // update tags
-        Set<Tag> newTags = new HashSet<>();
-        for (Tag tagExternal: inputBlog.getTags()) {
+        Set<Tag> newTags = translateExternalTagsToInternalTags(inputBlog.getTags());
+        internalBlog.setTags(newTags);
+
+        internalBlog.setGmtUpdate(new Date());
+        return internalBlog;
+    }
+
+    private Set<Tag> translateExternalTagsToInternalTags(Set<Tag> externalTags) {
+        Set<Tag> internalTags = new HashSet<>();
+        for (Tag tagExternal: externalTags) {
             if (Strings.isNotEmpty(tagExternal.getName())) {
                 Tag tagInternal = tagRepository.findByName(tagExternal.getName());
                 if (tagInternal == null) {
@@ -130,13 +129,10 @@ public class BlogHelper {
                     tagExternal.setBlogs(new HashSet<>());
                     tagInternal = tagRepository.save(tagExternal);
                 }
-                newTags.add(tagInternal);
+                internalTags.add(tagInternal);
             }
         }
-        internalBlog.setTags(newTags);
-
-        internalBlog.setGmtUpdate(new Date());
-        return internalBlog;
+        return internalTags;
     }
 
 }

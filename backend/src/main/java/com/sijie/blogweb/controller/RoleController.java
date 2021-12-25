@@ -20,8 +20,8 @@ public class RoleController {
     private static Logger logger = LoggerFactory.getLogger(RoleController.class);
     private static Integer DEFAULT_PAGE_SIZE = 10;
 
-    private RoleRepository roleRepository;
-    private RoleHelper roleHelper;
+    private final RoleRepository roleRepository;
+    private final RoleHelper roleHelper;
 
     @Autowired
     public RoleController(RoleRepository roleRepository,

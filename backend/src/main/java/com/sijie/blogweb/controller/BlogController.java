@@ -1,7 +1,6 @@
 package com.sijie.blogweb.controller;
 
 import com.google.common.base.MoreObjects;
-import com.sijie.blogweb.exception.InvalidParameterException;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
 import com.sijie.blogweb.helper.BlogHelper;
 import com.sijie.blogweb.model.Blog;
@@ -26,7 +25,7 @@ public class BlogController {
     private static Integer DEFAULT_PAGE_SIZE = 10;
 
     private final BlogRepository blogRepository;
-    private BlogHelper blogHelper;
+    private final BlogHelper blogHelper;
 
     @Autowired
     public BlogController(BlogRepository blogRepository, BlogHelper blogHelper) {

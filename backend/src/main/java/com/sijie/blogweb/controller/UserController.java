@@ -13,9 +13,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.HashSet;
-import java.util.List;
 import java.util.Set;
 
 @RestController
@@ -24,8 +22,8 @@ public class UserController {
     private static Logger logger = LoggerFactory.getLogger(UserController.class);
     private static Integer DEFAULT_PAGE_SIZE = 20;
 
-    private UserRepository userRepository;
-    private UserHelper userHelper;
+    private final UserRepository userRepository;
+    private final UserHelper userHelper;
 
     @Autowired
     public UserController(UserRepository userRepository,

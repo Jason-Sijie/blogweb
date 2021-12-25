@@ -10,6 +10,7 @@ import com.sijie.blogweb.repository.CategoryRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.transaction.annotation.Isolation;
@@ -26,7 +27,7 @@ public class CategoryController {
     private static Logger logger = LoggerFactory.getLogger(CategoryController.class);
     private static Integer DEFAULT_PAGE_SIZE = 20;
 
-    private CategoryRepository categoryRepository;
+    private final CategoryRepository categoryRepository;
 
     @Autowired
     public CategoryController(CategoryRepository categoryRepository) {
@@ -52,7 +53,7 @@ public class CategoryController {
         inputCategory.setGmtUpdate(now);
 
         internalCategory = categoryRepository.save(inputCategory);
-        return inputCategory;
+        return internalCategory;
     }
 
     @GetMapping(name = "")

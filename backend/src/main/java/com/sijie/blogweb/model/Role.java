@@ -24,7 +24,7 @@ public class Role {
     @JsonIgnore
     private Set<User> users;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             schema = "blog_web",
             name = "role_privilege",

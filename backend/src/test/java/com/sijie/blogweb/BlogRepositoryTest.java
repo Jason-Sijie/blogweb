@@ -30,14 +30,13 @@ class BlogRepositoryTest {
 
 		Blog result = blogRepository.findByBid("1");
 		logger.info("The result blog id: " + result.getId() + ", bid: " + result.getBid());
-		assertEquals(blog.getContent(), result.getContent());
+		assertEquals(blog.getTitle(), result.getTitle());
 	}
 
 	private Blog createDummyBlog() {
 		Blog blog = new Blog();
 		blog.setBid("1");
 		blog.setTitle("foo");
-		blog.setContent("foo");
 		blog.setDescription("foo");
 		blog.setViews(0);
 		blog.setGmtCreate(new Date());

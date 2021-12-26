@@ -25,6 +25,8 @@ import java.util.UUID;
 @Component
 public class DatabaseDataInit {
     private static final Logger logger = LoggerFactory.getLogger(DatabaseDataInit.class);
+    private static final String BLOG_WEB_ADMIN_USERNAME = "BLOG_WEB_ADMIN_USERNAME";
+    private static final String BLOG_WEB_ADMIN_PASSWORD = "BLOG_WEB_ADMIN_PASSWORD";
 
     private final RoleRepository roleRepository;
     private final PrivilegeRepository privilegeRepository;
@@ -97,8 +99,8 @@ public class DatabaseDataInit {
     }
 
     private void initAdminUser() {
-        String username = environment.getProperty("BLOG_WEB_ADMIN_USERNAME");
-        String password = environment.getProperty("BLOG_WEB_ADMIN_PASSWORD");
+        String username = environment.getProperty(BLOG_WEB_ADMIN_USERNAME);
+        String password = environment.getProperty(BLOG_WEB_ADMIN_PASSWORD);
 
         if (Strings.isNotEmpty(username) && Strings.isNotEmpty(password)) {
             User internalAdmin = userRepository.findByUsername(username);
@@ -109,7 +111,7 @@ public class DatabaseDataInit {
                 newAdmin.setUid(UUID.randomUUID().toString());
                 internalAdmin = userRepository.save(newAdmin);
                 logger.info("Create a new Admin user: " + internalAdmin);
-            } else if (!(passwordEncoder.encode(password)).equals(internalAdmin.getPassword())) {
+            } else if (!passwordEncoder.matches(password, internalAdmin.getPassword())) {
                 internalAdmin.setPassword(passwordEncoder.encode(password));
                 logger.info("Update the existing Admin user: " + username + " with new password");
             }

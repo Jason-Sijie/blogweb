@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -36,6 +37,7 @@ public class CategoryController {
 
     @PostMapping(value = "", consumes = {"application/json"})
     @Transactional(isolation = Isolation.SERIALIZABLE)
+    @PreAuthorize("hasAnyAuthority('CATEGORY_ALL', 'CATEGORY_CREATE')")
     public Category createNewCategory(@RequestBody Category inputCategory) {
         logger.info("Start createNewCategory");
 
@@ -95,6 +97,7 @@ public class CategoryController {
 
     @PostMapping(value = "/{id}", consumes = {"application/json"})
     @Transactional(isolation = Isolation.SERIALIZABLE)
+    @PreAuthorize("hasAnyAuthority('CATEGORY_ALL', 'CATEGORY_UPDATE')")
     public Category updateCategory(@PathVariable("id") long id, @RequestBody Category inputCategory) {
         logger.info("Start updateCategory");
 

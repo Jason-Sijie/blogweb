@@ -66,9 +66,7 @@ public class BlogHelper {
         }
 
         // validate author
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-        String uid = userDetails.getUid();
-
+        String uid = inputBlog.getAuthorId();
         if (Strings.isNotEmpty(uid)) {
             User user = userRepository.findByUid(uid);
             if (user == null) {
@@ -118,8 +116,10 @@ public class BlogHelper {
         }
 
         // update tags
-        Set<Tag> newTags = translateExternalTagsToInternalTags(inputBlog.getTags());
-        internalBlog.setTags(newTags);
+        if (inputBlog.getTags() != null && !inputBlog.getTags().isEmpty()) {
+            Set<Tag> newTags = translateExternalTagsToInternalTags(inputBlog.getTags());
+            internalBlog.setTags(newTags);
+        }
 
         internalBlog.setGmtUpdate(new Date());
         return internalBlog;

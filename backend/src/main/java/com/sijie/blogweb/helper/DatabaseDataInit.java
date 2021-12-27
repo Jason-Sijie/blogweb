@@ -1,5 +1,6 @@
 package com.sijie.blogweb.helper;
 
+import com.google.common.collect.Sets;
 import com.sijie.blogweb.model.Privilege;
 import com.sijie.blogweb.model.Role;
 import com.sijie.blogweb.model.User;
@@ -109,6 +110,10 @@ public class DatabaseDataInit {
                 newAdmin.setUsername(username);
                 newAdmin.setPassword(passwordEncoder.encode(password));
                 newAdmin.setUid(UUID.randomUUID().toString());
+
+                Role adminRole = roleRepository.findByName(RoleType.ADMIN.getName());
+                newAdmin.setRoles(Sets.newHashSet(adminRole));
+
                 internalAdmin = userRepository.save(newAdmin);
                 logger.info("Create a new Admin user: " + internalAdmin);
             } else if (!passwordEncoder.matches(password, internalAdmin.getPassword())) {

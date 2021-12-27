@@ -1,9 +1,8 @@
 package com.sijie.blogweb.exception.handler;
 
-import com.sijie.blogweb.exception.InvalidParameterException;
-import com.sijie.blogweb.exception.ResourceAlreadyExistsException;
-import com.sijie.blogweb.exception.ResourceNotFoundException;
+import com.sijie.blogweb.exception.*;
 import org.springframework.http.HttpStatus;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -37,7 +36,7 @@ public class ControllerExceptionHandler {
         return message;
     }
 
-    @ExceptionHandler(InvalidParameterException.class)
+    @ExceptionHandler({InvalidParameterException.class})
     @ResponseStatus(value = HttpStatus.BAD_REQUEST)
     @ResponseBody
     public ErrorMessage invalidParameterException(InvalidParameterException ex, WebRequest request) {
@@ -45,6 +44,17 @@ public class ControllerExceptionHandler {
         message.setMessage(ex.getMessage());
         message.setDate(new Date());
         message.setStatus(HttpStatus.BAD_REQUEST.name());
+        return message;
+    }
+
+    @ExceptionHandler({UserCredentialsAbsenceException.class, UserUnauthorziedException.class})
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    public ErrorMessage unauthorizedException(AuthenticationException ex, WebRequest request) {
+        ErrorMessage message = new ErrorMessage();
+        message.setMessage(ex.getMessage());
+        message.setDate(new Date());
+        message.setStatus(HttpStatus.UNAUTHORIZED.name());
         return message;
     }
 }

@@ -1,4 +1,4 @@
-package com.sijie.blogweb.config.test;
+package com.sijie.blogweb.config;
 
 import com.sijie.blogweb.filter.JwtLoginFilter;
 import com.sijie.blogweb.filter.JwtTokenAuthenticationFilter;
@@ -8,8 +8,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.authentication.dao.DaoAuthenticationProvider;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -17,9 +19,9 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
-@Profile("test")
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(prePostEnabled = true)
 public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -31,20 +33,18 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
-                .antMatchers("/h2-console/**").permitAll()
-                .antMatchers("/users/guest").permitAll()
-                .antMatchers(jwtLoginUrl).permitAll()
+                .antMatchers(HttpMethod.POST, "/users/guest", jwtLoginUrl).permitAll()
+                .antMatchers(HttpMethod.GET, "/blogs/**", "/categories/**").permitAll()
                 .anyRequest().authenticated()
                 .and().httpBasic();
-
-        // csrf
-        http.csrf().disable();
 
         // disable session
         http.sessionManagement().disable();
 
-        // enable iframe, for h2 console
-        http.headers().frameOptions().sameOrigin();
+        // csrf
+        // by default it allows [TRACE, HEAD, GET, OPTIONS]
+        http.csrf().disable();
+        http.cors();
 
         // add jwt filters
         http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class)

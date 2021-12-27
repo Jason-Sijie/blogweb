@@ -2,16 +2,21 @@ package com.sijie.blogweb.controller;
 
 import com.google.common.base.MoreObjects;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
+import com.sijie.blogweb.exception.UserCredentialsAbsenceException;
+import com.sijie.blogweb.exception.UserUnauthorziedException;
 import com.sijie.blogweb.helper.BlogHelper;
 import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.repository.BlogContentRepository;
 import com.sijie.blogweb.repository.BlogRepository;
+import com.sijie.blogweb.security.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 
+import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
@@ -39,9 +44,16 @@ public class BlogController {
 
     @PostMapping(value = "", consumes = {"application/json"})
     @Transactional(isolation = Isolation.SERIALIZABLE)
+    @PreAuthorize("hasAnyAuthority('BLOG_ALL', 'BLOG_CREATE')")
     public Blog createNewBlog(@RequestBody Blog inputBlog) {
         logger.info("Start createNewBlog");
 
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (userDetails != null) {
+            inputBlog.setAuthorId(userDetails.getUid());
+        } else {
+            throw new UserCredentialsAbsenceException("User credentials are required to create new blog");
+        }
         Blog newBlog = blogHelper.validateAndBuildNewBlog(inputBlog);
 
         // persist to both data sources
@@ -128,6 +140,7 @@ public class BlogController {
     }
 
     @PutMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('BLOG_ALL', 'BLOG_UPDATE')")
     public Blog updateBlogById(@PathVariable("id") long id, @RequestBody Blog inputBlog) {
         logger.info("Start updateBlogById");
 
@@ -136,6 +149,13 @@ public class BlogController {
             throw new ResourceNotFoundException("Blog with id: " + id + " not found");
         }
         Blog internalBlog = result.get();
+
+        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (userDetails == null) {
+            throw new UserCredentialsAbsenceException("User credentials are required to create new blog");
+        } else if (!userDetails.getUid().equals(internalBlog.getAuthorId())){
+            throw new UserUnauthorziedException("User " + userDetails.getUsername() + " is Unauthorized to perform update operation on blog " + internalBlog.getBid());
+        }
 
         internalBlog = blogHelper.validateAndUpdateBlog(inputBlog, internalBlog);
         blogRepository.save(internalBlog);

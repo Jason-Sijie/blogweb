@@ -1,55 +1,57 @@
 import {Component} from "react";
 import { connect } from "react-redux";
+import {Container, Row, Col} from "react-bootstrap";
 
-import BlogItem from "../components/BlogItem";
-import './App.css';
-import {getBlogDetailById} from "../actions/blogAction";
+import {getBlogDetailById, getBlogsWithPageAndSize} from "../actions/blogAction";
+import {acquireJwtCredentials} from "../actions/jwtAction";
 
+import "bootstrap/dist/css/bootstrap.min.css";
+import "./App.css";
+import "./App.sass";
+import BlogList from "../components/stateful/BlogList";
 
 class App extends Component {
   constructor() {
     super();
   }
 
-  defaultPost = {
-    imgSrc: "https://i.ibb.co/YLmzhgp/construction-4445367-1920-2.jpg",
-    tags: [
-      {
-        name: "Constructuion",
-      },
-      {
-        name: "Market",
-      },
-    ],
-    date: "14 Jan 2021",
-    title: "TOP 5 Ways to Choose Bricks made from manufactured stone",
-    text: "Brampton Brick® Select Series is a cost-effective clay brick product series...",
-    url: "/someblog"
-  }
-
   render() {
     return (
-      <div className="App">
-        <body>
-          <BlogItem blog={this.defaultPost}/>
-          {this.props.blog.currentBlog.title}
-          <button onClick={() => this.props.getBlogDetailById(2)}>get blog</button>
-        </body>
-      </div>
+      <Container fluid={"xxl"}>
+        <Row>
+          <BlogList {...this.props.blog.blogListPage}
+                    pageSize={2}
+                    getBlogsWithPageAndSize={this.props.action.blog.getBlogsWithPageAndSize} />
+        </Row>
+      </Container>
+
     );
   }
 }
 
 const mapStateToProps = (state) => {  
   return {
-    blog: state.blogReducer
+    blog: state.blogReducer,
+    jwt: state.jwtReducer,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    getBlogDetailById: (id) => {
-      getBlogDetailById(id)(dispatch);
+    action: {
+      blog: {
+        getBlogDetailById: (id) => {
+          getBlogDetailById(id)(dispatch);
+        },
+        getBlogsWithPageAndSize: (page, size) => {
+          getBlogsWithPageAndSize(page, size)(dispatch);
+        }
+      },
+      jwt: {
+        acquireJwtCredentials: (username, password) => {
+          acquireJwtCredentials(username, password)(dispatch);
+        }
+      }
     }
   }
 }

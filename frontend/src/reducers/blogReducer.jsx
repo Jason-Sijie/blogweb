@@ -1,29 +1,28 @@
-const { act } = require("react-dom/test-utils");
+import {actions} from "../constants/actions";
 
 const initialState = {
-  blogs: [],
-  currentBlog: {},
-  count: 0
+  blogListPage: [],
+  detailedBlog: {},
 }
 
 const blogReducer = (state = initialState, action) => {
   switch (action.type) {
-    case "BLOG_UPDATE_CURRENT":
+    case actions.blog.UPDATE_DETAILED_BLOG:
       state = {
         ...state,
-        currentBlog: action.payload
+        detailedBlog: action.payload
       }
       break;
-    
-    case "BLOG_UPDATE_ALL":
+
+    case actions.blog.UPDATE_BLOG_LIST_PAGE:
       state = {
         ...state,
-        blogs: action.payload
+        blogListPage: action.payload
       }
       break;
   }
 
   return state;
-} 
+}
 
 export default blogReducer;

@@ -6,8 +6,8 @@ import {Component} from "react";
 /**
  * props: {
  *   content: []
- *   totalPages: ,
  *   getBlogsWithPageAndSize: (page, size) => {}
+ *   totalPages: (optional),
  *   currentPage: (optional),
  *   leftNum: (optional),
  *   rightNum: (optional),
@@ -20,10 +20,10 @@ class BlogList extends Component {
     super(props);
     this.state = {
       pagination: {
-        currentPage: props.currentPage? props.currentPage: 0,
-        leftNum: props.leftNum? props.leftNum : 3,
-        rightNum: props.rightNum? props.rightNum : 3,
-        pageSize: props.pageSize? props.pageSize : 5,
+        currentPage: props.currentPage || 0,
+        leftNum: props.leftNum || 3,
+        rightNum: props.rightNum || 3,
+        pageSize: props.pageSize || 5,
       }
     }
 
@@ -37,9 +37,9 @@ class BlogList extends Component {
     this.setState({
       pagination: {
         currentPage: num,
-        leftNum: this.props.leftNum? this.props.leftNum : 3,
-        rightNum: this.props.rightNum? this.props.rightNum : 3,
-        pageSize: this.props.pageSize? this.props.pageSize : 5,
+        leftNum: this.props.leftNum || 3,
+        rightNum: this.props.rightNum || 3,
+        pageSize: this.props.pageSize || 5,
       }
     })
   }
@@ -47,7 +47,7 @@ class BlogList extends Component {
   render() {
     return (
       <Container>
-        {(this.props.content? this.props.content : []).map((item, idx) => {
+        {(this.props.content || []).map((item, idx) => {
           return (
             <Row key={idx} style={{margin: "10px 0"}}>
               <BlogItem blog={item} />
@@ -56,7 +56,7 @@ class BlogList extends Component {
         })}
         <Row>
           <Pages {...this.state.pagination}
-                 totalPages={this.props.totalPages? this.props.totalPages : 10}
+                 totalPages={this.props.totalPages || 10}
                  getContentWithPageAndSize={this.props.getBlogsWithPageAndSize}
                  updatePagination={this.updatePagination} />
         </Row>

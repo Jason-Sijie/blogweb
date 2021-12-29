@@ -59,6 +59,7 @@ public class PersistenceJPAConfig {
         return new DruidDataSource();
     }
 
+    // initialize DB schema
     @Bean
     public DataSourceInitializer dataSourceInitializer(@Qualifier("dataSource") final DataSource dataSource) {
         ResourceDatabasePopulator resourceDatabasePopulator = new ResourceDatabasePopulator();

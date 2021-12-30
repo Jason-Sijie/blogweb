@@ -10,7 +10,7 @@
     font-weight: bold;
     font-size: 70px;
     color: white;
-    padding: 200px 50px 100px 50px;
+    padding: 150px 50px 100px 50px;
 }
 
 .blog_header_description {
@@ -19,5 +19,5 @@
     font-style: italic;
     font-size: 25px;
     color: cornsilk;
-    padding: 0px 50px 150px;
+    padding: 0px 50px 100px;
 }

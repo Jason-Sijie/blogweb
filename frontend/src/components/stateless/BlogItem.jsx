@@ -1,12 +1,12 @@
 import {Row, Col, Card, Button} from "react-bootstrap";
 import TagList from "./TagList";
+import {Link} from "react-router-dom";
 
 /**
  * props = {
- *     blog: {
- *         ...
- *     },
- *     bgColor:
+ *   blog: {
+ *       ...
+ *   },
  * }
  */
 const BlogItem = (props) => {
@@ -23,12 +23,14 @@ const BlogItem = (props) => {
           {props.blog.title}
         </Card.Title>
         <Card.Subtitle style={{margin: "10px"}}>
-          <TagList tags={props.blog.tags? props.blog.tags : []}></TagList>
+          <TagList tags={props.blog.tags || []} />
         </Card.Subtitle>
         <Card.Text style={{color: "grey"}}>
           {props.blog.description}
         </Card.Text>
-        <Button style={{float:"right"}} variant="primary">Read More</Button>
+        <Link to={`/blogs/${props.blog.id}`} key={props.blog.id}>
+          <Button style={{float:"right"}} variant="primary" >Read More</Button>
+        </Link>
       </Card.Body>
       <Card.Footer>
         <Row style={{justifyContent: "space-between"}}>

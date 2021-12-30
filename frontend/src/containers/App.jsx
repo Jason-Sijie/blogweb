@@ -1,6 +1,5 @@
 import {Component} from "react";
 import { connect } from "react-redux";
-import {Container, Row, Col, Button} from "react-bootstrap";
 
 import {getBlogDetailById, getBlogsWithPageAndSize} from "../actions/blogAction";
 import {acquireJwtCredentials} from "../actions/jwtAction";
@@ -9,29 +8,33 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import "./App.sass";
 import BlogList from "../components/stateful/BlogList";
-import BlogDetail from "../components/stateful/BlogDetail";
+import {Route, Routes} from "react-router-dom";
+import BlogDetailPage from "../components/stateless/BlogDetailPage";
+import AppHeader from "../components/stateless/AppHeader";
 
 class App extends Component {
-  constructor() {
-    super();
+  constructor(props) {
+    super(props);
   }
 
   render() {
     return (
-      <Container fluid={"xxl"}>
-        <Row>
-          <Button onClick={() => {this.props.action.blog.getBlogDetailById(1)}} />
-        </Row>
-        <Row>
-          <BlogList {...this.props.blog.blogListPage}
-                    pageSize={2}
-                    getBlogsWithPageAndSize={this.props.action.blog.getBlogsWithPageAndSize} />
-        </Row>
-        <Row>
-          <BlogDetail blog={this.props.blog.detailedBlog} />
-        </Row>
-      </Container>
-
+      <div>
+        <AppHeader />
+        <div style={{marginTop: "60px"}}>
+          <Routes>
+            <Route path="/" exact element={
+              <BlogList {...this.props.blog.blogListPage}
+                        pageSize={2}
+                        getBlogsWithPageAndSize={this.props.action.blog.getBlogsWithPageAndSize}/>
+            }/>
+            <Route path="/blogs/:id" element={
+              <BlogDetailPage blog={this.props.blog.detailedBlog}
+                              getBlogDetailById={this.props.action.blog.getBlogDetailById} />
+            }/>
+          </Routes>
+        </div>
+      </div>
     );
   }
 }

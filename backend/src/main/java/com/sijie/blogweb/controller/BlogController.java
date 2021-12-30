@@ -65,7 +65,7 @@ public class BlogController {
     }
 
     @GetMapping(value = "/{id}")
-    @Transactional(readOnly = true)
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Blog getBlogDetailById(@PathVariable("id") long id) {
         logger.info("Start getBlogDetailById");
 
@@ -84,7 +84,7 @@ public class BlogController {
     }
 
     @GetMapping(value = "/", params = {"bid"})
-    @Transactional(readOnly = true)
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Blog getBlogDetailByBid(@RequestParam String bid) {
         logger.info("Start getBlogDetailByBid");
 
@@ -141,6 +141,7 @@ public class BlogController {
 
     @PutMapping(value = "/{id}")
     @PreAuthorize("hasAnyAuthority('BLOG_ALL', 'BLOG_UPDATE')")
+    @Transactional(isolation = Isolation.SERIALIZABLE)
     public Blog updateBlogById(@PathVariable("id") long id, @RequestBody Blog inputBlog) {
         logger.info("Start updateBlogById");
 

@@ -1,4 +1,4 @@
-import {Col, Container, Row} from "react-bootstrap";
+import {Container, Row} from "react-bootstrap";
 import BlogItem from "../stateless/BlogItem";
 import Pages from "../stateless/Pages";
 import {Component} from "react";
@@ -7,8 +7,8 @@ import {Component} from "react";
  * props: {
  *   content: []
  *   getBlogsWithPageAndSize: (page, size) => {}
- *   totalPages: (optional),
- *   currentPage: (optional),
+ *   totalPages: ,
+ *   number: ,
  *   leftNum: (optional),
  *   rightNum: (optional),
  *   pageSize: (pageSize),
@@ -20,7 +20,7 @@ class BlogList extends Component {
     super(props);
     this.state = {
       pagination: {
-        currentPage: props.currentPage || 0,
+        currentPage: props.number || 0,
         leftNum: props.leftNum || 3,
         rightNum: props.rightNum || 3,
         pageSize: props.pageSize || 5,

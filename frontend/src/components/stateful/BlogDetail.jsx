@@ -22,6 +22,7 @@ class BlogDetail extends Component {
       isEdit: false
     }
     this.props.getBlogDetailById(this.props.blogId);
+
   }
 
   blogContent = (isEdit) => {

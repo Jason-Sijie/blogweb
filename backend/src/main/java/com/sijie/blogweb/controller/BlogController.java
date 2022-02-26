@@ -76,6 +76,7 @@ public class BlogController {
         Blog resultBlog = result.get();
         resultBlog.setContent(blogContentRepository.getBlogContent(resultBlog.getBid()));
 
+
         // increment views
         resultBlog.setViews(resultBlog.getViews() + 1);
         blogRepository.save(resultBlog);

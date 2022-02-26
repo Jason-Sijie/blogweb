@@ -5,6 +5,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Component
 public class BlogContentRepositoryRedisImpl implements BlogContentRepository {
@@ -26,6 +27,7 @@ public class BlogContentRepositoryRedisImpl implements BlogContentRepository {
             throw new DataAccessResourceFailureException("error");
         }
         bid = BLOG_CONTENT_KEY_PREFIX + bid;
-        return (String) redisTemplate.opsForValue().get(bid);
+        String result = (String) redisTemplate.opsForValue().get(bid);
+        return result;
     }
 }

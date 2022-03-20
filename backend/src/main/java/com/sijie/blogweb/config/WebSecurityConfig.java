@@ -1,6 +1,5 @@
 package com.sijie.blogweb.config;
 
-import com.sijie.blogweb.filter.CustomCorsFilter;
 import com.sijie.blogweb.filter.JwtLoginFilter;
 import com.sijie.blogweb.filter.JwtTokenAuthenticationFilter;
 import com.sijie.blogweb.security.CustomUserDetailsService;
@@ -92,6 +91,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.addAllowedMethod("*");
         source.registerCorsConfiguration("/**", configuration);
 
-        return new CustomCorsFilter(source);
+        return new CorsFilter(source);
     }
 }

@@ -4,7 +4,8 @@ import BlogDetail from "../stateful/BlogDetail";
 /**
  * @param props : {
  *   blog: {},
- *   getBlogDetailById: (id) => {}
+ *   getBlogDetailById: (id) => {},
+ *   updateBlogContent: (blog) => {}
  * }
  * @returns {JSX.Element}
  * @constructor

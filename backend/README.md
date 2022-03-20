@@ -20,7 +20,7 @@ CREATE SCHEMA blog_web IF NOT EXISTS;
 #### Redis
 
 ```
-docker run --name blogwebredis -dp 7000:7000 \
+sudo docker run --name blogwebredis -dp 7000:7000 \
     -v=<project path>/backend/config/redis.conf:/etc/redis/redis.conf \
     -v=/var/redis:/data \
     redis:latest \ 

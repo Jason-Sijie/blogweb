@@ -18,11 +18,11 @@ const BlogHeader = (props) => {
       <Container className="blog_header" style={{backgroundImage: `url(/images/blog_header_background.jpg)`}}>
         <Row style={{justifyContent: "space-between"}}>
           <Col xs={"auto"} style={{margin: "20px 20px"}}>
-            <OverlayIcon trigger={"hover"} placement={"right"} src={"/icons/views.png"} header={"Views"}
+            <OverlayIcon trigger={['hover', 'focus']} placement={"right"} src={"/icons/views.png"} header={"Views"}
                          body={() => (<div><strong>{props.views}</strong> views in total</div>)}  />
           </Col>
           <Col xs={"auto"} style={{margin: "20px 20px"}}>
-            <OverlayIcon trigger={"hover"} placement={"left"} src={"/icons/likes.png"} header={"Likes"}
+            <OverlayIcon trigger={['hover', 'focus']} placement={"left"} src={"/icons/likes.png"} header={"Likes"}
                          body={() => (<div><strong>{props.likes}</strong> likes in total</div>)}  />
           </Col>
         </Row>

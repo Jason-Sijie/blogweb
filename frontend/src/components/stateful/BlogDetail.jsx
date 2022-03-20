@@ -10,6 +10,7 @@ import BlogHeader from "../stateless/BlogHeader";
  *   blogId: ,
  *   blog: {},
  *   getBlogDetailById: (id) => {}
+ *   updateBlogContent: (blog) => {}
  * }
  */
 class BlogDetail extends Component {
@@ -37,7 +38,7 @@ class BlogDetail extends Component {
               toolbarHeight={"30px"}
             />
           ) : (
-            <MDEditor.Markdown source={this.props.blog.content} />
+            <MDEditor.Markdown source={this.state.updatedContent} />
           )}
         </Row>
       </Container>
@@ -49,11 +50,22 @@ class BlogDetail extends Component {
       return(
         <Card.Body>
           <Row style={{justifyContent: "right"}}>
-            <Col xs={"auto"}>
+            <Col xs={"2"} lg={"1"}>
               <Button style={{width: "100%"}} variant={"secondary"} onClick={() => {this.setState({isEdit: false})}}>Cancel</Button>
             </Col>
-            <Col xs={"auto"}>
-              <Button style={{width: "100%"}} variant={"primary"} onClick={() => {this.setState({content: this.state.updatedContent})}}>Submit</Button>
+            <Col xs={"2"} lg={"1"}>
+              <Button style={{width: "100%"}} variant={"primary"} onClick={() => {this.setState({content: this.state.updatedContent})}}>Save</Button>
+            </Col>
+            <Col xs={"2"} lg={"1"}>
+              <Button style={{width: "100%"}} variant={"primary"} onClick={() => {
+                this.props.updateBlogContent({
+                  id: this.props.blog.id,
+                  bid: this.props.blog.bid,
+                  content: this.state.updatedContent,
+                  title: this.state.updatedTitle,
+                  description: this.state.updatedDescription
+                })
+              }}>Submit</Button>
             </Col>
           </Row>
         </Card.Body>

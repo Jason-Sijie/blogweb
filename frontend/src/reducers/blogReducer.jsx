@@ -20,6 +20,7 @@ const blogReducer = (state = initialState, action) => {
         blogListPage: action.payload
       }
       break;
+
   }
 
   return state;

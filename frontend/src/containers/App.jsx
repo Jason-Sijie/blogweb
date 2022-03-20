@@ -1,16 +1,18 @@
 import {Component} from "react";
 import { connect } from "react-redux";
+import {Route, Routes} from "react-router-dom";
 
-import {getBlogDetailById, getBlogsWithPageAndSize} from "../actions/blogAction";
+import {getBlogDetailById, getBlogsWithPageAndSize, updateBlogContent} from "../actions/blogAction";
 import {acquireJwtCredentials} from "../actions/jwtAction";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import "./App.sass";
+
 import BlogList from "../components/stateful/BlogList";
-import {Route, Routes} from "react-router-dom";
 import BlogDetailPage from "../components/stateless/BlogDetailPage";
 import AppHeader from "../components/stateless/AppHeader";
+import LoginPage from "../components/stateless/LoginPage";
 
 class App extends Component {
   constructor(props) {
@@ -30,7 +32,11 @@ class App extends Component {
             }/>
             <Route path="/blogs/:id" element={
               <BlogDetailPage blog={this.props.blog.detailedBlog}
-                              getBlogDetailById={this.props.action.blog.getBlogDetailById} />
+                              getBlogDetailById={this.props.action.blog.getBlogDetailById}
+                              updateBlogContent={this.props.action.blog.updateBlogContent}/>
+            }/>
+            <Route path="/login" element={
+              <LoginPage acquireJwtCredentials={this.props.action.jwt.acquireJwtCredentials} />
             }/>
           </Routes>
         </div>
@@ -55,6 +61,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         getBlogsWithPageAndSize: (page, size) => {
           getBlogsWithPageAndSize(page, size)(dispatch);
+        },
+        updateBlogContent: (blog) => {
+          updateBlogContent(blog)(dispatch);
         }
       },
       jwt: {

@@ -1,8 +1,6 @@
 package com.sijie.blogweb.filter;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.sijie.blogweb.exception.InvalidJwtAuthenticationException;
-import com.sijie.blogweb.exception.JwtAuthenticationAbsenceException;
 import com.sijie.blogweb.exception.handler.ErrorMessage;
 import com.sijie.blogweb.security.jwt.JwtTokenProvider;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -44,6 +42,7 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
             }
+            // if token does not exist, go to the next JwtLoginFilter
         } catch (AuthenticationException e) {
             ErrorMessage message = new ErrorMessage();
             message.setMessage("Authentication failure: Invalid token");

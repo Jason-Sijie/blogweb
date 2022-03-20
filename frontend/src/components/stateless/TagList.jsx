@@ -1,5 +1,5 @@
 import {Badge, Col, Row} from "react-bootstrap";
-import {getBadgeColor} from "../../constants/colors";
+import {getColorFromString} from "../../constants/colors";
 
 const TagList = (props) => {
   return (
@@ -7,7 +7,7 @@ const TagList = (props) => {
       {props.tags.map((tag, idx) => {
         return (
           <Col key={idx} xs={"auto"}>
-            <Badge pill bg={getBadgeColor(tag.name)}>{tag.name}</Badge>
+            <Badge pill bg={getColorFromString(tag.name)}>{tag.name}</Badge>
           </Col>
         )
       })}

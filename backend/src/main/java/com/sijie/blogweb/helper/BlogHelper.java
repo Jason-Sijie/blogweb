@@ -78,8 +78,9 @@ public class BlogHelper {
         }
 
         // attach tags
-        Set<Tag> resultTags = translateExternalTagsToInternalTags(inputBlog.getTags());
-        newBlog.setTags(resultTags);
+        if (inputBlog.getTags() != null) {
+            newBlog.setTags(translateExternalTagsToInternalTags(inputBlog.getTags()));
+        }
 
         newBlog.setBid(UUID.randomUUID().toString());
         newBlog.setViews(0);

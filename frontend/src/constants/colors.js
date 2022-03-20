@@ -10,12 +10,12 @@ export const badgeColors = [
   "dark"
 ];
 
-export const randomBadgeColor = () => {
+export const randomColor = () => {
   const idx = Math.floor(Math.random() * badgeColors.length);
   return badgeColors[idx];
 }
 
-export const getBadgeColor = (str) => {
+export const getColorFromString = (str) => {
   const idx = hashCode(str) % badgeColors.length;
   return badgeColors[idx];
 }

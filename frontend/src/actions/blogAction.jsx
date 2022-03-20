@@ -33,3 +33,30 @@ export const getBlogsWithPageAndSize = (page, size) => dispatch => {
     console.log(error)
   })
 }
+
+export const updateBlogContent = (blog) => dispatch => {
+  const url = api.blogWeb.blog + "/" + blog.id;
+  var headers;
+  if (localStorage.getItem("token") != null) {
+    const token = JSON.parse(localStorage.getItem("token"));
+    headers = {
+      "Content-Type": "application/json",
+      "Authorization": token.type + " " + token.content
+    }
+  } else {
+    headers = {
+      "Content-Type": "application/json"
+    }
+  }
+
+  return axios.put(url, blog,{
+    headers: headers
+  }).then(promise => {
+    dispatch({
+      type: actions.blog.UPDATE_DETAILED_BLOG,
+      payload: promise.data,
+    })
+  }).catch(error => {
+    console.log(error)
+  })
+}

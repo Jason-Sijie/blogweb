@@ -1,19 +1,22 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import reportWebVitals from './reportWebVitals';
 import {Provider} from "react-redux";
+import {ReduxRouter} from "@lagunovsky/redux-react-router";
 
+import reportWebVitals from './reportWebVitals';
 import App from './containers/App.jsx';
 import store from "./store";
+import {browserHistory} from "./utils/history";
 
 import './index.css';
-import {BrowserRouter} from "react-router-dom";
 
 ReactDOM.render(
   <Provider store={store}>
-    <BrowserRouter>
-      <App />
-    </BrowserRouter>
+    <ReduxRouter
+      history={browserHistory}
+      store={store}
+      children={<App/>}
+    />
   </Provider>,
   document.getElementById('root')
 );

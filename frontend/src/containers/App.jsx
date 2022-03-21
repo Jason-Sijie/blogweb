@@ -13,6 +13,7 @@ import BlogList from "../components/stateful/BlogList";
 import BlogDetailPage from "../components/stateless/BlogDetailPage";
 import AppHeader from "../components/stateless/AppHeader";
 import LoginPage from "../components/stateless/LoginPage";
+import {AppRoutes} from "../utils/routes";
 
 class App extends Component {
   constructor(props) {
@@ -24,21 +25,7 @@ class App extends Component {
       <div>
         <AppHeader />
         <div style={{marginTop: "60px"}}>
-          <Routes>
-            <Route path="/" exact element={
-              <BlogList {...this.props.blog.blogListPage}
-                        pageSize={2}
-                        getBlogsWithPageAndSize={this.props.action.blog.getBlogsWithPageAndSize}/>
-            }/>
-            <Route path="/blogs/:id" element={
-              <BlogDetailPage blog={this.props.blog.detailedBlog}
-                              getBlogDetailById={this.props.action.blog.getBlogDetailById}
-                              updateBlogContent={this.props.action.blog.updateBlogContent}/>
-            }/>
-            <Route path="/login" element={
-              <LoginPage acquireJwtCredentials={this.props.action.jwt.acquireJwtCredentials} />
-            }/>
-          </Routes>
+          <AppRoutes {...this.props} />
         </div>
       </div>
     );

@@ -5,6 +5,7 @@ import com.sijie.blogweb.exception.ResourceNotFoundException;
 import com.sijie.blogweb.exception.UserCredentialsAbsenceException;
 import com.sijie.blogweb.exception.UserUnauthorziedException;
 import com.sijie.blogweb.helper.BlogHelper;
+import com.sijie.blogweb.helper.RedisTransactionHelper;
 import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.repository.BlogContentRepository;
 import com.sijie.blogweb.repository.BlogRepository;
@@ -32,14 +33,17 @@ public class BlogController {
     private final BlogRepository blogRepository;
     private final BlogHelper blogHelper;
     private final BlogContentRepository blogContentRepository;
+    private final RedisTransactionHelper redisTransactionHelper;
 
     @Autowired
     public BlogController(BlogRepository blogRepository,
                           BlogContentRepository blogContentRepository,
-                          BlogHelper blogHelper) {
+                          BlogHelper blogHelper,
+                          RedisTransactionHelper redisTransactionHelper) {
         this.blogRepository = blogRepository;
         this.blogContentRepository = blogContentRepository;
         this.blogHelper = blogHelper;
+        this.redisTransactionHelper = redisTransactionHelper;
     }
 
     @PostMapping(value = "", consumes = {"application/json"})
@@ -65,9 +69,11 @@ public class BlogController {
     }
 
     @GetMapping(value = "/{id}")
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public Blog getBlogDetailById(@PathVariable("id") long id) {
         logger.info("Start getBlogDetailById");
+        logger.info("Clearing redis transaction");
+        redisTransactionHelper.discardRedisTransaction();
 
         Optional<Blog> result = blogRepository.findById(id);
         if (!result.isPresent()) {
@@ -75,7 +81,6 @@ public class BlogController {
         }
         Blog resultBlog = result.get();
         resultBlog.setContent(blogContentRepository.getBlogContent(resultBlog.getBid()));
-
 
         // increment views
         resultBlog.setViews(resultBlog.getViews() + 1);
@@ -85,9 +90,11 @@ public class BlogController {
     }
 
     @GetMapping(value = "/", params = {"bid"})
-    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @Transactional(isolation = Isolation.READ_COMMITTED)
     public Blog getBlogDetailByBid(@RequestParam String bid) {
         logger.info("Start getBlogDetailByBid");
+        logger.info("Clearing redis transaction");
+        redisTransactionHelper.discardRedisTransaction();
 
         Blog result = blogRepository.findByBid(bid);
         if (result == null) {
@@ -160,6 +167,10 @@ public class BlogController {
         }
 
         internalBlog = blogHelper.validateAndUpdateBlog(inputBlog, internalBlog);
+        blogContentRepository.setBlogContent(internalBlog.getBid(), internalBlog.getContent());
+        if (internalBlog.getViews() > 0) {
+            throw new ResourceNotFoundException("No resource");
+        }
         blogRepository.save(internalBlog);
 
         logger.info("Update Blog " + internalBlog);

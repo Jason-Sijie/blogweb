@@ -9,6 +9,7 @@ import {Col, Container, Row} from "react-bootstrap";
  * @constructor
  */
 const LoginPage = (props) => {
+
   return (
     <Container>
       <Row style={{justifyContent:"center", marginTop: "10%"}}>

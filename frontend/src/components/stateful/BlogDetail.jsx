@@ -50,13 +50,13 @@ class BlogDetail extends Component {
       return(
         <Card.Body>
           <Row style={{justifyContent: "right"}}>
-            <Col xs={"2"} lg={"1"}>
+            <Col xs={"2"} xxl={"1"}>
               <Button style={{width: "100%"}} variant={"secondary"} onClick={() => {this.setState({isEdit: false})}}>Cancel</Button>
             </Col>
-            <Col xs={"2"} lg={"1"}>
+            <Col xs={"2"} xxl={"1"}>
               <Button style={{width: "100%"}} variant={"primary"} onClick={() => {this.setState({content: this.state.updatedContent})}}>Save</Button>
             </Col>
-            <Col xs={"2"} lg={"1"}>
+            <Col xs={"2"} xxl={"1"}>
               <Button style={{width: "100%"}} variant={"primary"} onClick={() => {
                 this.props.updateBlogContent({
                   id: this.props.blog.id,
@@ -74,7 +74,7 @@ class BlogDetail extends Component {
       return (
         <Card.Body>
           <Row style={{justifyContent: "right"}}>
-            <Col xs={"2"} lg={"1"}>
+            <Col xs={"2"} xl={"1"}>
               <Button style={{width: "100%"}} variant={"primary"} onClick={() => {this.setState({isEdit: true})}}>Edit</Button>
             </Col>
           </Row>

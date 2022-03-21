@@ -36,8 +36,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers(HttpMethod.POST, "/users/guest", jwtLoginUrl).permitAll()
-                .antMatchers(HttpMethod.GET, "/blogs/**", "/categories/**").permitAll()
-                .anyRequest().authenticated()
+//                .antMatchers(HttpMethod.GET, "/blogs/**", "/categories/**").permitAll()
+//                .anyRequest().authenticated()
                 .and().httpBasic();
 
         // disable session

@@ -9,12 +9,17 @@ import {Button, Col, Form, Row} from "react-bootstrap";
  * @constructor
  */
 class LoginForm extends Component{
+
   constructor(props) {
     super(props);
     this.state = {
       username: "",
       password: ""
     };
+  }
+
+  performLogin = () => {
+    this.props.acquireJwtCredentials(this.state.username, this.state.password)
   }
 
   render() {

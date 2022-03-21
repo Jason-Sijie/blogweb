@@ -4,6 +4,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.support.TransactionSynchronizationManager;
 
@@ -12,12 +13,12 @@ public class BlogContentRepositoryRedisImpl implements BlogContentRepository {
     private static String BLOG_CONTENT_KEY_PREFIX = "blog_content:";
 
     @Autowired
-    private RedisTemplate redisTemplate;
+    private StringRedisTemplate stringRedisTemplate;
 
     @Override
     public String setBlogContent(String bid, String content) {
         bid = BLOG_CONTENT_KEY_PREFIX + bid;
-        redisTemplate.opsForValue().set(bid, content);
+        stringRedisTemplate.opsForValue().set(bid, content);
         return bid;
     }
 
@@ -27,7 +28,7 @@ public class BlogContentRepositoryRedisImpl implements BlogContentRepository {
             throw new DataAccessResourceFailureException("error");
         }
         bid = BLOG_CONTENT_KEY_PREFIX + bid;
-        String result = (String) redisTemplate.opsForValue().get(bid);
+        String result = (String) stringRedisTemplate.opsForValue().get(bid);
         return result;
     }
 }

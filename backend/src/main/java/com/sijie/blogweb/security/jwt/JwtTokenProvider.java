@@ -69,15 +69,12 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            Jws<Claims> claims = Jwts.parser().setSigningKey(jwtProperties.getSecretKey()).parseClaimsJws(token);
-
-            if (claims.getBody().getExpiration().before(new Date())) {
-                return false;
-            }
-
+            Jwts.parser().setSigningKey(jwtProperties.getSecretKey()).parseClaimsJws(token);
             return true;
+        } catch (ExpiredJwtException e) {
+            throw new InvalidJwtAuthenticationException("Expired JWT token. " + e.getMessage());
         } catch (JwtException | IllegalArgumentException e) {
-            throw new InvalidJwtAuthenticationException("Expired or invalid JWT token");
+            throw new InvalidJwtAuthenticationException("Authentication Failure: Invalid JWT token.");
         }
     }
 

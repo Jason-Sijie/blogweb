@@ -45,7 +45,7 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
             // if token does not exist, go to the next JwtLoginFilter
         } catch (AuthenticationException e) {
             ErrorMessage message = new ErrorMessage();
-            message.setMessage("Authentication failure: Invalid token");
+            message.setMessage(e.getMessage());
             message.setStatus(HttpStatus.UNAUTHORIZED.name());
             message.setDate(new Date());
 

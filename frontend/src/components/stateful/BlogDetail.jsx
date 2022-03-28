@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {Button, Card, Col, Container, Row} from "react-bootstrap";
+import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 import MDEditor from '@uiw/react-md-editor';
 
 import "../../styles/blog_style.css";
@@ -28,8 +28,30 @@ class BlogDetail extends Component {
 
   blogContent = (isEdit) => {
     return (
-      <Container style={{minHeight: "400px"}}>
-        <Row style={{padding: "50px 30px"}}>
+      <Container style={{minHeight: "500px"}}>
+        {isEdit? (
+          <Row style={{padding: "30px 30px 0px"}}>
+            <Form>
+              <Form.Group className="mb-3" controlId="blogTitle">
+                <Form.Label>Blog Title</Form.Label>
+                <Form.Control type="text"
+                              value={this.state.updatedTitle}
+                              onChange={(event) => this.setState({updatedTitle: event.target.value})}/>
+              </Form.Group>
+              <Form.Group className="mb-3" controlId="blogContent">
+                <Form.Label>Blog Description</Form.Label>
+                <Form.Control as="textarea"
+                              rows={3}
+                              value={this.state.updatedDescription}
+                              onChange={(event) => this.setState({updatedDescription: event.target.value})}/>
+              </Form.Group>
+            </Form>
+          </Row>
+        ) : (
+          <></>
+        )}
+
+        <Row style={{padding: "30px 30px"}}>
           {isEdit? (
             <MDEditor
               value={this.state.updatedContent}
@@ -38,7 +60,8 @@ class BlogDetail extends Component {
               toolbarHeight={"30px"}
             />
           ) : (
-            <MDEditor.Markdown source={this.state.updatedContent} />
+            <MDEditor.Markdown source={this.state.updatedContent}
+                               height={"800px"}/>
           )}
         </Row>
       </Container>
@@ -51,10 +74,7 @@ class BlogDetail extends Component {
         <Card.Body>
           <Row style={{justifyContent: "right"}}>
             <Col xs={"2"} xxl={"1"}>
-              <Button style={{width: "100%"}} variant={"secondary"} onClick={() => {this.setState({isEdit: false})}}>Cancel</Button>
-            </Col>
-            <Col xs={"2"} xxl={"1"}>
-              <Button style={{width: "100%"}} variant={"primary"} onClick={() => {this.setState({content: this.state.updatedContent})}}>Save</Button>
+              <Button style={{width: "100%"}} variant={"secondary"} onClick={() => {this.setState({isEdit: false})}}>Back</Button>
             </Col>
             <Col xs={"2"} xxl={"1"}>
               <Button style={{width: "100%"}} variant={"primary"} onClick={() => {

@@ -4,7 +4,6 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 /**
  * @param props : {
  *   acquireJwtCredentials: (username, password) => {},
- *   handleModalShow: (title, content) => {}
  * }
  * @returns {JSX.Element}
  * @constructor

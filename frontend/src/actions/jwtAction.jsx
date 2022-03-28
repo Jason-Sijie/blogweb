@@ -20,12 +20,12 @@ export const acquireJwtCredentials = (username, password) => dispatch => {
     })
     dispatch(push("/"))
   }).catch(error => {
-    console.log(error)
+    console.log(error.response)
     dispatch({
       type: ACTIONS.MODAL.SHOW_MODAL,
       payload: {
         title: "Login Failed",
-        content: error.toString()
+        content: error.response.data.message
       },
     })
   })

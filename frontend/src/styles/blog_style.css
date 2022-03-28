@@ -1,7 +1,8 @@
 .blog_header {
     width: 100%;
     background-repeat: no-repeat;
-    background-size: 100% 100%;
+    background-size: cover;
+    min-height: 500px;
 }
 
 .blog_header_title {
@@ -10,14 +11,14 @@
     font-weight: bold;
     font-size: 70px;
     color: white;
-    padding: 150px 50px 100px 50px;
+    padding: 0 80px 5%;
 }
 
 .blog_header_description {
     text-align: center;
     font-family: "georgia", serif;
     font-style: italic;
-    font-size: 25px;
+    font-size: 20px;
     color: cornsilk;
-    padding: 0px 50px 100px;
+    padding: 0 50px 5%;
 }

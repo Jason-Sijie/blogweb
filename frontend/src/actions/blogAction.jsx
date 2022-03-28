@@ -56,7 +56,21 @@ export const updateBlogContent = (blog) => dispatch => {
       type: ACTIONS.BLOG.UPDATE_DETAILED_BLOG,
       payload: promise.data,
     })
+    dispatch({
+      type: ACTIONS.MODAL.SHOW_MODAL,
+      payload: {
+        title: "Update Succeeded",
+        content: "Successfully updated the blog at " + new Date().toLocaleString()
+      }
+    })
   }).catch(error => {
-    console.log(error)
+    console.log(error.response)
+    dispatch({
+      type: ACTIONS.MODAL.SHOW_MODAL,
+      payload: {
+        title: "Update Blog Failed",
+        content: error.response.data.message,
+      }
+    })
   })
 }

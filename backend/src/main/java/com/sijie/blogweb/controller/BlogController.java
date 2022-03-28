@@ -168,9 +168,6 @@ public class BlogController {
 
         internalBlog = blogHelper.validateAndUpdateBlog(inputBlog, internalBlog);
         blogContentRepository.setBlogContent(internalBlog.getBid(), internalBlog.getContent());
-        if (internalBlog.getViews() > 0) {
-            throw new ResourceNotFoundException("No resource");
-        }
         blogRepository.save(internalBlog);
 
         logger.info("Update Blog " + internalBlog);

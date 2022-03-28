@@ -3,7 +3,8 @@ import {Col, Container, Row} from "react-bootstrap";
 
 /**
  * @param props : {
- *   acquireJwtCredentials: (username, password) => ()
+ *   acquireJwtCredentials: (username, password) => {},
+ *   handleModalShow: (title, content) => {}
  * }
  * @returns {JSX.Element}
  * @constructor

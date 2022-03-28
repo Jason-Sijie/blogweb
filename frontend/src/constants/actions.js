@@ -1,9 +1,13 @@
-export const actions = {
-  blog: {
+export const ACTIONS = {
+  BLOG: {
     UPDATE_DETAILED_BLOG: "BLOG_UPDATE_DETAILED_BLOG",
     UPDATE_BLOG_LIST_PAGE: "BLOG_UPDATE_BLOG_LIST_PAGE"
   },
-  jwt: {
+  JWT: {
     UPDATE_TOKEN_CREDENTIALS: "JWT_UPDATE_TOKEN_CREDENTIALS"
+  },
+  MODAL: {
+    SHOW_MODAL: "MODAL_SHOW",
+    HIDE_MODAL: "MODAL_HIDE"
   }
 };

@@ -1,19 +1,17 @@
 import {Component} from "react";
 import { connect } from "react-redux";
-import {Route, Routes} from "react-router-dom";
 
 import {getBlogDetailById, getBlogsWithPageAndSize, updateBlogContent} from "../actions/blogAction";
 import {acquireJwtCredentials} from "../actions/jwtAction";
+import {handleModalShow, handleModalClose} from "../actions/modalAction";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./App.css";
 import "./App.sass";
 
-import BlogList from "../components/stateful/BlogList";
-import BlogDetailPage from "../components/stateless/BlogDetailPage";
 import AppHeader from "../components/stateless/AppHeader";
-import LoginPage from "../components/stateless/LoginPage";
 import {AppRoutes} from "../utils/routes";
+import GlobalModal from "../components/stateful/GlobalModal";
 
 class App extends Component {
   constructor(props) {
@@ -26,6 +24,7 @@ class App extends Component {
         <AppHeader />
         <div style={{marginTop: "60px"}}>
           <AppRoutes {...this.props} />
+          <GlobalModal {...this.props.modal.globalModal} {...this.props.action.modal}/>
         </div>
       </div>
     );
@@ -36,6 +35,7 @@ const mapStateToProps = (state) => {
   return {
     blog: state.blogReducer,
     jwt: state.jwtReducer,
+    modal: state.modalReducer
   }
 }
 
@@ -56,6 +56,14 @@ const mapDispatchToProps = (dispatch) => {
       jwt: {
         acquireJwtCredentials: (username, password) => {
           acquireJwtCredentials(username, password)(dispatch);
+        }
+      },
+      modal: {
+        handleModalShow: (title, content) => {
+          handleModalShow(title, content)(dispatch)
+        },
+        handleModalClose: () => {
+          handleModalClose()(dispatch)
         }
       }
     }

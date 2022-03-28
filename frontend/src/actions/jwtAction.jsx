@@ -1,6 +1,6 @@
 import axios from "axios";
 import {api} from "../config";
-import {actions} from "../constants/actions";
+import {ACTIONS} from "../constants/actions";
 import {push} from "@lagunovsky/redux-react-router";
 
 export const acquireJwtCredentials = (username, password) => dispatch => {
@@ -15,11 +15,18 @@ export const acquireJwtCredentials = (username, password) => dispatch => {
     },
   }).then(promise => {
     dispatch({
-      type: actions.jwt.UPDATE_TOKEN_CREDENTIALS,
+      type: ACTIONS.JWT.UPDATE_TOKEN_CREDENTIALS,
       payload: promise.data,
     })
     dispatch(push("/"))
   }).catch(error => {
     console.log(error)
+    dispatch({
+      type: ACTIONS.MODAL.SHOW_MODAL,
+      payload: {
+        title: "Login Failed",
+        content: error.toString()
+      },
+    })
   })
 }

@@ -1,6 +1,6 @@
 import axios from "axios";
 import {api} from "../config";
-import {actions} from "../constants/actions";
+import {ACTIONS} from "../constants/actions";
 
 export const getBlogDetailById = (id) => dispatch => {
   const url = api.blogWeb.blog + "/" + id;
@@ -9,7 +9,7 @@ export const getBlogDetailById = (id) => dispatch => {
     headers: {}
   }).then(promise => {
     dispatch({
-      type: actions.blog.UPDATE_DETAILED_BLOG,
+      type: ACTIONS.BLOG.UPDATE_DETAILED_BLOG,
       payload: promise.data,
     })
   }).catch(error => {
@@ -26,7 +26,7 @@ export const getBlogsWithPageAndSize = (page, size) => dispatch => {
     }
   }).then(promise => {
     dispatch({
-      type: actions.blog.UPDATE_BLOG_LIST_PAGE,
+      type: ACTIONS.BLOG.UPDATE_BLOG_LIST_PAGE,
       payload: promise.data,
     })
   }).catch(error => {
@@ -53,7 +53,7 @@ export const updateBlogContent = (blog) => dispatch => {
     headers: headers
   }).then(promise => {
     dispatch({
-      type: actions.blog.UPDATE_DETAILED_BLOG,
+      type: ACTIONS.BLOG.UPDATE_DETAILED_BLOG,
       payload: promise.data,
     })
   }).catch(error => {

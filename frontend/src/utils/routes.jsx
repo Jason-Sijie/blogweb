@@ -19,7 +19,8 @@ export function AppRoutes(props){
                         updateBlogContent={props.action.blog.updateBlogContent}/>
       }/>
       <Route path="/login" element={
-        <LoginPage acquireJwtCredentials={props.action.jwt.acquireJwtCredentials} />
+        <LoginPage acquireJwtCredentials={props.action.jwt.acquireJwtCredentials}
+                   {...props.action.modal}/>
       }/>
     </Routes>
   )

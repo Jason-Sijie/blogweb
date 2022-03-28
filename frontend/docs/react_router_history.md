@@ -91,7 +91,6 @@ export function AppRoutes(props){
 }
 ```
 
-
 ```js
 // action.js
 
@@ -107,7 +106,7 @@ export const acquireJwtCredentials = (username, password) => dispatch => {
     },
   }).then(promise => {
     dispatch({
-      type: actions.jwt.UPDATE_TOKEN_CREDENTIALS,
+      type: ACTIONS.JWT.UPDATE_TOKEN_CREDENTIALS,
       payload: promise.data,
     })
     dispatch(push("/"))

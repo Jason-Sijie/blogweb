@@ -1,4 +1,4 @@
-import {actions} from "../constants/actions";
+import {ACTIONS} from "../constants/actions";
 
 const initialState = {
   token: {
@@ -11,7 +11,7 @@ const initialState = {
 
 const jwtReducer = (state = initialState, action) => {
   switch (action.type) {
-    case actions.jwt.UPDATE_TOKEN_CREDENTIALS:
+    case ACTIONS.JWT.UPDATE_TOKEN_CREDENTIALS:
       const currentTime = new Date().getTime();
       const newToken = {
         content: action.payload.token,

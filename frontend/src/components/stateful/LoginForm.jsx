@@ -3,7 +3,8 @@ import {Button, Col, Form, Row} from "react-bootstrap";
 
 /**
  * @param props : {
- *   acquireJwtCredentials: (username, password) => ()
+ *   acquireJwtCredentials: (username, password) => {},
+ *   handleModalShow: (title, content) => {}
  * }
  * @returns {JSX.Element}
  * @constructor
@@ -46,7 +47,7 @@ class LoginForm extends Component{
 
         <Row style={{justifyContent:"right"}}>
           <Col xs={"auto"}>
-            <Button variant="primary" onClick={() => this.props.acquireJwtCredentials(this.state.username, this.state.password)}>
+            <Button variant="primary" onClick={this.performLogin}>
               Submit
             </Button>
           </Col>

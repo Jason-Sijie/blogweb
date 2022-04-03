@@ -5,6 +5,7 @@ import MDEditor from '@uiw/react-md-editor';
 import "../../styles/blog_style.css";
 import BlogHeader from "../stateless/BlogHeader";
 import TagList from "../stateless/TagList";
+import {getColorFromString, randomColor} from "../../constants/colors";
 
 /**
  * @Params props: {
@@ -38,7 +39,7 @@ class BlogDetail extends Component {
     const toasts = tags.map((tag) =>
       <Toast style={{margin: "10px"}} onClose={() => this.removeTagFromUpdatedTags(tag.name)}>
         <Toast.Header>
-          <strong  className="me-auto">Tag Name</strong>
+          <strong className="me-auto" style={{color: randomColor()}}>Tag Name</strong>
           <small>Delete Tag</small>
         </Toast.Header>
         <Toast.Body>{tag.name}</Toast.Body>
@@ -140,7 +141,7 @@ class BlogDetail extends Component {
         <Card.Body>
           <Row style={{justifyContent: "space-between"}}>
             <Col xs={"10"} style={{margin: "10px 0px"}}>
-              <TagList tags={this.state.updatedTags || []} fontSize={"15px"}/>
+              <TagList tags={this.state.updatedTags || []} fontSize={"18px"}/>
             </Col>
             <Col xs={"2"} xl={"1"} style={{margin: "10px 0px"}}>
               <Button style={{width: "100%"}} variant={"primary"} onClick={() => {this.setState({isEdit: true})}}>Edit</Button>

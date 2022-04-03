@@ -9,15 +9,12 @@ import com.sijie.blogweb.model.User;
 import com.sijie.blogweb.repository.CategoryRepository;
 import com.sijie.blogweb.repository.TagRepository;
 import com.sijie.blogweb.repository.UserRepository;
-import com.sijie.blogweb.security.CustomUserDetails;
 import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.*;
@@ -93,16 +90,13 @@ public class BlogHelper {
     }
 
     public Blog validateAndUpdateBlog(Blog inputBlog, Blog internalBlog) {
-        if (Strings.isNotEmpty(inputBlog.getTitle())
-                && !inputBlog.getTitle().equals(internalBlog.getTitle())) {
+        if (Strings.isNotEmpty(inputBlog.getTitle())) {
             internalBlog.setTitle(inputBlog.getTitle());
         }
-        if (Strings.isNotEmpty(inputBlog.getDescription())
-                && !inputBlog.getDescription().equals(internalBlog.getDescription())) {
+        if (inputBlog.getDescription() != null) {
             internalBlog.setDescription(inputBlog.getDescription());
         }
-        if (inputBlog.getContent() != null
-                && !inputBlog.getContent().equals(internalBlog.getContent())) {
+        if (inputBlog.getContent() != null) {
             internalBlog.setContent(inputBlog.getContent());
         }
 

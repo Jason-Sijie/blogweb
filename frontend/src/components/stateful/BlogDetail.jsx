@@ -1,9 +1,10 @@
 import {Component} from "react";
-import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
+import {Button, Card, Col, Container, Dropdown, Form, ListGroup, ListGroupItem, Row, Toast} from "react-bootstrap";
 import MDEditor from '@uiw/react-md-editor';
 
 import "../../styles/blog_style.css";
 import BlogHeader from "../stateless/BlogHeader";
+import TagList from "../stateless/TagList";
 
 /**
  * @Params props: {
@@ -20,36 +21,80 @@ class BlogDetail extends Component {
       updatedContent: props.blog.content || "",
       updatedTitle: props.blog.title || "",
       updatedDescription: props.blog.description || "",
+      updatedTags: props.blog.tags || [],
+      newTag: "",
       isEdit: false
     }
     this.props.getBlogDetailById(this.props.blogId);
+  }
 
+  removeTagFromUpdatedTags = (name) => {
+    this.setState({updatedTags: this.state.updatedTags.filter(function(tag) {
+        return tag.name !== name
+      })});
+  }
+
+  tagListToasts = (tags) => {
+    const toasts = tags.map((tag) =>
+      <Toast style={{margin: "10px"}} onClose={() => this.removeTagFromUpdatedTags(tag.name)}>
+        <Toast.Header>
+          <strong  className="me-auto">Tag Name</strong>
+          <small>Delete Tag</small>
+        </Toast.Header>
+        <Toast.Body>{tag.name}</Toast.Body>
+      </Toast>
+    )
+
+    return (
+      <Row>
+        {toasts}
+      </Row>
+    )
+  }
+
+  blogMetadataForm = (isEdit) => {
+    if (isEdit) {
+      return (
+        <Row style={{padding: "30px 30px 0px"}}>
+          <Form>
+            <Form.Group className="mb-3" controlId="blogTitle">
+              <Form.Label>Blog Title</Form.Label>
+              <Form.Control type="text"
+                            value={this.state.updatedTitle}
+                            onChange={(event) => this.setState({updatedTitle: event.target.value})}/>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="blogContent">
+              <Form.Label>Blog Description</Form.Label>
+              <Form.Control as="textarea"
+                            rows={3}
+                            value={this.state.updatedDescription}
+                            onChange={(event) => this.setState({updatedDescription: event.target.value})}/>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="tag">
+              <Form.Label>Add New Tag</Form.Label>
+              <Row>
+                <Col xs={"8"}>
+                  <Form.Control type="text"
+                                onChange={(event) => this.setState({newTag: event.target.value})}/>
+                </Col>
+                <Col xs={"4"}>
+                  <Button style={{width: "100%"}} variant={"primary"} onClick={() => {
+                    this.setState({updatedTags: [...this.state.updatedTags, {"name": this.state.newTag}]})
+                  }}> Add </Button>
+                </Col>
+              </Row>
+            </Form.Group>
+            {this.tagListToasts(this.state.updatedTags)}
+          </Form>
+        </Row>
+      )
+    }
   }
 
   blogContent = (isEdit) => {
     return (
       <Container style={{minHeight: "500px"}}>
-        {isEdit? (
-          <Row style={{padding: "30px 30px 0px"}}>
-            <Form>
-              <Form.Group className="mb-3" controlId="blogTitle">
-                <Form.Label>Blog Title</Form.Label>
-                <Form.Control type="text"
-                              value={this.state.updatedTitle}
-                              onChange={(event) => this.setState({updatedTitle: event.target.value})}/>
-              </Form.Group>
-              <Form.Group className="mb-3" controlId="blogContent">
-                <Form.Label>Blog Description</Form.Label>
-                <Form.Control as="textarea"
-                              rows={3}
-                              value={this.state.updatedDescription}
-                              onChange={(event) => this.setState({updatedDescription: event.target.value})}/>
-              </Form.Group>
-            </Form>
-          </Row>
-        ) : (
-          <></>
-        )}
+        {this.blogMetadataForm(isEdit)}
 
         <Row style={{padding: "30px 30px"}}>
           {isEdit? (
@@ -79,11 +124,11 @@ class BlogDetail extends Component {
             <Col xs={"2"} xxl={"1"}>
               <Button style={{width: "100%"}} variant={"primary"} onClick={() => {
                 this.props.updateBlogContent({
-                  id: this.props.blog.id,
-                  bid: this.props.blog.bid,
+                  ...this.props.blog,
                   content: this.state.updatedContent,
                   title: this.state.updatedTitle,
-                  description: this.state.updatedDescription
+                  description: this.state.updatedDescription,
+                  tags: this.state.updatedTags
                 })
               }}>Submit</Button>
             </Col>
@@ -93,8 +138,11 @@ class BlogDetail extends Component {
     } else {
       return (
         <Card.Body>
-          <Row style={{justifyContent: "right"}}>
-            <Col xs={"2"} xl={"1"}>
+          <Row style={{justifyContent: "space-between"}}>
+            <Col xs={"10"} style={{margin: "10px 0px"}}>
+              <TagList tags={this.state.updatedTags || []} fontSize={"15px"}/>
+            </Col>
+            <Col xs={"2"} xl={"1"} style={{margin: "10px 0px"}}>
               <Button style={{width: "100%"}} variant={"primary"} onClick={() => {this.setState({isEdit: true})}}>Edit</Button>
             </Col>
           </Row>
@@ -129,6 +177,7 @@ class BlogDetail extends Component {
         updatedContent: this.props.blog.content || "",
         updatedTitle: this.props.blog.title || "",
         updatedDescription: this.props.blog.description || "",
+        updatedTags: this.props.blog.tags || [],
         isEdit: false
       })
     }

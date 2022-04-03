@@ -167,7 +167,9 @@ public class BlogController {
         }
 
         internalBlog = blogHelper.validateAndUpdateBlog(inputBlog, internalBlog);
-        blogContentRepository.setBlogContent(internalBlog.getBid(), internalBlog.getContent());
+        if (internalBlog.getContent() != null) {
+            blogContentRepository.setBlogContent(internalBlog.getBid(), internalBlog.getContent());
+        }
         blogRepository.save(internalBlog);
 
         logger.info("Update Blog " + internalBlog);

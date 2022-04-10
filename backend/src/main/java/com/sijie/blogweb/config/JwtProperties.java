@@ -1,4 +1,4 @@
-package com.sijie.blogweb.security.jwt;
+package com.sijie.blogweb.config;
 
 import lombok.Getter;
 import lombok.Setter;

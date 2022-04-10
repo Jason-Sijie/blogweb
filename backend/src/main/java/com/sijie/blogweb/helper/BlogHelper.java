@@ -22,7 +22,7 @@ import java.util.*;
 @Component
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
 public class BlogHelper {
-    private static Logger logger = LoggerFactory.getLogger(BlogHelper.class);
+    private static final Logger logger = LoggerFactory.getLogger(BlogHelper.class);
 
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
@@ -90,7 +90,10 @@ public class BlogHelper {
     }
 
     public Blog validateAndUpdateBlog(Blog inputBlog, Blog internalBlog) {
-        if (Strings.isNotEmpty(inputBlog.getTitle())) {
+        if (inputBlog.getTitle() != null) {
+            if (inputBlog.getTitle().isEmpty()) {
+                throw new InvalidParameterException("Invalid parameter: blog title can not be empty!");
+            }
             internalBlog.setTitle(inputBlog.getTitle());
         }
         if (inputBlog.getDescription() != null) {
@@ -111,7 +114,7 @@ public class BlogHelper {
         }
 
         // update tags
-        if (inputBlog.getTags() != null && !inputBlog.getTags().isEmpty()) {
+        if (inputBlog.getTags() != null) {
             Set<Tag> newTags = translateExternalTagsToInternalTags(inputBlog.getTags());
             internalBlog.setTags(newTags);
         }

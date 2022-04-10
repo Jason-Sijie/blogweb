@@ -1,6 +1,7 @@
 package com.sijie.blogweb.config.dev;
 
 import com.alibaba.druid.pool.DruidDataSource;
+import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -54,9 +55,9 @@ public class PersistenceJPAConfig {
     }
 
     @Bean
-    @ConfigurationProperties(prefix="dev.datasource.mysql")
+    @ConfigurationProperties(prefix = "dev.datasource.mysql.druid")
     public DataSource dataSource() {
-        return new DruidDataSource();
+        return DruidDataSourceBuilder.create().build();
     }
 
     // initialize DB schema

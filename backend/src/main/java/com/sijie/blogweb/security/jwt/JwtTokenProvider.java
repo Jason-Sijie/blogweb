@@ -1,5 +1,6 @@
 package com.sijie.blogweb.security.jwt;
 
+import com.sijie.blogweb.config.JwtProperties;
 import com.sijie.blogweb.exception.InvalidJwtAuthenticationException;
 import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,8 +20,8 @@ import java.util.List;
 @Component
 public class JwtTokenProvider {
 
-    private JwtProperties jwtProperties;
-    private UserDetailsService userDetailsService;
+    private final JwtProperties jwtProperties;
+    private final UserDetailsService userDetailsService;
 
     @Autowired
     public JwtTokenProvider(JwtProperties jwtProperties, UserDetailsService userDetailsService) {

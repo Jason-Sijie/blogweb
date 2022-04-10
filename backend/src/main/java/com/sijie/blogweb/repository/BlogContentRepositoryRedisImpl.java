@@ -1,5 +1,6 @@
 package com.sijie.blogweb.repository;
 
+import org.apache.logging.log4j.ThreadContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
@@ -10,7 +11,7 @@ import org.springframework.transaction.support.TransactionSynchronizationManager
 
 @Component
 public class BlogContentRepositoryRedisImpl implements BlogContentRepository {
-    private static String BLOG_CONTENT_KEY_PREFIX = "blog_content:";
+    private static final String BLOG_CONTENT_KEY_PREFIX = "blog_content:";
 
     @Autowired
     private StringRedisTemplate stringRedisTemplate;

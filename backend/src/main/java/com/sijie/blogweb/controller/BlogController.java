@@ -72,7 +72,6 @@ public class BlogController {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public Blog getBlogDetailById(@PathVariable("id") long id) {
         logger.info("Start getBlogDetailById");
-        logger.info("Clearing redis transaction");
         redisTransactionHelper.discardRedisTransaction();
 
         Optional<Blog> result = blogRepository.findById(id);
@@ -93,7 +92,6 @@ public class BlogController {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public Blog getBlogDetailByBid(@RequestParam String bid) {
         logger.info("Start getBlogDetailByBid");
-        logger.info("Clearing redis transaction");
         redisTransactionHelper.discardRedisTransaction();
 
         Blog result = blogRepository.findByBid(bid);

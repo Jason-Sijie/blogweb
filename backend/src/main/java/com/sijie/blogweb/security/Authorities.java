@@ -15,7 +15,7 @@ public class Authorities {
     public static final Set<AuthorityType> ADMIN_ROLE_AUTHORITY_TYPES = Collections.unmodifiableSet(Sets.newHashSet(
             AuthorityType.BLOG_ALL, AuthorityType.CATEGORY_ALL, AuthorityType.ROLE_ALL, AuthorityType.USER_ALL
     ));
-    public static final Set<Privilege> getPrivilegesOfGivenRoleType(RoleType roleType) {
+    public static Set<Privilege> getPrivilegesOfGivenRoleType(RoleType roleType) {
         switch (roleType) {
             case ADMIN:
                 return getPrivilegesOfAdminRole();
@@ -24,14 +24,14 @@ public class Authorities {
         }
         return null;
     }
-    public static final Set<Privilege> getPrivilegesOfGuestRole() {
+    public static Set<Privilege> getPrivilegesOfGuestRole() {
         return translateAuthorityTypesToPrivileges(GUEST_ROLE_AUTHORITY_TYPES);
     }
-    public static final Set<Privilege> getPrivilegesOfAdminRole() {
+    public static Set<Privilege> getPrivilegesOfAdminRole() {
         return translateAuthorityTypesToPrivileges(ADMIN_ROLE_AUTHORITY_TYPES);
     }
 
-    private static final Set<Privilege> translateAuthorityTypesToPrivileges(Set<AuthorityType> types) {
+    private static Set<Privilege> translateAuthorityTypesToPrivileges(Set<AuthorityType> types) {
         Set<Privilege> privileges = new HashSet<>();
         for (AuthorityType type : types) {
             Privilege privilege = new Privilege();

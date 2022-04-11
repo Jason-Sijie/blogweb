@@ -1,6 +1,7 @@
 package com.sijie.blogweb.controller;
 
 import com.google.common.base.MoreObjects;
+import com.sijie.blogweb.aspect.RedisReadTransaction;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
 import com.sijie.blogweb.exception.UserCredentialsAbsenceException;
 import com.sijie.blogweb.exception.UserUnauthorziedException;
@@ -72,7 +73,7 @@ public class BlogController {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     public Blog getBlogDetailById(@PathVariable("id") long id) {
         logger.info("Start getBlogDetailById");
-        redisTransactionHelper.discardRedisTransaction();
+//        redisTransactionHelper.discardRedisTransaction();
 
         Optional<Blog> result = blogRepository.findById(id);
         if (!result.isPresent()) {
@@ -88,11 +89,12 @@ public class BlogController {
         return resultBlog;
     }
 
-    @GetMapping(value = "/", params = {"bid"})
+    @GetMapping(value = "", params = {"bid"})
     @Transactional(isolation = Isolation.READ_COMMITTED)
+    @RedisReadTransaction
     public Blog getBlogDetailByBid(@RequestParam String bid) {
         logger.info("Start getBlogDetailByBid");
-        redisTransactionHelper.discardRedisTransaction();
+//        redisTransactionHelper.discardRedisTransaction();
 
         Blog result = blogRepository.findByBid(bid);
         if (result == null) {

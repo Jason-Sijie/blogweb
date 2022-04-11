@@ -1,12 +1,14 @@
 package com.sijie.blogweb.controller;
 
 import com.google.common.base.MoreObjects;
-import com.sijie.blogweb.aspect.RedisReadTransaction;
+import com.sijie.blogweb.repository.transaction.redis.RedisRepository;
+import com.sijie.blogweb.repository.transaction.redis.RedisTransaction;
+import com.sijie.blogweb.repository.transaction.redis.RedisTransactionType;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
 import com.sijie.blogweb.exception.UserCredentialsAbsenceException;
 import com.sijie.blogweb.exception.UserUnauthorziedException;
 import com.sijie.blogweb.helper.BlogHelper;
-import com.sijie.blogweb.helper.RedisTransactionHelper;
+import com.sijie.blogweb.repository.transaction.redis.RedisTransactionHelper;
 import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.repository.BlogContentRepository;
 import com.sijie.blogweb.repository.BlogRepository;
@@ -23,6 +25,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Date;
 import java.util.Optional;
 
 @RestController
@@ -71,9 +74,9 @@ public class BlogController {
 
     @GetMapping(value = "/{id}")
     @Transactional(isolation = Isolation.READ_COMMITTED)
+    @RedisTransaction(type = RedisTransactionType.ReadThenWrite)
     public Blog getBlogDetailById(@PathVariable("id") long id) {
         logger.info("Start getBlogDetailById");
-//        redisTransactionHelper.discardRedisTransaction();
 
         Optional<Blog> result = blogRepository.findById(id);
         if (!result.isPresent()) {
@@ -84,6 +87,7 @@ public class BlogController {
 
         // increment views
         resultBlog.setViews(resultBlog.getViews() + 1);
+        blogContentRepository.setBlogContent(resultBlog.getBid(), "something else" + new Date().toLocaleString());
         blogRepository.save(resultBlog);
 
         return resultBlog;
@@ -91,10 +95,9 @@ public class BlogController {
 
     @GetMapping(value = "", params = {"bid"})
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    @RedisReadTransaction
+    @RedisTransaction(type = RedisTransactionType.ReadOnly)
     public Blog getBlogDetailByBid(@RequestParam String bid) {
         logger.info("Start getBlogDetailByBid");
-//        redisTransactionHelper.discardRedisTransaction();
 
         Blog result = blogRepository.findByBid(bid);
         if (result == null) {

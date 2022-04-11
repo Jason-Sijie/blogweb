@@ -1,15 +1,14 @@
 package com.sijie.blogweb.repository;
 
-import org.apache.logging.log4j.ThreadContext;
+import com.sijie.blogweb.repository.transaction.redis.RedisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;
-import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.support.TransactionSynchronizationManager;
 
 @Component
+@RedisRepository
 public class BlogContentRepositoryRedisImpl implements BlogContentRepository {
     private static final String BLOG_CONTENT_KEY_PREFIX = "blog_content:";
 
@@ -29,7 +28,6 @@ public class BlogContentRepositoryRedisImpl implements BlogContentRepository {
             throw new DataAccessResourceFailureException("error");
         }
         bid = BLOG_CONTENT_KEY_PREFIX + bid;
-        String result = (String) stringRedisTemplate.opsForValue().get(bid);
-        return result;
+        return stringRedisTemplate.opsForValue().get(bid);
     }
 }

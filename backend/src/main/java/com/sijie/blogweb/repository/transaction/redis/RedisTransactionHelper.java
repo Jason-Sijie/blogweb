@@ -1,4 +1,4 @@
-package com.sijie.blogweb.helper;
+package com.sijie.blogweb.repository.transaction.redis;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class RedisTransactionHelper {
     private static final Logger logger = LoggerFactory.getLogger(RedisTransactionHelper.class);
+    public static final String REDIS_TRANSACTION_CONTEXT_KEY = "REDIS_TRANSACTION_CONTEXT";
 
     private final StringRedisTemplate stringRedisTemplate;
 

@@ -1,4 +1,4 @@
-package com.sijie.blogweb.repository.transaction.redis;
+package com.sijie.blogweb.repository.redis.transaction;
 
 public enum RedisTransactionType {
     ReadOnly("ReadOnly"),

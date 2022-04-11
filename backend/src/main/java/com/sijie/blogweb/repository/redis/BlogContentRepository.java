@@ -1,6 +1,6 @@
-package com.sijie.blogweb.repository;
+package com.sijie.blogweb.repository.redis;
 
-import com.sijie.blogweb.repository.transaction.redis.RedisRepository;
+import com.sijie.blogweb.repository.redis.transaction.RedisRepository;
 import org.springframework.dao.DataAccessException;
 
 @RedisRepository

@@ -1,32 +1,35 @@
 package com.sijie.blogweb.controller;
 
 import com.google.common.base.MoreObjects;
-import com.sijie.blogweb.repository.transaction.redis.RedisRepository;
-import com.sijie.blogweb.repository.transaction.redis.RedisTransaction;
-import com.sijie.blogweb.repository.transaction.redis.RedisTransactionType;
+import com.sijie.blogweb.helper.AuthPrincipalHelper;
+import com.sijie.blogweb.model.Tag;
+import com.sijie.blogweb.repository.redis.transaction.RedisTransaction;
+import com.sijie.blogweb.repository.redis.transaction.RedisTransactionType;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
 import com.sijie.blogweb.exception.UserCredentialsAbsenceException;
 import com.sijie.blogweb.exception.UserUnauthorziedException;
 import com.sijie.blogweb.helper.BlogHelper;
-import com.sijie.blogweb.repository.transaction.redis.RedisTransactionHelper;
 import com.sijie.blogweb.model.Blog;
-import com.sijie.blogweb.repository.BlogContentRepository;
+import com.sijie.blogweb.repository.redis.BlogContentRepository;
 import com.sijie.blogweb.repository.BlogRepository;
 import com.sijie.blogweb.security.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 
 import org.springframework.security.access.prepost.PreAuthorize;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.Date;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping(value = "/blogs")
@@ -37,17 +40,14 @@ public class BlogController {
     private final BlogRepository blogRepository;
     private final BlogHelper blogHelper;
     private final BlogContentRepository blogContentRepository;
-    private final RedisTransactionHelper redisTransactionHelper;
 
     @Autowired
     public BlogController(BlogRepository blogRepository,
                           BlogContentRepository blogContentRepository,
-                          BlogHelper blogHelper,
-                          RedisTransactionHelper redisTransactionHelper) {
+                          BlogHelper blogHelper) {
         this.blogRepository = blogRepository;
         this.blogContentRepository = blogContentRepository;
         this.blogHelper = blogHelper;
-        this.redisTransactionHelper = redisTransactionHelper;
     }
 
     @PostMapping(value = "", consumes = {"application/json"})
@@ -56,7 +56,7 @@ public class BlogController {
     public Blog createNewBlog(@RequestBody Blog inputBlog) {
         logger.info("Start createNewBlog");
 
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails != null) {
             inputBlog.setAuthorId(userDetails.getUid());
         } else {
@@ -74,7 +74,7 @@ public class BlogController {
 
     @GetMapping(value = "/{id}")
     @Transactional(isolation = Isolation.READ_COMMITTED)
-    @RedisTransaction(type = RedisTransactionType.ReadThenWrite)
+    @RedisTransaction(type = RedisTransactionType.ReadOnly)
     public Blog getBlogDetailById(@PathVariable("id") long id) {
         logger.info("Start getBlogDetailById");
 
@@ -87,7 +87,6 @@ public class BlogController {
 
         // increment views
         resultBlog.setViews(resultBlog.getViews() + 1);
-        blogContentRepository.setBlogContent(resultBlog.getBid(), "something else" + new Date().toLocaleString());
         blogRepository.save(resultBlog);
 
         return resultBlog;
@@ -150,6 +149,49 @@ public class BlogController {
         return blogRepository.findAllByAuthorId(authorId, PageRequest.of(page, size));
     }
 
+    @GetMapping(value = "", params = {"tagName"})
+    @Transactional(readOnly = true)
+    public Page<Blog> getBlogsByTagName(@RequestParam("tagName") String tagName,
+                                         @RequestParam(name = "page", required = false) Integer page,
+                                         @RequestParam(name = "size", required = false) Integer size) {
+        logger.info("Start getBlogsByTagName");
+
+        page = MoreObjects.firstNonNull(page, 0);
+        size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
+
+        return blogRepository.findBlogsByTagsName(tagName, PageRequest.of(page, size));
+    }
+
+    @GetMapping(value = "", params = {"tagNames"})
+    @Transactional(readOnly = true)
+    public Page<Blog> getBlogsByTagNames(@RequestParam("tagNames") List<String> tagNames,
+                                        @RequestParam(name = "page", required = false) Integer page,
+                                        @RequestParam(name = "size", required = false) Integer size) {
+        logger.info("Start getBlogsByTagName");
+        if (tagNames == null || tagNames.isEmpty()) {
+            return Page.empty();
+        }
+
+        page = MoreObjects.firstNonNull(page, 0);
+        size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
+
+        List<Blog> result = blogRepository.findBlogsByTagsName(tagNames.get(0));
+        for (int i = 1; i < tagNames.size(); i++) {
+            List<Blog> blogs = blogRepository.findBlogsByTagsName(tagNames.get(i));
+            result = result.stream().filter(element -> {
+                for (Blog blog : blogs) {
+                    if (blog.getId() == element.getId()) {
+                        return true;
+                    }
+                }
+                return false;
+            }).collect(Collectors.toList());
+        }
+
+        List<Blog> pageResult = result.subList(page*size, page*size + size);
+        return new PageImpl<Blog>(pageResult, PageRequest.of(page, size), result.size());
+    }
+
     @PutMapping(value = "/{id}")
     @PreAuthorize("hasAnyAuthority('BLOG_ALL', 'BLOG_UPDATE')")
     @Transactional(isolation = Isolation.SERIALIZABLE)
@@ -162,7 +204,7 @@ public class BlogController {
         }
         Blog internalBlog = result.get();
 
-        CustomUserDetails userDetails = (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails == null) {
             throw new UserCredentialsAbsenceException("User credentials are required to create new blog");
         } else if (!userDetails.getUid().equals(internalBlog.getAuthorId())){

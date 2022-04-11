@@ -71,7 +71,7 @@ public class BlogHelper {
             }
             newBlog.setAuthorId(uid);
         } else {
-            logger.debug("New blog does not have a author Id");
+            throw new InvalidParameterException("Invalid parameter: blog's author id cannot be null");
         }
 
         // attach tags
@@ -122,6 +122,20 @@ public class BlogHelper {
         internalBlog.setGmtUpdate(new Date());
         return internalBlog;
     }
+
+    public Set<Tag> getInternalTagsFromTagNames(List<String> tagNames) {
+        Set<Tag> internalTags = new HashSet<>();
+        for (String tagName : tagNames) {
+            if (Strings.isNotEmpty(tagName)) {
+                Tag tagInternal = tagRepository.findByName(tagName);
+                if (tagInternal != null) {
+                    internalTags.add(tagInternal);
+                }
+            }
+        }
+        return internalTags;
+    }
+
 
     private Set<Tag> translateExternalTagsToInternalTags(Set<Tag> externalTags) {
         Set<Tag> internalTags = new HashSet<>();

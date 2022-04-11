@@ -1,4 +1,4 @@
-package com.sijie.blogweb.repository.transaction.redis;
+package com.sijie.blogweb.repository.redis.transaction;
 
 import java.lang.annotation.*;
 

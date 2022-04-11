@@ -1,9 +1,9 @@
 package com.sijie.blogweb.aspect;
 
-import com.sijie.blogweb.repository.transaction.redis.RedisTransaction;
-import com.sijie.blogweb.repository.transaction.redis.RedisTransactionContext;
-import com.sijie.blogweb.repository.transaction.redis.RedisTransactionHelper;
-import com.sijie.blogweb.repository.transaction.redis.RedisTransactionType;
+import com.sijie.blogweb.repository.redis.transaction.RedisTransaction;
+import com.sijie.blogweb.repository.redis.transaction.RedisTransactionContext;
+import com.sijie.blogweb.repository.redis.transaction.RedisTransactionHelper;
+import com.sijie.blogweb.repository.redis.transaction.RedisTransactionType;
 import org.apache.logging.log4j.ThreadContext;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
@@ -14,7 +14,7 @@ import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
 
-import static com.sijie.blogweb.repository.transaction.redis.RedisTransactionHelper.REDIS_TRANSACTION_CONTEXT_KEY;
+import static com.sijie.blogweb.repository.redis.transaction.RedisTransactionHelper.REDIS_TRANSACTION_CONTEXT_KEY;
 
 @Aspect
 @Component
@@ -28,7 +28,7 @@ public class RedisTransactionAspect {
         this.redisTransactionHelper = redisTransactionHelper;
     }
 
-    @Before(value= "@annotation(com.sijie.blogweb.repository.transaction.redis.RedisTransaction)")
+    @Before(value= "@annotation(com.sijie.blogweb.repository.redis.transaction.RedisTransaction)")
     public void beforeTransaction(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
@@ -46,7 +46,7 @@ public class RedisTransactionAspect {
         }
     }
 
-    @Before(value = "@within(com.sijie.blogweb.repository.transaction.redis.RedisRepository)")
+    @Before(value = "@within(com.sijie.blogweb.repository.redis.transaction.RedisRepository)")
     public void beforeRepository(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();

@@ -1,4 +1,4 @@
-package com.sijie.blogweb.repository.transaction.redis;
+package com.sijie.blogweb.repository.redis.transaction;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

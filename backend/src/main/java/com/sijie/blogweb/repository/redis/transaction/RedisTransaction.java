@@ -1,6 +1,5 @@
-package com.sijie.blogweb.repository.transaction.redis;
+package com.sijie.blogweb.repository.redis.transaction;
 
-import com.sijie.blogweb.repository.transaction.redis.RedisTransactionType;
 import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.ElementType;

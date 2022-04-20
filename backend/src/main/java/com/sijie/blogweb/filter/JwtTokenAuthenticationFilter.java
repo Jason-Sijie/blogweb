@@ -42,7 +42,7 @@ public class JwtTokenAuthenticationFilter extends GenericFilterBean {
                     SecurityContextHolder.getContext().setAuthentication(auth);
                 }
             }
-            // if token does not exist, go to the next JwtLoginFilter
+            // if token does not exist, go forward as an unauthenticated guest
         } catch (AuthenticationException e) {
             ErrorMessage message = new ErrorMessage();
             message.setMessage(e.getMessage());

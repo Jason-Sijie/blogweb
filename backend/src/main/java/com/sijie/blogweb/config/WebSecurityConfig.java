@@ -17,6 +17,8 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.authentication.logout.LogoutFilter;
+import org.springframework.security.web.authentication.www.BasicAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import org.springframework.web.filter.CorsFilter;
@@ -34,12 +36,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        http.authorizeRequests()
-                .antMatchers(HttpMethod.POST, "/users/guest", jwtLoginUrl).permitAll()
-//                .antMatchers(HttpMethod.GET, "/blogs/**", "/categories/**").permitAll()
-//                .anyRequest().authenticated()
-                .and().httpBasic();
-
         // disable session
         http.sessionManagement().disable();
 
@@ -49,8 +45,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http.cors();
 
         // add jwt filters
-        http.addFilterBefore(jwtLoginFilter(), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtTokenAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+        http.addFilterAfter(jwtLoginFilter(), LogoutFilter.class)
+                .addFilterAfter(jwtTokenAuthenticationFilter(), LogoutFilter.class);
     }
 
     @Override

@@ -17,7 +17,8 @@ Useful blog: https://blog.csdn.net/NDKHBWH/article/details/100074764
 ### Spring Security Filters
 https://www.marcobehler.com/guides/spring-security
 
-DO NOT FORGET to set `http.httpBasic()`. Otherwise, the authentication on UserAndPasswordToken does not exist. 
+We do not need the `BasicAuthenticationFilter`, the `JwtAuthenticationFilter` is responsible to provide 
+user principle for the security context. 
 
 ## JWT
 

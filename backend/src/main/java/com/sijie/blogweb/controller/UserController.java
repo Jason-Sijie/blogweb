@@ -1,10 +1,15 @@
 package com.sijie.blogweb.controller;
 
 import com.google.common.base.MoreObjects;
+import com.sijie.blogweb.exception.InvalidParameterException;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
+import com.sijie.blogweb.exception.UserCredentialsAbsenceException;
+import com.sijie.blogweb.exception.UserUnauthorziedException;
+import com.sijie.blogweb.helper.AuthPrincipalHelper;
 import com.sijie.blogweb.helper.UserHelper;
 import com.sijie.blogweb.model.User;
 import com.sijie.blogweb.repository.UserRepository;
+import com.sijie.blogweb.security.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,7 +73,6 @@ public class UserController {
 
     @GetMapping(value = "")
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyAuthority('USER_ALL', 'USER_GET')")
     public Page<User> getAllUsers(@RequestParam(name = "page", required = false) Integer page,
                                   @RequestParam(name = "size", required = false) Integer size) {
         logger.info("Start getAllUsers");
@@ -83,11 +87,57 @@ public class UserController {
         });
     }
 
+    @GetMapping(value = "", params = {"id"})
+    @Transactional(readOnly = true)
+    public User getUserInfoById(@RequestParam(name = "id") Long id) {
+        logger.info("Start getUserInfoById");
+
+        User internalUser = userRepository.findById(id).orElse(null);
+        if (internalUser == null) {
+            throw new ResourceNotFoundException("User " + id + " not found");
+        }
+
+        return userHelper.toExternalUser(internalUser);
+    }
+
+    @GetMapping(value = "", params = {"username"})
+    @Transactional(readOnly = true)
+    public User getUserInfoByUsername(@RequestParam(name = "username", required = false) String username) {
+        logger.info("Start getUserInfoByUsername");
+
+        User internalUser = userRepository.findByUsername(username);
+        if (internalUser == null) {
+            throw new ResourceNotFoundException("User " + username + " not found");
+        }
+
+        return userHelper.toExternalUser(internalUser);
+    }
+
+    @GetMapping(value = "", params = {"uid"})
+    @Transactional(readOnly = true)
+    public User getUserInfoByUid(@RequestParam(name = "uid", required = false) String uid) {
+        logger.info("Start getUserInfoByUid");
+
+        User internalUser = userRepository.findByUid(uid);
+        if (internalUser == null) {
+            throw new ResourceNotFoundException("User " + uid + " not found");
+        }
+
+        return userHelper.toExternalUser(internalUser);
+    }
+
     @GetMapping(value = "/{id}")
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyAuthority('USER_ALL', 'USER_DETAILS_GET')")
+    @PreAuthorize("hasAnyAuthority('USER_ALL', 'USER_GET')")
     public User getUserDetailsById(@PathVariable("id") long id) {
         logger.info("Start getUserDetailsById");
+
+        CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
+        if (userDetails == null) {
+            throw new UserCredentialsAbsenceException("User credentials are required to get user details");
+        } else if (userDetails.getId() != id){
+            throw new UserUnauthorziedException("Not authorized to get the user details");
+        }
 
         Optional<User> internalUser = userRepository.findById(id);
         if (!internalUser.isPresent()) {
@@ -97,11 +147,18 @@ public class UserController {
         return userHelper.toExternalUserDetails(internalUser.get());
     }
 
-    @GetMapping(value = "", params = {"uid"})
+    @GetMapping(value = "/details", params = {"uid"})
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER_ALL', 'USER_GET')")
-    public User getUserInfoByUid(@RequestParam("uid") String uid) {
+    public User getUserDetailsByUid(@RequestParam("uid") String uid) {
         logger.info("Start getUserInfoByUid");
+
+        CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
+        if (userDetails == null) {
+            throw new UserCredentialsAbsenceException("User credentials are required to get user details");
+        } else if (!userDetails.getUid().equals(uid)){
+            throw new UserUnauthorziedException("Not authorized to get the user details");
+        }
 
         User internalUser = userRepository.findByUid(uid);
         if (internalUser == null) {
@@ -111,11 +168,18 @@ public class UserController {
         return userHelper.toExternalUser(internalUser);
     }
 
-    @GetMapping(value = "", params = {"username"})
+    @GetMapping(value = "/details", params = {"username"})
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyAuthority('USER_ALL', 'USER_DETAILS_GET') or principal.username == #username")
+    @PreAuthorize("hasAnyAuthority('USER_ALL', 'USER_GET') or principal.username == #username")
     public User getUserDetailsByUsername(@RequestParam("username") String username) {
         logger.info("Start getUserInfoByUsername");
+
+        CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
+        if (userDetails == null) {
+            throw new UserCredentialsAbsenceException("User credentials are required to get user details");
+        } else if (!userDetails.getUsername().equals(username)){
+            throw new UserUnauthorziedException("Not authorized to get the user details");
+        }
 
         User internalUser = userRepository.findByUsername(username);
         if (internalUser == null) {
@@ -125,4 +189,22 @@ public class UserController {
         return userHelper.toExternalUserDetails(internalUser);
     }
 
+    @GetMapping(value = "/self")
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyAuthority('USER_ALL', 'USER_GET')")
+    public User getCurrentUserDetails() {
+        logger.info("Start getCurrentUserDetails");
+
+        CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
+        if (userDetails == null) {
+            throw new UserCredentialsAbsenceException("User credentials are required to get current user details");
+        }
+
+        User internalUser = userRepository.findByUsername(userDetails.getUsername());
+        if (internalUser == null) {
+            throw new ResourceNotFoundException("User " + userDetails.getUsername() + " not found");
+        }
+
+        return userHelper.toExternalUserDetails(internalUser);
+    }
 }

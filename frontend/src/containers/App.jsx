@@ -2,7 +2,7 @@ import {Component} from "react";
 import { connect } from "react-redux";
 
 import {getBlogDetailById, getBlogsWithPageAndSize, updateBlogContent} from "../actions/blogAction";
-import {acquireJwtCredentials} from "../actions/jwtAction";
+import {acquireJwtCredentials} from "../actions/userAction";
 import {handleModalShow, handleModalClose} from "../actions/modalAction";
 
 import "bootstrap/dist/css/bootstrap.min.css";
@@ -34,7 +34,7 @@ class App extends Component {
 const mapStateToProps = (state) => {  
   return {
     blog: state.blogReducer,
-    jwt: state.jwtReducer,
+    jwt: state.userReducer,
     modal: state.modalReducer
   }
 }
@@ -53,7 +53,7 @@ const mapDispatchToProps = (dispatch) => {
           updateBlogContent(blog)(dispatch);
         }
       },
-      jwt: {
+      user: {
         acquireJwtCredentials: (username, password) => {
           acquireJwtCredentials(username, password)(dispatch);
         }

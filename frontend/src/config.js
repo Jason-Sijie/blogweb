@@ -9,7 +9,8 @@ export const api = {
         blog: blogWeb.host + blogWeb.port + "/blogs",
         category: blogWeb.host + blogWeb.port + "/categories",
         user: blogWeb.host + blogWeb.port + "/users",
-        jwt: blogWeb.host + blogWeb.port + "/login",
+        login: blogWeb.host + blogWeb.port + "/login",
+        self: blogWeb.host + blogWeb.port + "/users/self"
     }
 };
 

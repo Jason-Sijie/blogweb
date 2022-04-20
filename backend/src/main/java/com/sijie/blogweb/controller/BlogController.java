@@ -2,7 +2,6 @@ package com.sijie.blogweb.controller;
 
 import com.google.common.base.MoreObjects;
 import com.sijie.blogweb.helper.AuthPrincipalHelper;
-import com.sijie.blogweb.model.Tag;
 import com.sijie.blogweb.repository.redis.transaction.RedisTransaction;
 import com.sijie.blogweb.repository.redis.transaction.RedisTransactionType;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
@@ -25,10 +24,8 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @RestController

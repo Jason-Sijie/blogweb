@@ -66,7 +66,6 @@ public class Authorities {
         USER_CREATE("USER_CREATE"),
         USER_UPDATE("USER_UPDATE"),
         USER_GET("USER_GET"),
-        USER_DETAILS_GET("USER_DETAILS_GET"),
         USER_DELETE("USER_DELETE"),
         ;
 

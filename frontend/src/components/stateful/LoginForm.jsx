@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {Button, Col, Form, Row} from "react-bootstrap";
+import {Button, Col, FloatingLabel, Form, Row} from "react-bootstrap";
 
 /**
  * @param props : {
@@ -25,24 +25,20 @@ class LoginForm extends Component{
   render() {
     return (
       <Form>
-        <Form.Group className="mb-3" controlId="formBasicEmail">
-          <Form.Label>Email address</Form.Label>
+        <FloatingLabel controlId="floatingLoginEmail" label="Email address" className="mb-3">
           <Form.Control type="email"
-                        placeholder="Enter email"
+                        placeholder="name@example.com"
                         onChange={(event) => this.setState({username: event.target.value})}
                         required />
-          <Form.Text className="text-muted">
-            We'll never share your email with anyone else.
-          </Form.Text>
-        </Form.Group>
+        </FloatingLabel>
 
-        <Form.Group className="mb-3" controlId="formBasicPassword">
-          <Form.Label>Password</Form.Label>
+
+        <FloatingLabel controlId="floatingLoginPassword" label="Password" className="mb-3">
           <Form.Control type="password"
                         placeholder="Password"
                         onChange={(event) => this.setState({password: event.target.value})}
                         required />
-        </Form.Group>
+        </FloatingLabel>
 
         <Row style={{justifyContent:"right"}}>
           <Col xs={"auto"}>

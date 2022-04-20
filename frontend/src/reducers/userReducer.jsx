@@ -6,12 +6,13 @@ const initialState = {
     type: "",
     expireTime: 0,
     startTime: 0,
-  }
+  },
+  currentUser: {}
 }
 
-const jwtReducer = (state = initialState, action) => {
+const userReducer = (state = initialState, action) => {
   switch (action.type) {
-    case ACTIONS.JWT.UPDATE_TOKEN_CREDENTIALS:
+    case ACTIONS.USER.UPDATE_TOKEN_CREDENTIALS:
       const currentTime = new Date().getTime();
       const newToken = {
         content: action.payload.token,
@@ -26,10 +27,17 @@ const jwtReducer = (state = initialState, action) => {
         token: newToken
       }
       break;
+
+    case ACTIONS.USER.UPDATE_CURRENT_USER_DETAILS:
+      state = {
+        ...state,
+        currentUser: action.payload
+      }
+      break;
   }
 
   return state;
 }
 
-export default jwtReducer;
+export default userReducer;
 

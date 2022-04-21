@@ -21,7 +21,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <AppHeader />
+        <AppHeader {...this.props.user}/>
         <div style={{marginTop: "60px"}}>
           <AppRoutes {...this.props} />
           <GlobalModal {...this.props.modal.globalModal} {...this.props.action.modal}/>
@@ -34,7 +34,7 @@ class App extends Component {
 const mapStateToProps = (state) => {  
   return {
     blog: state.blogReducer,
-    jwt: state.userReducer,
+    user: state.userReducer,
     modal: state.modalReducer
   }
 }

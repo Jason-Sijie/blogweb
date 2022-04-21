@@ -7,7 +7,8 @@ const initialState = {
     expireTime: 0,
     startTime: 0,
   },
-  currentUser: {}
+  currentUser: {},
+  isLogin: false
 }
 
 const userReducer = (state = initialState, action) => {
@@ -32,6 +33,22 @@ const userReducer = (state = initialState, action) => {
       state = {
         ...state,
         currentUser: action.payload
+      }
+      break;
+
+    case ACTIONS.USER.LOGIN:
+      state = {
+        ...state,
+        isLogin: true
+      }
+      break;
+
+    case ACTIONS.USER.LOGOUT:
+      localStorage.setItem('token', null);
+
+      state = {
+        ...state,
+        isLogin: false
       }
       break;
   }

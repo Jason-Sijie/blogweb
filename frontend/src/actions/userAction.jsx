@@ -6,7 +6,7 @@ import {push} from "@lagunovsky/redux-react-router";
 export const acquireJwtCredentials = (username, password) => dispatch => {
   const url = api.blogWeb.login;
 
-  return axios.post(url, {
+  axios.post(url, {
     username: username,
     password: password
   }, {
@@ -18,11 +18,15 @@ export const acquireJwtCredentials = (username, password) => dispatch => {
       type: ACTIONS.USER.UPDATE_TOKEN_CREDENTIALS,
       payload: promise.data,
     })
+
     acquireCurrentUserDetails({
       type: promise.data.type,
       content: promise.data.token
     })(dispatch)
 
+    dispatch({
+      type: ACTIONS.USER.LOGIN
+    })
     dispatch(push("/"))
   }).catch(error => {
     console.log(error.response)
@@ -40,7 +44,7 @@ export const acquireCurrentUserDetails = (token) => dispatch => {
   const url = api.blogWeb.self;
   console.log("Start acquireCurrentUserDetails method", token)
 
-  return axios.get(url, {
+  axios.get(url, {
     headers: {
       "Content-Type": "application/json",
       "Authorization": token.type + " " + token.content

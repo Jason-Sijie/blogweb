@@ -17,13 +17,13 @@ const AppHeader = (props) => {
   const {currentUser, isLogin} = props
 
   return (
-    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top" style={{minHeight: "60px"}}>
-      <Container>
-        <Navbar.Brand href="/">Write Something</Navbar.Brand>
+    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top" style={{height: "70px"}}>
+      <Container fluid style={{margin: "0 5%", fontSize: "20px"}}>
+        <Navbar.Brand href="/" style={{fontSize: "30px", marginRight: "2%"}}>Write Something</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
-            <MyNavLink path={"/"} text={"Home"}/>
+            <MyNavLink path={"/home"} text={"Home"}/>
             <MyNavLink path={"/blogs"} text={"Blogs"}/>
             <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
               <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>

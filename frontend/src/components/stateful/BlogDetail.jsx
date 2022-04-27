@@ -1,11 +1,11 @@
 import {Component} from "react";
-import {Button, Card, Col, Container, Dropdown, Form, ListGroup, ListGroupItem, Row, Toast} from "react-bootstrap";
+import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
 import MDEditor from '@uiw/react-md-editor';
 
 import "../../styles/blog_style.css";
-import BlogHeader from "../stateless/BlogHeader";
-import TagList from "../stateless/TagList";
-import {getColorFromString, randomColor} from "../../constants/colors";
+import BlogHeader from "../stateless/blog/BlogHeader";
+import TagList from "../stateless/util/TagList";
+import TagListToasts from "../stateless/util/TagListToasts";
 
 /**
  * @Params props: {
@@ -29,28 +29,18 @@ class BlogDetail extends Component {
     this.props.getBlogDetailById(this.props.blogId);
   }
 
-  removeTagFromUpdatedTags = (name) => {
+  removeTagFromUpdatedTags = (target) => {
     this.setState({updatedTags: this.state.updatedTags.filter(function(tag) {
-        return tag.name !== name
+        return tag.name !== target.name
       })});
   }
 
-  tagListToasts = (tags) => {
-    const toasts = tags.map((tag) =>
-      <Toast style={{margin: "10px"}} onClose={() => this.removeTagFromUpdatedTags(tag.name)}>
-        <Toast.Header>
-          <strong className="me-auto" style={{color: randomColor()}}>Tag Name</strong>
-          <small>Delete Tag</small>
-        </Toast.Header>
-        <Toast.Body>{tag.name}</Toast.Body>
-      </Toast>
-    )
-
-    return (
-      <Row>
-        {toasts}
-      </Row>
-    )
+  changeStateOnEvent = (key) => {
+    return (event) => {
+      this.setState({
+        [key]: event.target.value
+      })
+    }
   }
 
   blogMetadataForm = (isEdit) => {
@@ -62,30 +52,33 @@ class BlogDetail extends Component {
               <Form.Label>Blog Title</Form.Label>
               <Form.Control type="text"
                             value={this.state.updatedTitle}
-                            onChange={(event) => this.setState({updatedTitle: event.target.value})}/>
+                            onChange={this.changeStateOnEvent("updatedTitle")}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="blogContent">
               <Form.Label>Blog Description</Form.Label>
               <Form.Control as="textarea"
                             rows={3}
                             value={this.state.updatedDescription}
-                            onChange={(event) => this.setState({updatedDescription: event.target.value})}/>
+                            onChange={this.changeStateOnEvent("updatedDescription")}/>
             </Form.Group>
             <Form.Group className="mb-3" controlId="tag">
               <Form.Label>Add New Tag</Form.Label>
               <Row>
                 <Col xs={"8"}>
                   <Form.Control type="text"
-                                onChange={(event) => this.setState({newTag: event.target.value})}/>
+                                onChange={this.changeStateOnEvent("newTag")}/>
                 </Col>
                 <Col xs={"4"}>
                   <Button style={{width: "100%"}} variant={"primary"} onClick={() => {
                     this.setState({updatedTags: [...this.state.updatedTags, {"name": this.state.newTag}]})
-                  }}> Add </Button>
+                  }}> Add Tag </Button>
                 </Col>
               </Row>
             </Form.Group>
-            {this.tagListToasts(this.state.updatedTags)}
+
+            <Row>
+              <TagListToasts tags={this.state.updatedTags} onCloseAction={this.removeTagFromUpdatedTags}/>
+            </Row>
           </Form>
         </Row>
       )
@@ -173,7 +166,7 @@ class BlogDetail extends Component {
   }
 
   componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.blog != this.props.blog) {
+    if (prevProps.blog !== this.props.blog) {
       this.setState({
         updatedContent: this.props.blog.content || "",
         updatedTitle: this.props.blog.title || "",

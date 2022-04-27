@@ -5,13 +5,12 @@ import {getBlogDetailById, getBlogsWithPageAndSize, updateBlogContent} from "../
 import {acquireJwtCredentials} from "../actions/userAction";
 import {handleModalShow, handleModalClose} from "../actions/modalAction";
 
-import "bootstrap/dist/css/bootstrap.min.css";
-import "./App.css";
-import "./App.sass";
-
 import AppHeader from "../components/stateless/AppHeader";
 import {AppRoutes} from "../utils/routes";
 import GlobalModal from "../components/stateful/GlobalModal";
+
+import "bootstrap/dist/css/bootstrap.min.css";
+import "../styles/app_style.css";
 
 class App extends Component {
   constructor(props) {
@@ -20,9 +19,9 @@ class App extends Component {
 
   render() {
     return (
-      <div>
+      <div className={"app"}>
         <AppHeader {...this.props.user}/>
-        <div style={{marginTop: "60px"}}>
+        <div style={{marginTop: "70px"}}>
           <AppRoutes {...this.props} />
           <GlobalModal {...this.props.modal.globalModal} {...this.props.action.modal}/>
         </div>

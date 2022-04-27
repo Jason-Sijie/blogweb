@@ -22,28 +22,36 @@ class LoginForm extends Component{
     this.props.acquireJwtCredentials(this.state.username, this.state.password)
   }
 
+  changeStateOnEvent = (key) => {
+    return (event) => {
+      this.setState({
+        [key]: event.target.value
+      })
+    }
+  }
+
   render() {
     return (
-      <Form>
-        <FloatingLabel controlId="floatingLoginEmail" label="Email address" className="mb-3">
+      <Form className={"shadow p-3 mb-5 bg-white rounded"}>
+        <FloatingLabel controlId="floatingLoginEmail" label="Email address" className="mt-2 mb-4">
           <Form.Control type="email"
                         placeholder="name@example.com"
-                        onChange={(event) => this.setState({username: event.target.value})}
+                        onChange={this.changeStateOnEvent("username")}
                         required />
         </FloatingLabel>
 
 
-        <FloatingLabel controlId="floatingLoginPassword" label="Password" className="mb-3">
+        <FloatingLabel controlId="floatingLoginPassword" label="Password" className="mb-4">
           <Form.Control type="password"
                         placeholder="Password"
-                        onChange={(event) => this.setState({password: event.target.value})}
+                        onChange={this.changeStateOnEvent("password")}
                         required />
         </FloatingLabel>
 
-        <Row style={{justifyContent:"right"}}>
-          <Col xs={"auto"}>
-            <Button variant="primary" onClick={this.performLogin}>
-              Submit
+        <Row style={{justifyContent:"right"}} className={"mb-2"}>
+          <Col xs={"3"}>
+            <Button style={{width: "100%"}} variant="primary" onClick={this.performLogin}>
+              Log in
             </Button>
           </Col>
         </Row>

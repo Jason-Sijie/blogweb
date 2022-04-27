@@ -1,4 +1,4 @@
-import LoginForm from "../stateful/LoginForm";
+import LoginForm from "../../stateful/LoginForm";
 import {Col, Container, Row} from "react-bootstrap";
 
 /**
@@ -13,7 +13,7 @@ const LoginPage = (props) => {
   return (
     <Container>
       <Row style={{justifyContent:"center", marginTop: "10%"}}>
-        <Col xs={"6"} style={{borderStyle:"solid", padding:"10px", borderColor:"lightgray"}} >
+        <Col xs={"6"} >
           <LoginForm {...props}/>
         </Col>
       </Row>

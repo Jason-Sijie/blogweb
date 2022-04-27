@@ -1,11 +1,12 @@
 import axios from "axios";
 import {api} from "../config";
 import {ACTIONS} from "../constants/actions";
+import {stringify} from "qs";
 
 export const getBlogDetailById = (id) => dispatch => {
   const url = api.blogWeb.blog + "/" + id;
 
-  return axios.get(url, {
+  axios.get(url, {
     headers: {}
   }).then(promise => {
     dispatch({
@@ -17,18 +18,17 @@ export const getBlogDetailById = (id) => dispatch => {
   })
 }
 
-export const getBlogsWithPageAndSize = (page, size) => dispatch => {
-  const url = api.blogWeb.blog;
-  return axios.get(url, {
-    params: {
-      page: page,
-      size: size
-    }
-  }).then(promise => {
-    dispatch({
-      type: ACTIONS.BLOG.UPDATE_BLOG_LIST_PAGE,
-      payload: promise.data,
-    })
+export const getBlogsWithPageAndSize = (params) => dispatch => {
+  params = stringify(params, {arrayFormat: "repeat", skipNulls: true});
+  console.log("Get blogs with params: ", params)
+  const url = api.blogWeb.blog + "?" + params;
+
+  axios.get(url)
+    .then(promise => {
+      dispatch({
+        type: ACTIONS.BLOG.UPDATE_BLOG_LIST_PAGE,
+        payload: promise.data,
+      })
   }).catch(error => {
     console.log(error)
   })
@@ -36,20 +36,19 @@ export const getBlogsWithPageAndSize = (page, size) => dispatch => {
 
 export const updateBlogContent = (blog) => dispatch => {
   const url = api.blogWeb.blog + "/" + blog.id;
-  var headers;
+  let headers = {
+    "Content-Type": "application/json"
+  };
+
   if (localStorage.getItem("token") != null) {
     const token = JSON.parse(localStorage.getItem("token"));
     headers = {
-      "Content-Type": "application/json",
+      ...headers,
       "Authorization": token.type + " " + token.content
-    }
-  } else {
-    headers = {
-      "Content-Type": "application/json"
     }
   }
 
-  return axios.put(url, blog,{
+  axios.put(url, blog,{
     headers: headers
   }).then(promise => {
     dispatch({

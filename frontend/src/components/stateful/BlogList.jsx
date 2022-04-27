@@ -1,6 +1,6 @@
 import {Container, Row} from "react-bootstrap";
-import BlogItem from "../stateless/BlogItem";
-import Pages from "../stateless/Pages";
+import BlogItem from "../stateless/blog/BlogItem";
+import Pages from "../stateless/util/Pages";
 import {Component} from "react";
 
 /**
@@ -14,7 +14,6 @@ import {Component} from "react";
  *   pageSize: (pageSize),
  * }
  */
-
 class BlogList extends Component {
   constructor(props) {
     super(props);
@@ -26,11 +25,13 @@ class BlogList extends Component {
         pageSize: props.pageSize || 5,
       }
     }
-
   }
 
   componentDidMount() {
-    this.props.getBlogsWithPageAndSize(this.state.pagination.currentPage, this.state.pagination.pageSize);
+    this.props.getBlogsWithPageAndSize({
+      page: this.state.pagination.currentPage,
+      size: this.state.pagination.pageSize
+    });
   }
 
   updatePagination = (num) => {
@@ -54,6 +55,7 @@ class BlogList extends Component {
             </Row>
           );
         })}
+
         <Row>
           <Pages {...this.state.pagination}
                  totalPages={this.props.totalPages || 10}

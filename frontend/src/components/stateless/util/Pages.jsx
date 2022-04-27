@@ -16,9 +16,12 @@ const Pages = (props) => {
   const right = Math.min(props.totalPages - 1, props.currentPage + props.rightNum);
   const pageArray = [...Array(right - left + 1).keys()].map((x) => x + left);
 
-  const clickAction = (num) => {
-    props.getContentWithPageAndSize(num, props.pageSize);
-    props.updatePagination(num);
+  const clickAction = (pageNum) => {
+    props.getContentWithPageAndSize({
+      page: pageNum,
+      size: props.pageSize
+    });
+    props.updatePagination(pageNum);
   }
 
   return (
@@ -28,7 +31,7 @@ const Pages = (props) => {
       <Pagination.Ellipsis disabled />
 
       {pageArray.map((num) => {
-        if (num == props.currentPage) {
+        if (num === props.currentPage) {
           return (
             <Pagination.Item key={num} active>{num}</Pagination.Item>
           )

@@ -2,21 +2,19 @@ import React from 'react'
 import {Route, Routes} from "react-router-dom";
 
 import BlogList from "../components/stateful/BlogList";
-import BlogDetailPage from "../components/stateless/BlogDetailPage";
-import LoginPage from "../components/stateless/LoginPage";
+import BlogDetailPage from "../components/stateless/blog/BlogDetailPage";
+import LoginPage from "../components/stateless/login/LoginPage";
+import HomePage from "../components/stateless/home/HomePage";
+import BlogListPage from "../components/stateless/blog/BlogListPage";
 
 export function AppRoutes(props){
   return (
     <Routes>
       <Route path="/" exact element={
-        <BlogList {...props.blog.blogListPage}
-                  pageSize={2}
-                  getBlogsWithPageAndSize={props.action.blog.getBlogsWithPageAndSize}/>
+        <BlogListPage {...props} />
       }/>
       <Route path="/blogs" exact element={
-        <BlogList {...props.blog.blogListPage}
-                  pageSize={2}
-                  getBlogsWithPageAndSize={props.action.blog.getBlogsWithPageAndSize}/>
+        <BlogListPage {...props} />
       }/>
       <Route path="/blogs/:id" element={
         <BlogDetailPage blog={props.blog.detailedBlog}
@@ -25,6 +23,9 @@ export function AppRoutes(props){
       }/>
       <Route path="/login" element={
         <LoginPage acquireJwtCredentials={props.action.user.acquireJwtCredentials}/>
+      }/>
+      <Route path="/home" element={
+        <HomePage {...props}/>
       }/>
     </Routes>
   )

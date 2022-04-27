@@ -1,7 +1,7 @@
 import {Col, Container, Row} from "react-bootstrap";
-import OverlayIcon from "./OverlayIcon";
+import OverlayIcon from "../util/OverlayIcon";
 
-import "../../styles/blog_style.css";
+import "../../../styles/blog_style.css";
 
 /**
  * @param props: {

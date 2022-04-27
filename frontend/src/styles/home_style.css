@@ -1,25 +1,28 @@
-.blog_header {
+.home_header {
     width: 100%;
     background-repeat: no-repeat;
-    /*background-size: cover;*/
     background-size: 100vw 100%;
     min-height: 500px;
 }
 
-.blog_header_title {
-    text-align: center;
+.home_header_title {
+    text-align: right;
     font-family: "georgia", serif;
     font-weight: bold;
     font-size: 70px;
     color: white;
-    padding: 0 80px 5%;
+    padding: 250px 15% 20px;
 }
 
-.blog_header_description {
-    text-align: center;
+.home_header_description {
+    text-align: right;
     font-family: "georgia", serif;
     font-style: italic;
     font-size: 20px;
     color: cornsilk;
-    padding: 0 50px 5%;
+    padding: 0 15% 50px;
+}
+
+.home_profile_avatar {
+    min-height: 400px;
 }

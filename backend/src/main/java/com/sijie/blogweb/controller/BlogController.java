@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -185,7 +186,13 @@ public class BlogController {
             }).collect(Collectors.toList());
         }
 
-        List<Blog> pageResult = result.subList(page*size, page*size + size);
+        List<Blog> pageResult;
+        if (page*size < result.size()) {
+            pageResult = result.subList(page*size, Math.min(page*size + size, result.size()));
+        } else {
+            pageResult = Collections.emptyList();
+        }
+
         return new PageImpl<Blog>(pageResult, PageRequest.of(page, size), result.size());
     }
 

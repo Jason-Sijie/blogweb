@@ -1,6 +1,5 @@
 package com.sijie.blogweb.repository.redis;
 
-import com.sijie.blogweb.repository.redis.transaction.RedisRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.dao.DataAccessResourceFailureException;

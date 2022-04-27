@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import BlogDetail from "../stateful/BlogDetail";
+import BlogDetail from "../../stateful/BlogDetail";
 
 /**
  * @param props : {

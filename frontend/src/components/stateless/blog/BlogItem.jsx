@@ -1,5 +1,5 @@
 import {Row, Col, Card, Button} from "react-bootstrap";
-import TagList from "./TagList";
+import TagList from "../util/TagList";
 import {Link} from "react-router-dom";
 
 /**
@@ -23,7 +23,7 @@ const BlogItem = (props) => {
           {props.blog.title}
         </Card.Title>
         <Card.Subtitle style={{margin: "10px"}}>
-          <TagList tags={props.blog.tags || []} />
+          <TagList tags={props.blog.tags || []} fontSize="18px"/>
         </Card.Subtitle>
         <Card.Text style={{color: "grey"}}>
           {props.blog.description}

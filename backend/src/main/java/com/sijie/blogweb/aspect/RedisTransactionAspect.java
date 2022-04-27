@@ -9,6 +9,8 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -46,7 +48,7 @@ public class RedisTransactionAspect {
         }
     }
 
-    @Before(value = "@within(com.sijie.blogweb.repository.redis.transaction.RedisRepository)")
+    @Before(value = "@within(com.sijie.blogweb.repository.redis.RedisRepository)")
     public void beforeRepository(JoinPoint joinPoint) {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();

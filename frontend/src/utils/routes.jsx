@@ -1,7 +1,6 @@
 import React from 'react'
 import {Route, Routes} from "react-router-dom";
 
-import BlogList from "../components/stateful/BlogList";
 import BlogDetailPage from "../components/stateless/blog/BlogDetailPage";
 import LoginPage from "../components/stateless/login/LoginPage";
 import HomePage from "../components/stateless/home/HomePage";

@@ -12,10 +12,10 @@ const HomeHeader = (props) => {
   return (
     <Container fluid className="home_header" style={{backgroundImage: `url(/images/home_header_background.jpg)`}}>
       <Row className="home_header_title">
-        <text>Jason Yu</text>
+        <p>Jason Yu</p>
       </Row>
       <Row className="home_header_description">
-        <text>Email: yusj.jason@gmail.com</text>
+        <p>Email: yusj.jason@gmail.com</p>
       </Row>
     </Container>
   )

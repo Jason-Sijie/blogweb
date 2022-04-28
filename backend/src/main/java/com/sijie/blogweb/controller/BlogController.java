@@ -165,13 +165,10 @@ public class BlogController {
     public Page<Blog> getBlogsByTagNames(@RequestParam("tagNames") List<String> tagNames,
                                         @RequestParam(name = "page", required = false) Integer page,
                                         @RequestParam(name = "size", required = false) Integer size) {
-        logger.info("Start getBlogsByTagName");
+        logger.info("Start getBlogsByTagNames, tagNames: " + tagNames.toString());
         if (tagNames == null || tagNames.isEmpty()) {
             return Page.empty();
         }
-
-        page = MoreObjects.firstNonNull(page, 0);
-        size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
 
         List<Blog> result = blogRepository.findBlogsByTagsName(tagNames.get(0));
         for (int i = 1; i < tagNames.size(); i++) {
@@ -186,14 +183,49 @@ public class BlogController {
             }).collect(Collectors.toList());
         }
 
+        page = MoreObjects.firstNonNull(page, 0);
+        size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
+        return generatePageBlogResult(result, page, size);
+    }
+
+    @GetMapping(value = "", params = {"authorId", "tagNames"})
+    @Transactional(readOnly = true)
+    public Page<Blog> getBlogsByAuthorIdAndTagNames(@RequestParam("authorId") String authorId,
+                                                    @RequestParam("tagNames") List<String> tagNames,
+                                                    @RequestParam(name = "page", required = false) Integer page,
+                                                    @RequestParam(name = "size", required = false) Integer size) {
+        logger.info("Start getBlogsByAuthorIdAndTagNames, authorId: " + authorId + ", tagNames: " + tagNames.toString());
+        if (tagNames == null || tagNames.isEmpty()) {
+            return Page.empty();
+        }
+
+        List<Blog> result = blogRepository.findBlogsByAuthorIdAndTagsName(authorId, tagNames.get(0));
+        for (int i = 1; i < tagNames.size(); i++) {
+            List<Blog> blogs = blogRepository.findBlogsByAuthorIdAndTagsName(authorId, tagNames.get(0));
+            result = result.stream().filter(element -> {
+                for (Blog blog : blogs) {
+                    if (blog.getId() == element.getId()) {
+                        return true;
+                    }
+                }
+                return false;
+            }).collect(Collectors.toList());
+        }
+
+        page = MoreObjects.firstNonNull(page, 0);
+        size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
+        return generatePageBlogResult(result, page, size);
+    }
+
+    private Page<Blog> generatePageBlogResult(List<Blog> blogs, int page, int size) {
         List<Blog> pageResult;
-        if (page*size < result.size()) {
-            pageResult = result.subList(page*size, Math.min(page*size + size, result.size()));
+        if (page*size < blogs.size()) {
+            pageResult = blogs.subList(page*size, Math.min(page*size + size, blogs.size()));
         } else {
             pageResult = Collections.emptyList();
         }
 
-        return new PageImpl<Blog>(pageResult, PageRequest.of(page, size), result.size());
+        return new PageImpl<Blog>(pageResult, PageRequest.of(page, size), blogs.size());
     }
 
     @PutMapping(value = "/{id}")

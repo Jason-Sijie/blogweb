@@ -26,6 +26,19 @@ class SearchPanel extends Component {
       })});
   }
 
+  AddTagToTags = () => {
+    if (this.state.newTag === "") {
+      return;
+    }
+
+    let target = this.state.newTag
+    let newTags = this.state.tags.filter(function(tag) {
+      return tag.name !== target
+    })
+
+    this.setState({tags: [...newTags, {"name": target}]});
+  }
+
   changeStateOnEvent = (key) => {
     return (event) => {
       this.setState({
@@ -35,6 +48,13 @@ class SearchPanel extends Component {
   }
 
   performSearch = () => {
+    this.props.updateSearchParams({
+      tagNames: this.state.tags.map((tag) => {
+        return tag.name
+      }),
+      blogTitle: this.state.blogTitle || null
+    })
+
     this.props.searchWithParams({
       tagNames: this.state.tags.map((tag) => {
         return tag.name
@@ -66,9 +86,7 @@ class SearchPanel extends Component {
             <Col xs={"4"}>
               <Button style={{width: "100%"}}
                       variant={"secondary"}
-                      onClick={() => {
-                        this.setState({tags: [...this.state.tags, {"name": this.state.newTag}]})
-                      }}>
+                      onClick={this.AddTagToTags}>
                 Add Tag to Search params
               </Button>
             </Col>

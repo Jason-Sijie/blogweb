@@ -1,24 +1,10 @@
-import BlogList from "../../stateful/BlogList";
 import React from "react";
-import SearchPanel from "../../stateful/SearchPanel";
-import {Container} from "react-bootstrap";
+import BlogSearch from "../../stateful/BlogSearch";
 
 const BlogListPage = (props) => {
-  const getBlogsWithParams = (params) => {
-    props.action.blog.getBlogsWithPageAndSize(params);
-  }
-
   return (
-    <>
-      <Container>
-        <SearchPanel searchWithParams={getBlogsWithParams}
-                     text="Search Blogs"/>
-      </Container>
-
-      <BlogList {...props.blog.blogListPage}
-                pageSize={2}
-                getBlogsWithPageAndSize={props.action.blog.getBlogsWithPageAndSize}/>
-    </>
+    <BlogSearch getBlogsWithPageAndSize={props.action.blog.getBlogsWithPageAndSize}
+                blogListPage={props.blog.blogListPage} />
   )
 }
 

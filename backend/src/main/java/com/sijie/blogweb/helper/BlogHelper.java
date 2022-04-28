@@ -141,6 +141,10 @@ public class BlogHelper {
         Set<Tag> internalTags = new HashSet<>();
         for (Tag tagExternal: externalTags) {
             if (Strings.isNotEmpty(tagExternal.getName())) {
+                if (!ResourceNameHelper.isValidTagName(tagExternal.getName())) {
+                    throw new InvalidParameterException(ResourceNameHelper.INVALID_TAG_NAME_MESSAGE);
+                }
+
                 Tag tagInternal = tagRepository.findByName(tagExternal.getName());
                 if (tagInternal == null) {
                     // create new tag

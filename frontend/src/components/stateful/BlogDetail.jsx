@@ -35,6 +35,19 @@ class BlogDetail extends Component {
       })});
   }
 
+  AddTagToTags = () => {
+    if (this.state.newTag === "") {
+      return;
+    }
+
+    let target = this.state.newTag
+    let newTags = this.state.updatedTags.filter(function(tag) {
+      return tag.name !== target
+    })
+
+    this.setState({updatedTags: [...newTags, {"name": target}]});
+  }
+
   changeStateOnEvent = (key) => {
     return (event) => {
       this.setState({
@@ -47,7 +60,7 @@ class BlogDetail extends Component {
     if (isEdit) {
       return (
         <Row style={{padding: "30px 30px 0px"}}>
-          <Form>
+          <Form className={"shadow p-3 mb-5 bg-white rounded"}>
             <Form.Group className="mb-3" controlId="blogTitle">
               <Form.Label>Blog Title</Form.Label>
               <Form.Control type="text"
@@ -69,9 +82,11 @@ class BlogDetail extends Component {
                                 onChange={this.changeStateOnEvent("newTag")}/>
                 </Col>
                 <Col xs={"4"}>
-                  <Button style={{width: "100%"}} variant={"primary"} onClick={() => {
-                    this.setState({updatedTags: [...this.state.updatedTags, {"name": this.state.newTag}]})
-                  }}> Add Tag </Button>
+                  <Button style={{width: "100%"}}
+                          variant={"primary"}
+                          onClick={this.AddTagToTags}>
+                    Add Tag
+                  </Button>
                 </Col>
               </Row>
             </Form.Group>
@@ -95,7 +110,7 @@ class BlogDetail extends Component {
             <MDEditor
               value={this.state.updatedContent}
               onChange={(value) => {this.setState({updatedContent: value})}}
-              height={"800px"}
+              height={"1000px"}
               toolbarHeight={"30px"}
             />
           ) : (

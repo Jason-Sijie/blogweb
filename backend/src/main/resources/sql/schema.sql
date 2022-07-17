@@ -71,6 +71,15 @@ CREATE TABLE IF NOT EXISTS `blog_tag` (
     CONSTRAINT `FK_blog_tag_table_tag_id` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
+CREATE TABLE IF NOT EXISTS `blog_like` (
+    `blog_id` bigint(20) NOT NULL,
+    `user_id` bigint(20) NOT NULL,
+    PRIMARY KEY (`blog_id`,`user_id`),
+    KEY `blog_like_user_id_key` (`user_id`),
+    CONSTRAINT `FK_blog_like_table_blog_id` FOREIGN KEY (`blog_id`) REFERENCES `blog` (`id`),
+    CONSTRAINT `FK_blog_like_table_user_id` FOREIGN KEY (`user_id`) REFERENCES `user` (`id`)
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
 CREATE TABLE IF NOT EXISTS `user_role` (
     `user_id` bigint(20) NOT NULL,
     `role_id` bigint(20) NOT NULL,

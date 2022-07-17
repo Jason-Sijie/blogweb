@@ -1,6 +1,7 @@
 package com.sijie.blogweb.controller;
 
 import com.google.common.base.MoreObjects;
+import com.sijie.blogweb.exception.handler.InternalFaultException;
 import com.sijie.blogweb.helper.AuthPrincipalHelper;
 import com.sijie.blogweb.repository.redis.transaction.RedisTransaction;
 import com.sijie.blogweb.repository.redis.transaction.RedisTransactionType;
@@ -49,8 +50,9 @@ public class BlogController {
     }
 
     @PostMapping(value = "", consumes = {"application/json"})
-    @Transactional(isolation = Isolation.SERIALIZABLE)
     @PreAuthorize("hasAnyAuthority('BLOG_ALL', 'BLOG_CREATE')")
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @RedisTransaction(type = RedisTransactionType.WriteOnly)
     public Blog createNewBlog(@RequestBody Blog inputBlog) {
         CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails != null) {
@@ -66,6 +68,80 @@ public class BlogController {
 
         logger.info("Create new Blog: " + internalBlog);
         return internalBlog;
+    }
+
+    @PutMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('BLOG_ALL', 'BLOG_UPDATE')")
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @RedisTransaction(type = RedisTransactionType.WriteOnly)
+    public Blog updateBlogById(@PathVariable("id") long id, @RequestBody Blog inputBlog) {
+        Optional<Blog> result = blogRepository.findById(id);
+        if (!result.isPresent()) {
+            throw new ResourceNotFoundException("Blog with id: " + id + " not found");
+        }
+        Blog internalBlog = result.get();
+
+        CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
+        if (userDetails == null) {
+            throw new UserCredentialsAbsenceException("User credentials are required to create new blog");
+        } else if (!userDetails.getUid().equals(internalBlog.getAuthorId())){
+            throw new UserUnauthorziedException("User " + userDetails.getUsername() + " is Unauthorized to perform update operation on blog " + internalBlog.getBid());
+        }
+
+        internalBlog = blogHelper.validateAndUpdateBlog(inputBlog, internalBlog);
+        if (internalBlog.getContent() != null) {
+            blogContentRepository.setBlogContent(internalBlog.getBid(), internalBlog.getContent());
+        }
+        blogRepository.save(internalBlog);
+
+        logger.info("Update Blog " + internalBlog);
+        return internalBlog;
+    }
+
+    @PutMapping(value = "/{id}/like")
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public String likeABlogById(@PathVariable("id") long id) {
+        Optional<Blog> result = blogRepository.findById(id);
+        if (!result.isPresent()) {
+            throw new ResourceNotFoundException("Blog with id: " + id + " not found");
+        }
+        Blog internalBlog = result.get();
+
+        CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
+        if (userDetails == null) {
+            throw new UserCredentialsAbsenceException("User credentials are required to like a blog");
+        }
+
+        Blog blog = blogHelper.likeABlog(internalBlog, userDetails.getUsername());
+        if (blog == null) {
+            throw new InternalFaultException("Failed to like the blog " + blog.getBid());
+        }
+
+        blogRepository.save(blog);
+        return "User " + userDetails.getUsername() + " successfully liked the blog " + blog.getBid();
+    }
+
+    @PutMapping(value = "/{id}/unlike")
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    public String unlikeABlogById(@PathVariable("id") long id) {
+        Optional<Blog> result = blogRepository.findById(id);
+        if (!result.isPresent()) {
+            throw new ResourceNotFoundException("Blog with id: " + id + " not found");
+        }
+        Blog internalBlog = result.get();
+
+        CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
+        if (userDetails == null) {
+            throw new UserCredentialsAbsenceException("User credentials are required to like a blog");
+        }
+
+        Blog blog = blogHelper.unlikeABlog(internalBlog, userDetails.getUsername());
+        if (blog == null) {
+            throw new InternalFaultException("Failed to unlike the blog " + blog.getBid());
+        }
+
+        blogRepository.save(blog);
+        return "User " + userDetails.getUsername() + " successfully unliked the blog " + blog.getBid();
     }
 
     @GetMapping(value = "/{id}")
@@ -210,33 +286,6 @@ public class BlogController {
         }
 
         return new PageImpl<Blog>(pageResult, PageRequest.of(page, size), blogs.size());
-    }
-
-    @PutMapping(value = "/{id}")
-    @PreAuthorize("hasAnyAuthority('BLOG_ALL', 'BLOG_UPDATE')")
-    @Transactional(isolation = Isolation.SERIALIZABLE)
-    public Blog updateBlogById(@PathVariable("id") long id, @RequestBody Blog inputBlog) {
-        Optional<Blog> result = blogRepository.findById(id);
-        if (!result.isPresent()) {
-            throw new ResourceNotFoundException("Blog with id: " + id + " not found");
-        }
-        Blog internalBlog = result.get();
-
-        CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
-        if (userDetails == null) {
-            throw new UserCredentialsAbsenceException("User credentials are required to create new blog");
-        } else if (!userDetails.getUid().equals(internalBlog.getAuthorId())){
-            throw new UserUnauthorziedException("User " + userDetails.getUsername() + " is Unauthorized to perform update operation on blog " + internalBlog.getBid());
-        }
-
-        internalBlog = blogHelper.validateAndUpdateBlog(inputBlog, internalBlog);
-        if (internalBlog.getContent() != null) {
-            blogContentRepository.setBlogContent(internalBlog.getBid(), internalBlog.getContent());
-        }
-        blogRepository.save(internalBlog);
-
-        logger.info("Update Blog " + internalBlog);
-        return internalBlog;
     }
 
 }

@@ -2,6 +2,7 @@ package com.sijie.blogweb.helper;
 
 import com.sijie.blogweb.exception.InvalidParameterException;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
+import com.sijie.blogweb.exception.ValidationException;
 import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.model.Category;
 import com.sijie.blogweb.model.Tag;
@@ -123,19 +124,42 @@ public class BlogHelper {
         return internalBlog;
     }
 
-    public Set<Tag> getInternalTagsFromTagNames(List<String> tagNames) {
-        Set<Tag> internalTags = new HashSet<>();
-        for (String tagName : tagNames) {
-            if (Strings.isNotEmpty(tagName)) {
-                Tag tagInternal = tagRepository.findByName(tagName);
-                if (tagInternal != null) {
-                    internalTags.add(tagInternal);
-                }
-            }
+    public Blog likeABlog(Blog blog, String username) {
+        if (blog == null || username == null) {
+            return null;
         }
-        return internalTags;
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new ResourceNotFoundException("User " + username + " does not exist.");
+        }
+
+        Set<User> likedUsers = blog.getLikedUsers();
+        if (!likedUsers.add(user)) {
+            throw new ValidationException("User " + username + " has already liked the blog " + blog.getBid() + ".");
+        }
+        blog.setLikes(blog.getLikes() + 1);
+
+        return blog;
     }
 
+    public Blog unlikeABlog(Blog blog, String username) {
+        if (blog == null || username == null) {
+            return null;
+        }
+        User user = userRepository.findByUsername(username);
+        if (user == null) {
+            throw new ResourceNotFoundException("User " + username + " does not exist.");
+        }
+
+        Set<User> likedUsers = blog.getLikedUsers();
+        if (!likedUsers.contains(user)) {
+            throw new ValidationException("User " + username + " must liked the blog " + blog.getBid() + " first.");
+        }
+        likedUsers.remove(user);
+        blog.setLikes(Math.max(0, blog.getLikes() - 1));
+
+        return blog;
+    }
 
     private Set<Tag> translateExternalTagsToInternalTags(Set<Tag> externalTags) {
         Set<Tag> internalTags = new HashSet<>();

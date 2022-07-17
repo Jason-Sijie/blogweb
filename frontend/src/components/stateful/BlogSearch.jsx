@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Container} from "react-bootstrap";
+import {Container, Row} from "react-bootstrap";
 import SearchPanel from "./SearchPanel";
 import BlogList from "./BlogList";
 

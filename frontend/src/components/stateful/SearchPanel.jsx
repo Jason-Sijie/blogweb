@@ -68,6 +68,7 @@ class SearchPanel extends Component {
   render() {
     return (
       <Form className={"shadow p-3 mb-5 bg-white rounded"}>
+        <h2>Search Panel</h2>
         <Form.Group className="mb-3" controlId="blogTitle">
           <Form.Label>Blog Name</Form.Label>
           <Form.Control type="text"

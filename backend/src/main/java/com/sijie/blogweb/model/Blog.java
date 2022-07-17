@@ -57,4 +57,14 @@ public class Blog {
             inverseJoinColumns = @JoinColumn(table = "tag", name = "tag_id")
     )
     private Set<Tag> tags;
+
+    @ManyToMany(fetch = FetchType.EAGER)
+    @JoinTable(
+            schema = "blog_web",
+            name = "blog_like",
+            joinColumns = @JoinColumn(table = "blog", name = "blog_id"),
+            inverseJoinColumns = @JoinColumn(table = "user", name = "user_id")
+    )
+    @JsonIgnore
+    private Set<User> likedUsers;
 }

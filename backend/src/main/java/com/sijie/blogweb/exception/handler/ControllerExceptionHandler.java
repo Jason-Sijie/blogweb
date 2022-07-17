@@ -47,6 +47,28 @@ public class ControllerExceptionHandler {
         return message;
     }
 
+    @ExceptionHandler({ValidationException.class})
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    public ErrorMessage validationException(ValidationException ex, WebRequest request) {
+        ErrorMessage message = new ErrorMessage();
+        message.setMessage(ex.getMessage());
+        message.setDate(new Date());
+        message.setStatus(HttpStatus.BAD_REQUEST.name());
+        return message;
+    }
+
+    @ExceptionHandler({InternalFaultException.class})
+    @ResponseStatus(value = HttpStatus.INTERNAL_SERVER_ERROR)
+    @ResponseBody
+    public ErrorMessage internalFaultException(InternalFaultException ex, WebRequest request) {
+        ErrorMessage message = new ErrorMessage();
+        message.setMessage(ex.getMessage());
+        message.setDate(new Date());
+        message.setStatus(HttpStatus.INTERNAL_SERVER_ERROR.name());
+        return message;
+    }
+
     @ExceptionHandler({UserCredentialsAbsenceException.class, UserUnauthorziedException.class})
     @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
     @ResponseBody

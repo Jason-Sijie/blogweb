@@ -52,8 +52,6 @@ public class BlogController {
     @Transactional(isolation = Isolation.SERIALIZABLE)
     @PreAuthorize("hasAnyAuthority('BLOG_ALL', 'BLOG_CREATE')")
     public Blog createNewBlog(@RequestBody Blog inputBlog) {
-        logger.info("Start createNewBlog");
-
         CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails != null) {
             inputBlog.setAuthorId(userDetails.getUid());
@@ -74,8 +72,6 @@ public class BlogController {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     @RedisTransaction(type = RedisTransactionType.ReadOnly)
     public Blog getBlogDetailById(@PathVariable("id") long id) {
-        logger.info("Start getBlogDetailById");
-
         Optional<Blog> result = blogRepository.findById(id);
         if (!result.isPresent()) {
             throw new ResourceNotFoundException("Blog with id: " + id + " not found");
@@ -94,8 +90,6 @@ public class BlogController {
     @Transactional(isolation = Isolation.READ_COMMITTED)
     @RedisTransaction(type = RedisTransactionType.ReadOnly)
     public Blog getBlogDetailByBid(@RequestParam String bid) {
-        logger.info("Start getBlogDetailByBid");
-
         Blog result = blogRepository.findByBid(bid);
         if (result == null) {
             throw new ResourceNotFoundException("Blog with bid: " + bid + " not found");
@@ -113,8 +107,6 @@ public class BlogController {
     @Transactional(readOnly = true)
     public Page<Blog> getAllBlogs(@RequestParam(name = "page", required = false) Integer page,
                                   @RequestParam(name = "size", required = false) Integer size) {
-        logger.info("Start getAllBlogs");
-
         page = MoreObjects.firstNonNull(page, 0);
         size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
 
@@ -126,8 +118,6 @@ public class BlogController {
     public Page<Blog> getBlogsByCategoryId(@RequestParam("categoryId") String categoryId,
                                            @RequestParam(name = "page", required = false) Integer page,
                                            @RequestParam(name = "size", required = false) Integer size) {
-        logger.info("Start getBlogsByCategoryId");
-
         page = MoreObjects.firstNonNull(page, 0);
         size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
 
@@ -139,8 +129,6 @@ public class BlogController {
     public Page<Blog> getBlogsByAuthorId(@RequestParam("authorId") String authorId,
                                            @RequestParam(name = "page", required = false) Integer page,
                                            @RequestParam(name = "size", required = false) Integer size) {
-        logger.info("Start getBlogsByAuthorId");
-
         page = MoreObjects.firstNonNull(page, 0);
         size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
 
@@ -152,8 +140,6 @@ public class BlogController {
     public Page<Blog> getBlogsByTagName(@RequestParam("tagName") String tagName,
                                          @RequestParam(name = "page", required = false) Integer page,
                                          @RequestParam(name = "size", required = false) Integer size) {
-        logger.info("Start getBlogsByTagName");
-
         page = MoreObjects.firstNonNull(page, 0);
         size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
 
@@ -165,7 +151,6 @@ public class BlogController {
     public Page<Blog> getBlogsByTagNames(@RequestParam("tagNames") List<String> tagNames,
                                         @RequestParam(name = "page", required = false) Integer page,
                                         @RequestParam(name = "size", required = false) Integer size) {
-        logger.info("Start getBlogsByTagNames, tagNames: " + tagNames.toString());
         if (tagNames == null || tagNames.isEmpty()) {
             return Page.empty();
         }
@@ -194,7 +179,6 @@ public class BlogController {
                                                     @RequestParam("tagNames") List<String> tagNames,
                                                     @RequestParam(name = "page", required = false) Integer page,
                                                     @RequestParam(name = "size", required = false) Integer size) {
-        logger.info("Start getBlogsByAuthorIdAndTagNames, authorId: " + authorId + ", tagNames: " + tagNames.toString());
         if (tagNames == null || tagNames.isEmpty()) {
             return Page.empty();
         }
@@ -232,8 +216,6 @@ public class BlogController {
     @PreAuthorize("hasAnyAuthority('BLOG_ALL', 'BLOG_UPDATE')")
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public Blog updateBlogById(@PathVariable("id") long id, @RequestBody Blog inputBlog) {
-        logger.info("Start updateBlogById");
-
         Optional<Blog> result = blogRepository.findById(id);
         if (!result.isPresent()) {
             throw new ResourceNotFoundException("Blog with id: " + id + " not found");

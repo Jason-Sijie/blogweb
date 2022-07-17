@@ -49,7 +49,7 @@ public class Blog {
     @Column(name = "gmt_update", nullable = false)
     private Date gmtUpdate;
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             schema = "blog_web",
             name = "blog_tag",

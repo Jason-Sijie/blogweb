@@ -1,16 +1,11 @@
 import React, {Component} from "react";
 import {Container, Row} from "react-bootstrap";
 import SearchPanel from "./SearchPanel";
-import BlogList from "./BlogList";
+import BlogList from "../stateless/blog/BlogList";
+import {getBlogsWithParams} from "../../actions/blogRequests";
 
 /**
  * props : {
- *   getBlogsWithParams : (params) => {}
- *   blogListPage : {
- *     content: [],
- *     number: int,
- *     totalPages: int,
- *   }
  *   pageSize : int,
  *   authorId : "" (optional),
  *   searchButtonText : "" (optional),
@@ -21,13 +16,25 @@ class BlogSearch extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentPage: 0,
       authorId: props.authorId || null,
       tagNames: null,
       blogTitle: null
     }
+
+    getBlogsWithParams({
+      page: this.state.currentPage,
+      size: props.pageSize
+    }, (data) => {
+      this.setState({
+        content : data.content,
+        totalPages : data.totalPages,
+        currentPage : data.number
+      })
+    })
   }
 
-  getBlogsWithParams = (params) => {
+  getBlogsWithSearchParams = (params) => {
     params = {
       authorId: this.state.authorId,
       tagNames: this.state.tagNames,
@@ -35,7 +42,13 @@ class BlogSearch extends Component {
       ...params
     }
 
-    this.props.getBlogsWithParams(params);
+    getBlogsWithParams(params, (data) => {
+      this.setState({
+        content: data.content,
+        currentPage: data.number,
+        totalPages: data.totalPages
+      })
+    });
   }
 
   updateSearchParams = (params) => {
@@ -49,17 +62,18 @@ class BlogSearch extends Component {
   render() {
     return (
       <Container>
-        <SearchPanel searchWithParams={this.getBlogsWithParams}
+        <SearchPanel getBlogsWithSearchParams={this.getBlogsWithSearchParams}
                      updateSearchParams={this.updateSearchParams}
                      pageSize={this.props.pageSize}
                      searchButtonText={this.props.searchButtonText || "Search Blogs"}
                      searchPanelTitle={this.props.searchPanelTitle || "Search Panel"} />
 
-        <BlogList content={this.props.blogListPage.content}
-                  totalPages={this.props.blogListPage.totalPages}
-                  number={this.props.blogListPage.number}
+        <BlogList content={this.state.content}
+                  currentPage={this.state.currentPage}
+                  totalPages={this.state.totalPages}
                   pageSize={this.props.pageSize}
-                  getBlogsWithParams={this.getBlogsWithParams} />
+                  getBlogsWithSearchParams={this.getBlogsWithSearchParams}
+        />
       </Container>
     )
   }

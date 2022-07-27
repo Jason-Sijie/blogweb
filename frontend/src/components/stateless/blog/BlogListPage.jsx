@@ -16,9 +16,7 @@ import BlogSearch from "../../stateful/BlogSearch";
  */
 const BlogListPage = (props) => {
   return (
-    <BlogSearch getBlogsWithParams={props.getBlogsWithParams}
-                blogListPage={props.blogListPage}
-                pageSize={props.pageSize}
+    <BlogSearch pageSize={props.pageSize}
                 searchButtonText={"Search Blogs"}/>
   )
 }

@@ -3,9 +3,6 @@ import BlogDetail from "../../stateful/BlogDetail";
 
 /**
  * @param props : {
- *   blog : {},
- *   getBlogDetailById : (id) => {},
- *   updateBlogContent : (blog) => {},
  *   currentUser : {}
  * }
  * @returns {JSX.Element}
@@ -14,7 +11,8 @@ import BlogDetail from "../../stateful/BlogDetail";
 const BlogDetailPage = (props) => {
   let params = useParams()
   return (
-    <BlogDetail blogId={params.id} {...props}/>
+    <BlogDetail blogId={params.id}
+                currentUser={props.currentUser} />
   )
 }
 

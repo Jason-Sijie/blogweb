@@ -4,7 +4,7 @@ import TagListToasts from "../stateless/util/TagListToasts";
 
 /**
  * props : {
- *   searchWithParams : (params) => {},
+ *   getBlogsWithSearchParams : (params) => {},
  *   searchButtonText : ""
  *   searchPanelTitle : ""
  *   pageSize : int,
@@ -55,7 +55,7 @@ class SearchPanel extends Component {
       blogTitle: this.state.blogTitle || null
     })
 
-    this.props.searchWithParams({
+    this.props.getBlogsWithSearchParams({
       tagNames: this.state.tags.map((tag) => {
         return tag.name
       }),

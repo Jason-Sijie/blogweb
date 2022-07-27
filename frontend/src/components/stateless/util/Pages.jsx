@@ -7,8 +7,7 @@ import {Pagination} from "react-bootstrap";
  *   leftNum: int,        // number of pages to display left to the current page
  *   rightNum: int,       // number of pages to display right to the current page
  *   pageSize: int,
- *   getContentWithPageAndSize: (page, size) => {},
- *   updatePagination: ,
+ *   getPageContentAndUpdatePagination: (page, size) => {},
  * }
  */
 const Pages = (props) => {
@@ -17,8 +16,7 @@ const Pages = (props) => {
   const pageArray = [...Array(right - left + 1).keys()].map((x) => x + left);
 
   const clickAction = (pageNum) => {
-    props.getContentWithPageAndSize(pageNum, props.pageSize);
-    props.updatePagination(pageNum);
+    props.getPageContentAndUpdatePagination(pageNum, props.pageSize);
   }
 
   return (

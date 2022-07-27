@@ -32,7 +32,6 @@ class App extends Component {
 
 const mapStateToProps = (state) => {  
   return {
-    blog: state.blogReducer,
     user: state.userReducer,
     modal: state.modalReducer
   }
@@ -41,17 +40,6 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     action: {
-      blog: {
-        getBlogDetailById: (id) => {
-          getBlogDetailById(id)(dispatch);
-        },
-        getBlogsWithParams: (params) => {
-          getBlogsWithParams(params)(dispatch);
-        },
-        updateBlogContent: (blog) => {
-          updateBlogContent(blog)(dispatch);
-        }
-      },
       user: {
         acquireJwtCredentials: (username, password) => {
           acquireJwtCredentials(username, password)(dispatch);

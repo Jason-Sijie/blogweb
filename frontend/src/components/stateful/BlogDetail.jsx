@@ -6,13 +6,11 @@ import "../../styles/blog_style.css";
 import BlogHeader from "../stateless/blog/BlogHeader";
 import TagList from "../stateless/util/TagList";
 import TagListToasts from "../stateless/util/TagListToasts";
+import {getBlogDetailById, updateBlogContent} from "../../actions/blogRequests";
 
 /**
  * @Params props: {
  *   blogId : int,
- *   blog : {},
- *   getBlogDetailById : (id) => {},
- *   updateBlogContent : (blog) => {},
  *   currentUser : (optional) {
  *     id : int,
  *     uid : "",
@@ -24,14 +22,15 @@ class BlogDetail extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      updatedContent: props.blog.content || "",
-      updatedTitle: props.blog.title || "",
-      updatedDescription: props.blog.description || "",
-      updatedTags: props.blog.tags || [],
+      blog: {
+        gmtCreate: "",
+        gmtUpdate: "",
+        authorId: ""
+      },
       newTag: "",
       isEdit: false
     }
-    this.props.getBlogDetailById(this.props.blogId);
+    this.refreshBlogDetail()
   }
 
   removeTagFromUpdatedTags = (target) => {
@@ -59,6 +58,31 @@ class BlogDetail extends Component {
         [key]: event.target.value
       })
     }
+  }
+
+  refreshBlogDetail = () => {
+    getBlogDetailById(this.props.blogId, (data) => {
+      this.setState({
+        blog: data,
+        updatedContent: data.content || "",
+        updatedTitle: data.title || "",
+        updatedDescription: data.description || "",
+        updatedTags: data.tags || [],
+      })
+    });
+  }
+
+  updateBlogContentWithMessage = () => {
+    updateBlogContent({
+      ...this.state.blog,
+      content: this.state.updatedContent,
+      title: this.state.updatedTitle,
+      description: this.state.updatedDescription,
+      tags: this.state.updatedTags
+    }, (data) => {
+      alert("Updated Successfully")
+      this.refreshBlogDetail();
+    })
   }
 
   blogMetadataForm = (isEdit) => {
@@ -130,7 +154,7 @@ class BlogDetail extends Component {
   }
 
   displayEditPanel = () => {
-    let shouldDisplay = this.props.currentUser != null && this.props.currentUser.uid === this.props.blog.authorId
+    let shouldDisplay = this.props.currentUser != null && this.props.currentUser.uid === this.state.blog.authorId
 
     if (shouldDisplay) {
       return this.editPanel()
@@ -158,15 +182,9 @@ class BlogDetail extends Component {
               <Button style={{width: "100%"}} variant={"secondary"} onClick={() => {this.setState({isEdit: false})}}>Back</Button>
             </Col>
             <Col xs={"2"} xxl={"1"}>
-              <Button style={{width: "100%"}} variant={"primary"} onClick={() => {
-                this.props.updateBlogContent({
-                  ...this.props.blog,
-                  content: this.state.updatedContent,
-                  title: this.state.updatedTitle,
-                  description: this.state.updatedDescription,
-                  tags: this.state.updatedTags
-                })
-              }}>Submit</Button>
+              <Button style={{width: "100%"}} variant={"primary"} onClick={this.updateBlogContentWithMessage}>
+                Submit
+              </Button>
             </Col>
           </Row>
         </Card.Body>
@@ -194,10 +212,10 @@ class BlogDetail extends Component {
           <Card.Header>
             <Row style={{justifyContent: "space-between"}}>
               <Col xs={"auto"}>
-                Create Time: <div style={{color:"grey"}}>{new Date(this.props.blog.gmtCreate).toLocaleString()}</div>
+                Create Time: <div style={{color:"grey"}}>{new Date(this.state.blog.gmtCreate).toLocaleString()}</div>
               </Col>
               <Col xs={"auto"}>
-                Last Modified: <div style={{color:"grey"}}>{new Date(this.props.blog.gmtUpdate).toLocaleString()}</div>
+                Last Modified: <div style={{color:"grey"}}>{new Date(this.state.blog.gmtUpdate).toLocaleString()}</div>
               </Col>
             </Row>
           </Card.Header>
@@ -207,22 +225,22 @@ class BlogDetail extends Component {
     )
   }
 
-  componentDidUpdate(prevProps, prevState, snapshot) {
-    if (prevProps.blog !== this.props.blog) {
-      this.setState({
-        updatedContent: this.props.blog.content || "",
-        updatedTitle: this.props.blog.title || "",
-        updatedDescription: this.props.blog.description || "",
-        updatedTags: this.props.blog.tags || [],
-        isEdit: false
-      })
-    }
-  }
+  // componentDidUpdate(prevProps, prevState, snapshot) {
+  //   if (prevProps.blog !== this.props.blog) {
+  //     this.setState({
+  //       updatedContent: this.props.blog.content || "",
+  //       updatedTitle: this.props.blog.title || "",
+  //       updatedDescription: this.props.blog.description || "",
+  //       updatedTags: this.props.blog.tags || [],
+  //       isEdit: false
+  //     })
+  //   }
+  // }
 
   render() {
     return(
       <Container>
-        <BlogHeader {...this.props.blog} />
+        <BlogHeader {...this.state.blog} />
         {this.metadataPanel()}
         {this.blogContent()}
       </Container>

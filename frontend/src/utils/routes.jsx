@@ -11,20 +11,13 @@ export function AppRoutes(props){
   return (
     <Routes>
       <Route path="/" exact element={
-        <BlogListPage getBlogsWithParams={props.action.blog.getBlogsWithParams}
-                      blogListPage={props.blog.blogListPage}
-                      pageSize={2} />
+        <BlogListPage pageSize={2} />
       }/>
       <Route path="/blogs" exact element={
-        <BlogListPage getBlogsWithParams={props.action.blog.getBlogsWithParams}
-                      blogListPage={props.blog.blogListPage}
-                      pageSize={2} />
+        <BlogListPage pageSize={2} />
       }/>
       <Route path="/blogs/:id" element={
-        <BlogDetailPage blog={props.blog.detailedBlog}
-                        getBlogDetailById={props.action.blog.getBlogDetailById}
-                        updateBlogContent={props.action.blog.updateBlogContent}
-                        currentUser={props.user.currentUser} />
+        <BlogDetailPage currentUser={props.user.currentUser} />
       }/>
       <Route path="/login" element={
         <LoginPage acquireJwtCredentials={props.action.user.acquireJwtCredentials}/>

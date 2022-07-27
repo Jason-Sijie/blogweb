@@ -2,7 +2,7 @@ import {Button, Modal} from "react-bootstrap";
 
 /**
  * A global popup modal
- * @param props = {
+ * @param props : {
  *   show: boolean,
  *   title: string,
  *   content: string,

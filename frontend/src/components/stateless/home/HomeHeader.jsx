@@ -4,7 +4,10 @@ import OverlayIcon from "../util/OverlayIcon";
 import "../../../styles/home_style.css";
 
 /**
- * @param props
+ * @param props : {
+ *   email : "",
+ *   name : ""
+ * }
  * @returns {JSX.Element}
  * @constructor
  */
@@ -12,10 +15,10 @@ const HomeHeader = (props) => {
   return (
     <Container fluid className="home_header" style={{backgroundImage: `url(/images/home_header_background.jpg)`}}>
       <Row className="home_header_title">
-        <p>Jason Yu</p>
+        <p>{props.name}</p>
       </Row>
       <Row className="home_header_description">
-        <p>Email: yusj.jason@gmail.com</p>
+        <p>Email: {props.email}</p>
       </Row>
     </Container>
   )

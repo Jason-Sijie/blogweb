@@ -3,9 +3,10 @@ import BlogDetail from "../../stateful/BlogDetail";
 
 /**
  * @param props : {
- *   blog: {},
- *   getBlogDetailById: (id) => {},
- *   updateBlogContent: (blog) => {}
+ *   blog : {},
+ *   getBlogDetailById : (id) => {},
+ *   updateBlogContent : (blog) => {},
+ *   currentUser : {}
  * }
  * @returns {JSX.Element}
  * @constructor

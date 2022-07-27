@@ -1,7 +1,10 @@
 import {Button, Card} from "react-bootstrap";
 
 /**
- * @param props
+ * @param props : {
+ *   name : "",
+ *
+ * }
  * @returns {JSX.Element}
  * @constructor
  */
@@ -11,7 +14,7 @@ const HomeProfile = (props) => {
       <Card.Img className={"home_profile_avatar"} variant="top" src="/images/profile_avatar.jpg" />
       <Card.Body>
         <Card.Title as={"h2"}>
-          Jason Yu
+          {props.name}
         </Card.Title>
         <hr />
         <Card.Text as={"h4"}>

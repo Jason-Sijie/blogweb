@@ -5,25 +5,26 @@ import SearchPanel from "../../stateful/SearchPanel";
 import BlogSearch from "../../stateful/BlogSearch";
 
 /**
- * @param props
+ * @param props : {
+ *   getBlogsWithParams : (params) => {}
+ *   blogListPage : {
+ *     content : [],
+ *     number : int,
+ *     totalPages : int
+ *   }
+ *   authorId : "",
+ * }
  * @returns {JSX.Element}
  * @constructor
  */
 const HomeContent = (props) => {
   return (
-    <Container className={"shadow-lg p-3 mb-5 bg-white rounded"}>
-      <Tabs defaultActiveKey="profile" id="home-content-tab" style={{margin: "20px 30px", fontSize: "20px"}}>
-        <Tab eventKey="profile" title="Profile">
-          Tab1
-        </Tab>
-        <Tab eventKey="blogs" title="Self Blogs">
-          <BlogSearch getBlogsWithPageAndSize={props.action.blog.getBlogsWithPageAndSize}
-                      blogListPage={props.blog.blogListPage}
-                      authorId={props.user.currentUser.uid}
-                      text="Search Blogs under current User"/>
-        </Tab>
-      </Tabs>
-
+    <Container className={"shadow-lg p-3 pt-5 mb-5 bg-white rounded"} style={{minHeight: "800px"}}>
+      <BlogSearch getBlogsWithParams={props.getBlogsWithParams}
+                  blogListPage={props.blogListPage}
+                  authorId={props.authorId}
+                  pageSize={2}
+                  searchButtonText="Search blogs under current author" />
     </Container>
   )
 }

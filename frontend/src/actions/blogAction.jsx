@@ -18,7 +18,7 @@ export const getBlogDetailById = (id) => dispatch => {
   })
 }
 
-export const getBlogsWithPageAndSize = (params) => dispatch => {
+export const getBlogsWithParams = (params) => dispatch => {
   params = stringify(params, {arrayFormat: "repeat", skipNulls: true});
   console.log("Get blogs with params: ", params)
   const url = api.blogWeb.blog + "?" + params;

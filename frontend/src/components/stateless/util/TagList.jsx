@@ -2,7 +2,7 @@ import {Badge, Col, Row} from "react-bootstrap";
 import {getBadgeColorFromString} from "../../../constants/colors";
 /**
  *
- * @param props = {
+ * @param props : {
  *   tags : [
  *     {
  *       "name": ""

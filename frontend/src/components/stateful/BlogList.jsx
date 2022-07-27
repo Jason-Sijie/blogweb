@@ -5,44 +5,38 @@ import {Component} from "react";
 
 /**
  * props: {
- *   content: []
- *   getBlogsWithPageAndSize: (page, size) => {}
- *   totalPages: ,
- *   number: ,
+ *   content: [],                         // list of blogs
+ *   totalPages: ,                        // total number of pages
+ *   number: ,                            // current page number
+ *   pageSize: ,                          // number of element in each page
  *   leftNum: (optional),
  *   rightNum: (optional),
- *   pageSize: (pageSize),
+ *   getBlogsWithParams: (param) => {},
  * }
  */
 class BlogList extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      pagination: {
-        currentPage: props.number || 0,
-        leftNum: props.leftNum || 3,
-        rightNum: props.rightNum || 3,
-        pageSize: props.pageSize || 5,
-      }
+      currentPage: props.number || 0,
     }
-  }
-
-  componentDidMount() {
-    this.props.getBlogsWithPageAndSize({
-      page: this.state.pagination.currentPage,
-      size: this.state.pagination.pageSize
+    this.props.getBlogsWithParams({
+      page: this.state.currentPage,
+      size: this.props.pageSize
     });
   }
 
-  updatePagination = (num) => {
+  updatePagination = (currentPage) => {
     this.setState({
-      pagination: {
-        currentPage: num,
-        leftNum: this.props.leftNum || 3,
-        rightNum: this.props.rightNum || 3,
-        pageSize: this.props.pageSize || 5,
-      }
+      currentPage: currentPage,
     })
+  }
+
+  getBlogWithPageAndSize = (page, size) => {
+    this.props.getBlogsWithParams({
+      page: page,
+      size: size
+    });
   }
 
   render() {
@@ -57,9 +51,12 @@ class BlogList extends Component {
         })}
 
         <Row>
-          <Pages {...this.state.pagination}
+          <Pages currentPage={this.state.currentPage}
                  totalPages={this.props.totalPages || 10}
-                 getContentWithPageAndSize={this.props.getBlogsWithPageAndSize}
+                 leftNum={this.props.leftNum || 3}
+                 rightNum={this.props.rightNum || 3}
+                 pageSize={this.props.pageSize}
+                 getContentWithPageAndSize={this.getBlogWithPageAndSize}
                  updatePagination={this.updatePagination} />
         </Row>
       </Container>

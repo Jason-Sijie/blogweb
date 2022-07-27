@@ -2,12 +2,12 @@ import {Pagination} from "react-bootstrap";
 
 /**
  * props: {
- *   currentPage: ,
- *   totalPages: ,
- *   leftNum: ,
- *   rightNum: ,
- *   pageSize: ,
- *   getContentWithPageAndSize: ,
+ *   currentPage: int,
+ *   totalPages: int,
+ *   leftNum: int,        // number of pages to display left to the current page
+ *   rightNum: int,       // number of pages to display right to the current page
+ *   pageSize: int,
+ *   getContentWithPageAndSize: (page, size) => {},
  *   updatePagination: ,
  * }
  */
@@ -17,10 +17,7 @@ const Pages = (props) => {
   const pageArray = [...Array(right - left + 1).keys()].map((x) => x + left);
 
   const clickAction = (pageNum) => {
-    props.getContentWithPageAndSize({
-      page: pageNum,
-      size: props.pageSize
-    });
+    props.getContentWithPageAndSize(pageNum, props.pageSize);
     props.updatePagination(pageNum);
   }
 

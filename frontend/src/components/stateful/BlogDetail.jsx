@@ -9,10 +9,15 @@ import TagListToasts from "../stateless/util/TagListToasts";
 
 /**
  * @Params props: {
- *   blogId: ,
- *   blog: {},
- *   getBlogDetailById: (id) => {}
- *   updateBlogContent: (blog) => {}
+ *   blogId : int,
+ *   blog : {},
+ *   getBlogDetailById : (id) => {},
+ *   updateBlogContent : (blog) => {},
+ *   currentUser : (optional) {
+ *     id : int,
+ *     uid : "",
+ *     username : ""
+ *   }
  * }
  */
 class BlogDetail extends Component {
@@ -100,7 +105,9 @@ class BlogDetail extends Component {
     }
   }
 
-  blogContent = (isEdit) => {
+  blogContent = () => {
+    let isEdit = this.state.isEdit;
+
     return (
       <Container style={{minHeight: "500px"}}>
         {this.blogMetadataForm(isEdit)}
@@ -122,7 +129,27 @@ class BlogDetail extends Component {
     )
   }
 
-  editPanel = (isEdit) => {
+  displayEditPanel = () => {
+    let shouldDisplay = this.props.currentUser != null && this.props.currentUser.uid === this.props.blog.authorId
+
+    if (shouldDisplay) {
+      return this.editPanel()
+    } else {
+      return (
+        <Card.Body>
+          <Row style={{justifyContent: "space-between"}}>
+            <Col xs={"10"} style={{margin: "10px 0px"}}>
+              <TagList tags={this.state.updatedTags || []} fontSize={"18px"}/>
+            </Col>
+          </Row>
+        </Card.Body>
+      )
+    }
+  }
+
+  editPanel = () => {
+    let isEdit = this.state.isEdit;
+
     if (isEdit) {
       return(
         <Card.Body>
@@ -160,7 +187,7 @@ class BlogDetail extends Component {
     }
   }
 
-  metadataPanel = (isEdit) => {
+  metadataPanel = () => {
     return(
       <Container>
         <Card>
@@ -174,7 +201,7 @@ class BlogDetail extends Component {
               </Col>
             </Row>
           </Card.Header>
-          {this.editPanel(isEdit)}
+          {this.displayEditPanel()}
         </Card>
       </Container>
     )
@@ -196,8 +223,8 @@ class BlogDetail extends Component {
     return(
       <Container>
         <BlogHeader {...this.props.blog} />
-        {this.metadataPanel(this.state.isEdit)}
-        {this.blogContent(this.state.isEdit)}
+        {this.metadataPanel()}
+        {this.blogContent()}
       </Container>
     )
   }

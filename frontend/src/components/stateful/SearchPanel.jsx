@@ -5,9 +5,9 @@ import TagListToasts from "../stateless/util/TagListToasts";
 /**
  * props : {
  *   searchWithParams : (params) => {},
- *   text : "" (optional)
- *   page : 0 (optional)
- *   size : 0 (optional)
+ *   searchButtonText : ""
+ *   searchPanelTitle : ""
+ *   pageSize : int,
  * }
  */
 class SearchPanel extends Component {
@@ -60,15 +60,15 @@ class SearchPanel extends Component {
         return tag.name
       }),
       blogTitle: this.state.blogTitle || null,
-      page: this.props.page || 0,
-      size: this.props.size || 2,
+      page: 0,
+      size: this.props.pageSize,
     });
   }
 
   render() {
     return (
       <Form className={"shadow p-3 mb-5 bg-white rounded"}>
-        <h2>Search Panel</h2>
+        <h2>{this.props.searchPanelTitle}</h2>
         <Form.Group className="mb-3" controlId="blogTitle">
           <Form.Label>Blog Name</Form.Label>
           <Form.Control type="text"
@@ -102,7 +102,7 @@ class SearchPanel extends Component {
           <Button style={{width: "100%"}}
                   variant={"primary"}
                   onClick={this.performSearch} >
-            {this.props.text || "Search Blogs"}
+            {this.props.searchButtonText}
           </Button>
         </Row>
       </Form>

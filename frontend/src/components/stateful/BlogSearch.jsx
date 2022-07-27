@@ -5,10 +5,16 @@ import BlogList from "./BlogList";
 
 /**
  * props : {
- *   getBlogsWithPageAndSize : (params) => {}
- *   blogListPage : {}
+ *   getBlogsWithParams : (params) => {}
+ *   blogListPage : {
+ *     content: [],
+ *     number: int,
+ *     totalPages: int,
+ *   }
+ *   pageSize : int,
  *   authorId : "" (optional),
- *   text : "" (optional)
+ *   searchButtonText : "" (optional),
+ *   searchPanelTitle : "" (optional)
  * }
  */
 class BlogSearch extends Component {
@@ -23,11 +29,13 @@ class BlogSearch extends Component {
 
   getBlogsWithParams = (params) => {
     params = {
-      ...this.state,
+      authorId: this.state.authorId,
+      tagNames: this.state.tagNames,
+      blogTitle: this.state.blogTitle,
       ...params
     }
 
-    this.props.getBlogsWithPageAndSize(params);
+    this.props.getBlogsWithParams(params);
   }
 
   updateSearchParams = (params) => {
@@ -40,17 +48,19 @@ class BlogSearch extends Component {
 
   render() {
     return (
-      <>
-        <Container>
-          <SearchPanel searchWithParams={this.getBlogsWithParams}
-                       updateSearchParams={this.updateSearchParams}
-                       text={this.props.text || "Search Blogs"}/>
-        </Container>
+      <Container>
+        <SearchPanel searchWithParams={this.getBlogsWithParams}
+                     updateSearchParams={this.updateSearchParams}
+                     pageSize={this.props.pageSize}
+                     searchButtonText={this.props.searchButtonText || "Search Blogs"}
+                     searchPanelTitle={this.props.searchPanelTitle || "Search Panel"} />
 
-        <BlogList {...this.props.blogListPage}
-                  pageSize={2}
-                  getBlogsWithPageAndSize={this.getBlogsWithParams}/>
-      </>
+        <BlogList content={this.props.blogListPage.content}
+                  totalPages={this.props.blogListPage.totalPages}
+                  number={this.props.blogListPage.number}
+                  pageSize={this.props.pageSize}
+                  getBlogsWithParams={this.getBlogsWithParams} />
+      </Container>
     )
   }
 }

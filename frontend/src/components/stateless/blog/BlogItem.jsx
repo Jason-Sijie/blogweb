@@ -3,7 +3,7 @@ import TagList from "../util/TagList";
 import {Link} from "react-router-dom";
 
 /**
- * props = {
+ * props : {
  *   blog: {
  *       ...
  *   },

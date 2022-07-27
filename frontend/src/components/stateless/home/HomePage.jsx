@@ -11,13 +11,16 @@ import HomeProfile from "./HomeProfile";
 const HomePage = (props) => {
   return (
     <Container fluid style={{margin: 0, padding: 0}}>
-      <HomeHeader/>
+      <HomeHeader name={"Test User"}
+                  email={"test-account@example.com"} />
       <Row>
-        <Col xs={3} style={{margin: "0% 2% 4% 4%", position: "relative", top: "-300px"}}>
+        <Col xs={3} style={{margin: "0% 2% 4% 4%", position: "relative", top: "-200px"}}>
           <HomeProfile />
         </Col>
         <Col xs={8} style={{margin: "3% 0%"}}>
-          <HomeContent {...props}/>
+          <HomeContent getBlogsWithParams={props.action.blog.getBlogsWithParams}
+                       blogListPage={props.blog.blogListPage}
+                       authorId={props.user.currentUser.uid} />
         </Col>
       </Row>
     </Container>

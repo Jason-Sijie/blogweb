@@ -1,7 +1,7 @@
 import {Component} from "react";
 import { connect } from "react-redux";
 
-import {getBlogDetailById, getBlogsWithPageAndSize, updateBlogContent} from "../actions/blogAction";
+import {getBlogDetailById, getBlogsWithParams, updateBlogContent} from "../actions/blogAction";
 import {acquireJwtCredentials} from "../actions/userAction";
 import {handleModalShow, handleModalClose} from "../actions/modalAction";
 
@@ -45,8 +45,8 @@ const mapDispatchToProps = (dispatch) => {
         getBlogDetailById: (id) => {
           getBlogDetailById(id)(dispatch);
         },
-        getBlogsWithPageAndSize: (page, size) => {
-          getBlogsWithPageAndSize(page, size)(dispatch);
+        getBlogsWithParams: (params) => {
+          getBlogsWithParams(params)(dispatch);
         },
         updateBlogContent: (blog) => {
           updateBlogContent(blog)(dispatch);

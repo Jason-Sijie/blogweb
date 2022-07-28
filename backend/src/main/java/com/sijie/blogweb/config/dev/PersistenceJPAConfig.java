@@ -28,7 +28,7 @@ import java.util.Properties;
 @EnableJpaRepositories(
         basePackages = "com.sijie.blogweb.repository",
         entityManagerFactoryRef = "entityManager",
-        transactionManagerRef = "transactionManager")
+        transactionManagerRef = "jpaTransactionManager")
 public class PersistenceJPAConfig {
 
     @Autowired
@@ -72,7 +72,7 @@ public class PersistenceJPAConfig {
     }
 
     @Bean
-    public PlatformTransactionManager transactionManager() {
+    public PlatformTransactionManager jpaTransactionManager() {
         JpaTransactionManager transactionManager = new JpaTransactionManager();
         transactionManager.setEntityManagerFactory(entityManager().getObject());
 

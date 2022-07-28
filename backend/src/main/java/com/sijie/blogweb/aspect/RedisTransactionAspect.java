@@ -9,8 +9,6 @@ import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.aspectj.lang.reflect.MethodSignature;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -18,6 +16,24 @@ import java.lang.reflect.Method;
 
 import static com.sijie.blogweb.repository.redis.transaction.RedisTransactionHelper.REDIS_TRANSACTION_CONTEXT_KEY;
 
+
+/**
+ * RedisTemplate shares the JPA transaction manager used by MySQL Database.
+ * However, there is an issue with the default Redis transaction behavior.
+ * The transaction manager always call multi() at the beginning of each controller method.
+ * It causes all the Redis read operations piped to execute at the end of the transaction.
+ * In other word, all Redis read operations would return null during the method invocation.
+ * Therefore, we add a custom aspect to enhance the Redis transaction management.
+ * Now we have three types of Redis transactions defined in 'RedisTransactionType'.
+ *   - ReadOnly
+ *   - WriteOnly
+ *   - ReadThenWrite
+ * The reason we only support the 2 phase ReadThenWrite is that once we make write operation, we need
+ * to call multi() which would pipe all the remaining operations to execute at the exec(). So we have
+ * to perform all the reads before any write.
+ * Also, for each redis transaction involved request, we store the Redis transaction context into the
+ * thread context, in order to keep track of the current transaction status.
+ */
 @Aspect
 @Component
 public class RedisTransactionAspect {

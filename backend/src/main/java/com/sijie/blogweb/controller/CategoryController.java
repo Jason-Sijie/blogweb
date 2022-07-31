@@ -39,8 +39,6 @@ public class CategoryController {
     @Transactional(isolation = Isolation.SERIALIZABLE)
     @PreAuthorize("hasAnyAuthority('CATEGORY_ALL', 'CATEGORY_CREATE')")
     public Category createNewCategory(@RequestBody Category inputCategory) {
-        logger.info("Start createNewCategory");
-
         if (Strings.isNullOrEmpty(inputCategory.getName())) {
             throw new InvalidParameterException("Invalid parameter: category name can not be empty");
         }
@@ -62,8 +60,6 @@ public class CategoryController {
     @Transactional(readOnly = true)
     public Page<Category> getAllCategories(@RequestParam(name = "page", required = false) Integer page,
                                            @RequestParam(name = "size", required = false) Integer size) {
-        logger.info("Start getAllCategories");
-
         page = MoreObjects.firstNonNull(page, 0);
         size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
 
@@ -73,8 +69,6 @@ public class CategoryController {
     @GetMapping(value = "/{id}")
     @Transactional(readOnly = true)
     public Category getCategoryDetailById(@PathVariable("id") long id) {
-        logger.info("Start getCategoryDetailById");
-
         Optional<Category> result = categoryRepository.findById(id);
         if (!result.isPresent()) {
             throw new ResourceNotFoundException("Category not found with id: " + id);
@@ -86,8 +80,6 @@ public class CategoryController {
     @GetMapping(value = "/", params = {"cid"})
     @Transactional(readOnly = true)
     public Category getCategoryDetailByCid(@RequestParam String cid) {
-        logger.info("Start getCategoryDetailByCid");
-
         Category result = categoryRepository.findByCid(cid);
         if (result == null) {
             throw new ResourceNotFoundException("Category not found with cid: " + cid);
@@ -99,8 +91,6 @@ public class CategoryController {
     @Transactional(isolation = Isolation.SERIALIZABLE)
     @PreAuthorize("hasAnyAuthority('CATEGORY_ALL', 'CATEGORY_UPDATE')")
     public Category updateCategory(@PathVariable("id") long id, @RequestBody Category inputCategory) {
-        logger.info("Start updateCategory");
-
         Optional<Category> categoryOptional = categoryRepository.findById(id);
         if (!categoryOptional.isPresent()) {
             throw new ResourceNotFoundException("Category with id: " + id + " not found");

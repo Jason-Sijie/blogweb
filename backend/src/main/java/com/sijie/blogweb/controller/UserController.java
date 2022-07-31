@@ -1,7 +1,6 @@
 package com.sijie.blogweb.controller;
 
 import com.google.common.base.MoreObjects;
-import com.sijie.blogweb.exception.InvalidParameterException;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
 import com.sijie.blogweb.exception.UserCredentialsAbsenceException;
 import com.sijie.blogweb.exception.UserUnauthorziedException;

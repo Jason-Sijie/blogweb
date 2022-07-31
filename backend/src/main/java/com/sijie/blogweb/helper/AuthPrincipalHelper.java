@@ -5,6 +5,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 
 public class AuthPrincipalHelper {
     public static CustomUserDetails getAuthenticationPrincipal() {
-        return (CustomUserDetails) SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        Object principal = SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+        if (principal instanceof CustomUserDetails) {
+            return (CustomUserDetails) principal;
+        } else {
+            return null;
+        }
     }
 }

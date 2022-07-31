@@ -58,7 +58,7 @@ public class BlogController {
         if (userDetails != null) {
             inputBlog.setAuthorId(userDetails.getUid());
         } else {
-            throw new UserCredentialsAbsenceException("User credentials are required to create new blog");
+            throw new UserCredentialsAbsenceException("You must log in before creating a new blog");
         }
         Blog newBlog = blogHelper.validateAndBuildNewBlog(inputBlog);
 

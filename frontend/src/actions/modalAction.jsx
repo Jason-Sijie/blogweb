@@ -1,18 +1,23 @@
 import {ACTIONS} from "../constants/actions";
+import {push} from "@lagunovsky/redux-react-router";
 
-export const handleModalClose = () => dispatch => {
+export const handleModalClose = (path = "") => dispatch => {
   dispatch({
     type: ACTIONS.MODAL.HIDE_MODAL,
-    payload: {}
   });
+
+  if (path != null && path !== "") {
+    dispatch(push(path))
+  }
 }
 
-export const handleModalShow = (title, content) => dispatch => {
+export const handleModalShow = (title, content, path) => dispatch => {
   dispatch({
     type: ACTIONS.MODAL.SHOW_MODAL,
     payload: {
       title: title,
-      content: content
+      content: content,
+      path: path
     }
   });
 }

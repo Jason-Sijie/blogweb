@@ -18,9 +18,7 @@ const HomePage = (props) => {
           <HomeProfile />
         </Col>
         <Col xs={8} style={{margin: "3% 0%"}}>
-          <HomeContent getBlogsWithParams={props.action.blog.getBlogsWithParams}
-                       blogListPage={props.blog.blogListPage}
-                       authorId={props.user.currentUser.uid} />
+          <HomeContent authorId={props.user.currentUser.uid} />
         </Col>
       </Row>
     </Container>

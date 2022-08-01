@@ -6,6 +6,8 @@ import LoginPage from "../components/stateless/login/LoginPage";
 import HomePage from "../components/stateless/home/HomePage";
 import BlogListPage from "../components/stateless/blog/BlogListPage";
 import UserHomePage from "../components/stateless/user/UserHomePage";
+import LogoutPage from "../components/stateless/login/LogoutPage";
+import {handleModalShow} from "../actions/modalAction";
 
 export function AppRoutes(props){
   return (
@@ -21,6 +23,11 @@ export function AppRoutes(props){
       }/>
       <Route path="/login" element={
         <LoginPage acquireJwtCredentials={props.action.user.acquireJwtCredentials}/>
+      }/>
+      <Route path="/logout" element={
+        <LogoutPage logout={props.action.user.logout}
+                    currentUser={props.user.currentUser}
+                    handleModalShow={props.action.modal.handleModalShow}  />
       }/>
       <Route path="/home" element={
         <HomePage {...props}/>

@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {Button, Col, Form, Row} from "react-bootstrap";
+import {Button, Col, Form, Row, Dropdown, Collapse, Container} from "react-bootstrap";
 import TagListToasts from "../stateless/util/TagListToasts";
 
 /**
@@ -14,6 +14,7 @@ class SearchPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
+      isOpen: false,
       blogTitle: "",
       tags: [],
       newTag: ""
@@ -65,47 +66,60 @@ class SearchPanel extends Component {
     });
   }
 
+  updateIsOpen = () => {
+    this.setState({isOpen: !this.state.isOpen})
+  }
+
   render() {
     return (
-      <Form className={"shadow p-3 mb-5 bg-white rounded"}>
-        <h2>{this.props.searchPanelTitle}</h2>
-        <Form.Group className="mb-3" controlId="blogTitle">
-          <Form.Label>Blog Name</Form.Label>
-          <Form.Control type="text"
-                        placeholder="Not Support Searching by Blog Title"
-                        disabled
-                        onChange={this.changeStateOnEvent("blogTitle")}/>
-        </Form.Group>
+      <Container className={"shadow p-3 mb-5 bg-white rounded"}>
+        <Row style={{justifyContent:"space-between"}}>
+          <h2 onClick={this.updateIsOpen}>
+            {this.props.searchPanelTitle} &#9660;
+          </h2>
+        </Row>
 
-        <Form.Group className="mb-3" controlId="tags">
-          <Form.Label>Tag Name</Form.Label>
-          <Row>
-            <Col xs={"8"}>
+        <Collapse in={this.state.isOpen}>
+          <Form>
+            <Form.Group className="mb-3" controlId="blogTitle">
+              <Form.Label>Blog Name</Form.Label>
               <Form.Control type="text"
-                            onChange={this.changeStateOnEvent("newTag")}/>
-            </Col>
-            <Col xs={"4"}>
-              <Button style={{width: "100%"}}
-                      variant={"secondary"}
-                      onClick={this.AddTagToTags}>
-                Add Tag to Search params
+                            placeholder="Not Support Searching by Blog Title"
+                            disabled
+                            onChange={this.changeStateOnEvent("blogTitle")}/>
+            </Form.Group>
+
+            <Form.Group className="mb-3" controlId="tags">
+              <Form.Label>Tag Name</Form.Label>
+              <Row>
+                <Col xs={"5"}>
+                  <Form.Control type="text"
+                                onChange={this.changeStateOnEvent("newTag")}/>
+                </Col>
+                <Col xs={"3"}>
+                  <Button style={{width: "100%"}}
+                          variant={"secondary"}
+                          onClick={this.AddTagToTags}>
+                    Add Tag to Search params
+                  </Button>
+                </Col>
+              </Row>
+            </Form.Group>
+
+            <Row className={"mb-2"}>
+              <TagListToasts tags={this.state.tags} onCloseAction={this.removeTagFromTags}/>
+            </Row>
+
+            <Row className={"pe-3 ps-3"}>
+              <Button style={{width: "20%"}}
+                      variant={"primary"}
+                      onClick={this.performSearch} >
+                {this.props.searchButtonText}
               </Button>
-            </Col>
-          </Row>
-        </Form.Group>
-
-        <Row className={"mb-2"}>
-          <TagListToasts tags={this.state.tags} onCloseAction={this.removeTagFromTags}/>
-        </Row>
-
-        <Row className={"pe-3 ps-3"}>
-          <Button style={{width: "100%"}}
-                  variant={"primary"}
-                  onClick={this.performSearch} >
-            {this.props.searchButtonText}
-          </Button>
-        </Row>
-      </Form>
+            </Row>
+          </Form>
+        </Collapse>
+      </Container>
     )
   }
 }

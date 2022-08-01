@@ -1,6 +1,15 @@
 import {Row, Toast} from "react-bootstrap";
 import {getColorFromString} from "../../../constants/colors";
 
+/**
+ * @param props : {
+ *   tags : [],
+ *   onCloseAction : () => {},
+ *   toastWidth : "" (optional)
+ * }
+ * @returns {JSX.Element}
+ * @constructor
+ */
 const TagListToasts = (props) => {
   const {tags, onCloseAction, toastWidth} = props;
 

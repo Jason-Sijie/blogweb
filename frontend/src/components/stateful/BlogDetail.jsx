@@ -225,18 +225,6 @@ class BlogDetail extends Component {
     )
   }
 
-  // componentDidUpdate(prevProps, prevState, snapshot) {
-  //   if (prevProps.blog !== this.props.blog) {
-  //     this.setState({
-  //       updatedContent: this.props.blog.content || "",
-  //       updatedTitle: this.props.blog.title || "",
-  //       updatedDescription: this.props.blog.description || "",
-  //       updatedTags: this.props.blog.tags || [],
-  //       isEdit: false
-  //     })
-  //   }
-  // }
-
   render() {
     return(
       <Container>

@@ -1,8 +1,7 @@
 import {Component} from "react";
 import { connect } from "react-redux";
 
-import {getBlogDetailById, getBlogsWithParams, updateBlogContent} from "../actions/blogAction";
-import {acquireJwtCredentials} from "../actions/userAction";
+import {acquireJwtCredentials, logout} from "../actions/userAction";
 import {handleModalShow, handleModalClose} from "../actions/modalAction";
 
 import AppHeader from "../components/stateless/AppHeader";
@@ -43,14 +42,17 @@ const mapDispatchToProps = (dispatch) => {
       user: {
         acquireJwtCredentials: (username, password) => {
           acquireJwtCredentials(username, password)(dispatch);
+        },
+        logout: () => {
+          logout()(dispatch);
         }
       },
       modal: {
-        handleModalShow: (title, content) => {
-          handleModalShow(title, content)(dispatch)
+        handleModalShow: (title, content, path) => {
+          handleModalShow(title, content, path)(dispatch)
         },
-        handleModalClose: () => {
-          handleModalClose()(dispatch)
+        handleModalClose: (path) => {
+          handleModalClose(path)(dispatch)
         }
       }
     }

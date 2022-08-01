@@ -4,21 +4,23 @@ const initialState = {
   globalModal: {
     show: false,
     title: "",
-    content: ""
+    content: "",
+    path: "",
   }
 }
 
 const modalReducer = (state = initialState, action) => {
   switch (action.type) {
     case ACTIONS.MODAL.SHOW_MODAL:
-      const {title, content} = action.payload
+      const {title, content, path} = action.payload
 
       state = {
         ...state,
         globalModal: {
           show: true,
           title: title,
-          content: content
+          content: content,
+          path: path
         }
       }
       break;
@@ -29,9 +31,11 @@ const modalReducer = (state = initialState, action) => {
         globalModal: {
           show: false,
           title: "",
-          content: ""
+          content: "",
+          path: ""
         }
       }
+      break;
   }
 
   return state;

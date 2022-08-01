@@ -33,7 +33,12 @@ const AppHeader = (props) => {
             </NavDropdown>
           </Nav>
           <Nav>
-            {isLogin ? (<MyNavLink path={"/home"} text={"Hello " + currentUser.username}/>) : (
+            {isLogin ? (
+              <>
+                <MyNavLink path={"/home"} text={"Hello " + currentUser.username}/>
+                <MyNavLink path={"/logout"} text={"Logout"}/>
+              </>
+            ) : (
               <>
                 <MyNavLink path={"/register"} text={"Register"}/>
                 <MyNavLink path={"/login"} text={"Login"}/>

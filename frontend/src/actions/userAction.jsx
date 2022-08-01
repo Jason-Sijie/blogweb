@@ -27,9 +27,18 @@ export const acquireJwtCredentials = (username, password) => dispatch => {
     dispatch({
       type: ACTIONS.USER.LOGIN
     })
-    dispatch(push("/"))
+    dispatch({
+      type: ACTIONS.MODAL.SHOW_MODAL,
+      payload: {
+        title: "Login Succeeded",
+        content: "",
+        path: "/"
+      }
+    })
+
   }).catch(error => {
     console.log(error.response)
+
     dispatch({
       type: ACTIONS.MODAL.SHOW_MODAL,
       payload: {
@@ -64,4 +73,35 @@ export const acquireCurrentUserDetails = (token) => dispatch => {
       },
     })
   })
+}
+
+export const logout = () => dispatch => {
+  console.log("Start logging out")
+  let token = localStorage.getItem("token")
+  console.log("current token: " + token)
+
+  if (token == null || token === "") {
+    dispatch({
+      type: ACTIONS.MODAL.SHOW_MODAL,
+      payload: {
+        title: "Logout Failed",
+        content: "You must logged in first",
+        path: "/"
+      }
+    })
+  } else {
+    dispatch({
+      type: ACTIONS.USER.LOGOUT
+    })
+
+    dispatch({
+      type: ACTIONS.MODAL.SHOW_MODAL,
+      payload: {
+        title: "Logout Succeeded",
+        path: "/"
+      }
+    })
+  }
+
+
 }

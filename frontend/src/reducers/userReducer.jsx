@@ -44,11 +44,18 @@ const userReducer = (state = initialState, action) => {
       break;
 
     case ACTIONS.USER.LOGOUT:
-      localStorage.setItem('token', null);
+      localStorage.removeItem('token');
 
       state = {
         ...state,
-        isLogin: false
+        isLogin: false,
+        token: {
+          content: "",
+          type: "",
+          expireTime: 0,
+          startTime: 0,
+        },
+        currentUser: {},
       }
       break;
   }

@@ -7,7 +7,6 @@ import HomePage from "../components/stateless/home/HomePage";
 import BlogListPage from "../components/stateless/blog/BlogListPage";
 import UserHomePage from "../components/stateless/user/UserHomePage";
 import LogoutPage from "../components/stateless/login/LogoutPage";
-import {handleModalShow} from "../actions/modalAction";
 
 export function AppRoutes(props){
   return (

@@ -3,14 +3,12 @@ import { createRouterReducer, createRouterMiddleware } from '@lagunovsky/redux-r
 import thunk from "redux-thunk";
 import logger from "redux-logger";
 
-import blogReducer  from "./reducers/blogReducer.jsx";
 import userReducer from "./reducers/userReducer";
 import modalReducer from "./reducers/modalReducer";
 import {browserHistory} from "./utils/history";
 
 const store = createStore(combineReducers({
   router: createRouterReducer(browserHistory),
-  blogReducer: blogReducer,
   userReducer: userReducer,
   modalReducer: modalReducer
 }), {}, applyMiddleware(

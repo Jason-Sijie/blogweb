@@ -11,7 +11,7 @@ import java.util.Date;
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
     // business logic id
     @Column(name = "cid", length = 36, nullable = false, unique = true)

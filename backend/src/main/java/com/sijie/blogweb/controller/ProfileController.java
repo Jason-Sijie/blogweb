@@ -14,26 +14,30 @@ import com.sijie.blogweb.security.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.HashMap;
+
+import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
+
 
 @RestController
-@RequestMapping(value = "/profiles")
 public class ProfileController {
     private static final Logger logger = LoggerFactory.getLogger(ProfileController.class);
 
     @Autowired
     private ProfileRepository profileRepository;
 
-    @PostMapping(value = "", consumes = {"application/json"})
+    @PostMapping(value = "/users/profiles", consumes = {"application/json"})
     @Transactional(isolation = Isolation.SERIALIZABLE)
     @RedisTransaction(type = RedisTransactionType.ReadThenWrite)
     public Profile createNewProfile(@RequestBody Profile profile) {
         CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails != null) {
-            profile.setUserId(userDetails.getUid());
+            profile.setUserId(userDetails.getId());
         } else {
             throw new UserCredentialsAbsenceException("You must log in before creating a new profile");
         }
@@ -50,13 +54,13 @@ public class ProfileController {
         return profile;
     }
 
-    @PutMapping(value = "/{id}", consumes = {"application/json"})
+    @PutMapping(value = "/users/{id}/profiles", consumes = {"application/json"})
     @Transactional(isolation = Isolation.SERIALIZABLE)
     @RedisTransaction(type = RedisTransactionType.ReadThenWrite)
-    public Profile updateProfile(@PathVariable("id") String userId, @RequestBody Profile inputProfile) {
+    public Profile updateProfile(@PathVariable("id") Long userId, @RequestBody Profile inputProfile) {
         CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails != null) {
-            inputProfile.setUserId(userDetails.getUid());
+            inputProfile.setUserId(userDetails.getId());
         } else {
             throw new UserCredentialsAbsenceException("You must be logged in to update your profile");
         }
@@ -73,28 +77,28 @@ public class ProfileController {
         return internalProfile;
     }
 
-    @GetMapping(value = "/{id}")
-    @Transactional(readOnly = true)
+    @GetMapping(value = "/users/{id}/profiles")
+    @Transactional(isolation = READ_COMMITTED)
     @RedisTransaction(type = RedisTransactionType.ReadOnly)
-    public Profile getProfileById(@PathVariable("id") String userId) {
+    public Profile getProfileById(@PathVariable("id") Long userId) {
         Profile profile = profileRepository.getProfile(userId);
         if (profile == null) {
             throw new ResourceNotFoundException("Profile with user id: " + userId + " not found");
         }
 
-        return profile;
+        return transformToExternalProfile(profile);
     }
 
-    @GetMapping(value = "", params = {"userId"})
-    @Transactional(readOnly = true)
+    @GetMapping(value = "/users/profiles", params = {"userId"})
+    @Transactional(isolation = READ_COMMITTED)
     @RedisTransaction(type = RedisTransactionType.ReadOnly)
-    public Profile getProfileByUserId(@RequestParam String userId) {
+    public Profile getProfileByUserId(@RequestParam Long userId) {
         Profile profile = profileRepository.getProfile(userId);
         if (profile == null) {
             throw new ResourceNotFoundException("Profile with user id: " + userId + " not found");
         }
 
-        return profile;
+        return transformToExternalProfile(profile);
     }
 
     private void validateNewProfile(Profile profile) {
@@ -125,5 +129,12 @@ public class ProfileController {
 
         validateNewProfile(internalProfile);
         return internalProfile;
+    }
+
+    private Profile transformToExternalProfile(Profile profile) {
+        if (profile.getLinks() == null) {
+            profile.setLinks(new HashMap<>());
+        }
+        return profile;
     }
 }

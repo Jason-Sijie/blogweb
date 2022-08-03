@@ -6,7 +6,7 @@ import java.util.Map;
 
 @Data
 public class Profile {
-    private String userId;
+    private Long userId;
     private String name;
     private String aboutMe;
     private String email;

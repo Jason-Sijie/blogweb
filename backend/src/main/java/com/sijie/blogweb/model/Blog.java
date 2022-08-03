@@ -1,7 +1,10 @@
 package com.sijie.blogweb.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -10,11 +13,14 @@ import java.util.Set;
 @Entity
 @Table(name = "blog", schema = "blog_web")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Blog {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+    private Long id;
 
     // business logic id
     @Column(name = "bid", length = 36, nullable = false, unique = true)
@@ -30,12 +36,12 @@ public class Blog {
     private String content;
 
     @Column(name = "likes", nullable = false)
-    private long likes;
+    private Long likes;
 
     @Column(name = "views", nullable = false)
-    private long views;
+    private Long views;
 
-    @Column(name = "author_id", length = 36, nullable = true)
+    @Column(name = "author_id", length = 36, nullable = false)
     private String authorId;
 
     @Column(name = "category_id", length = 36, nullable = true)
@@ -58,7 +64,7 @@ public class Blog {
     )
     private Set<Tag> tags;
 
-    @ManyToMany(fetch = FetchType.EAGER)
+    @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
             schema = "blog_web",
             name = "blog_like",
@@ -67,4 +73,5 @@ public class Blog {
     )
     @JsonIgnore
     private Set<User> likedUsers;
+
 }

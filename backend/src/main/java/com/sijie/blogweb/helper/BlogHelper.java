@@ -81,8 +81,8 @@ public class BlogHelper {
         }
 
         newBlog.setBid(UUID.randomUUID().toString());
-        newBlog.setViews(0);
-        newBlog.setLikes(0);
+        newBlog.setViews(0l);
+        newBlog.setLikes(0l);
         Date now = new Date();
         newBlog.setGmtCreate(now);
         newBlog.setGmtUpdate(now);

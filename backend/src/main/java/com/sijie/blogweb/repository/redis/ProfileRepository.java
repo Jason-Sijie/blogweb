@@ -4,5 +4,5 @@ import com.sijie.blogweb.model.Profile;
 
 public interface ProfileRepository {
     public void setProfile(Profile profile);
-    public Profile getProfile(String userId);
+    public Profile getProfile(Long userId);
 }

@@ -5,7 +5,9 @@ import {Link} from "react-router-dom";
  * @param props : {
  *   logout : () => {}
  *   currentUser : {
- *     username : ""
+ *     username : "",
+ *     id : "",
+ *     uid : ""
  *   }
  * }
  * @returns {JSX.Element}

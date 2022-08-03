@@ -3,9 +3,8 @@ import {Route, Routes} from "react-router-dom";
 
 import BlogDetailPage from "../components/stateless/blog/BlogDetailPage";
 import LoginPage from "../components/stateless/login/LoginPage";
-import HomePage from "../components/stateless/home/HomePage";
+import UserHomePage from "../components/stateless/home/UserHomePage";
 import BlogListPage from "../components/stateless/blog/BlogListPage";
-import UserHomePage from "../components/stateless/user/UserHomePage";
 import LogoutPage from "../components/stateless/login/LogoutPage";
 
 export function AppRoutes(props){
@@ -28,11 +27,11 @@ export function AppRoutes(props){
                     currentUser={props.user.currentUser}
                     handleModalShow={props.action.modal.handleModalShow}  />
       }/>
-      <Route path="/home" element={
-        <HomePage {...props}/>
-      }/>
+      {/*<Route path="/home" element={*/}
+      {/*  <UserHomePage {...props}/>*/}
+      {/*}/>*/}
       <Route path="/home/users/:id" element={
-        <UserHomePage />
+        <UserHomePage currentUser={props.user.currentUser} />
       }/>
     </Routes>
   )

@@ -3,7 +3,11 @@ import BlogDetail from "../../stateful/BlogDetail";
 
 /**
  * @param props : {
- *   currentUser : {}
+ *   currentUser : {
+ *     username : "",
+ *     id : "",
+ *     uid : ""
+ *   }
  * }
  * @returns {JSX.Element}
  * @constructor

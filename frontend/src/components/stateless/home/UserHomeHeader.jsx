@@ -11,7 +11,7 @@ import "../../../styles/home_style.css";
  * @returns {JSX.Element}
  * @constructor
  */
-const HomeHeader = (props) => {
+const UserHomeHeader = (props) => {
   return (
     <Container fluid className="home_header" style={{backgroundImage: `url(/images/home_header_background.jpg)`}}>
       <Row className="home_header_title">
@@ -24,4 +24,4 @@ const HomeHeader = (props) => {
   )
 }
 
-export default HomeHeader;
+export default UserHomeHeader;

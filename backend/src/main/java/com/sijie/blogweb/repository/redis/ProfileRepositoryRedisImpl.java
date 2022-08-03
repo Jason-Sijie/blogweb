@@ -30,7 +30,7 @@ public class ProfileRepositoryRedisImpl implements ProfileRepository{
     }
 
     @Override
-    public Profile getProfile(String userId) {
+    public Profile getProfile(Long userId) {
         String key = PROFILE_KEY_PREFIX + userId;
         String profileInJson = stringRedisTemplate.opsForValue().get(key);
 

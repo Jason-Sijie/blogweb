@@ -5,8 +5,12 @@ import com.sijie.blogweb.exception.ResourceNotFoundException;
 import com.sijie.blogweb.exception.UserCredentialsAbsenceException;
 import com.sijie.blogweb.exception.UserUnauthorziedException;
 import com.sijie.blogweb.helper.AuthPrincipalHelper;
+import com.sijie.blogweb.helper.BlogHelper;
 import com.sijie.blogweb.helper.UserHelper;
+import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.model.User;
+import com.sijie.blogweb.repository.BlogRepository;
+import com.sijie.blogweb.repository.TupleWrapper;
 import com.sijie.blogweb.repository.UserRepository;
 import com.sijie.blogweb.security.CustomUserDetails;
 import org.slf4j.Logger;
@@ -19,9 +23,10 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.HashSet;
-import java.util.Optional;
-import java.util.Set;
+import javax.persistence.Tuple;
+import java.math.BigInteger;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -30,20 +35,24 @@ public class UserController {
     private static Integer DEFAULT_PAGE_SIZE = 20;
 
     private final UserRepository userRepository;
+    private final BlogRepository blogRepository;
     private final UserHelper userHelper;
+    private final BlogHelper blogHelper;
 
     @Autowired
     public UserController(UserRepository userRepository,
-                          UserHelper userHelper) {
+                          BlogRepository blogRepository,
+                          UserHelper userHelper,
+                          BlogHelper blogHelper) {
         this.userRepository = userRepository;
+        this.blogRepository = blogRepository;
         this.userHelper = userHelper;
+        this.blogHelper = blogHelper;
     }
 
     @PostMapping("/guest")
     @Transactional(isolation = Isolation.SERIALIZABLE)
     public User registerGuestUser(@RequestBody User inputUser) {
-        logger.info("Start registerGuestUser");
-
         Set<String> roles = new HashSet<>();
         roles.add("GUEST");
 
@@ -58,8 +67,6 @@ public class UserController {
     @Transactional(isolation = Isolation.SERIALIZABLE)
     @PreAuthorize("hasAnyAuthority('USER_ALL', 'USER_ADMIN_CREATE')")
     public User registerAdminUser(@RequestBody User inputUser) {
-        logger.info("Start registerAdminUser");
-
         Set<String> roles = new HashSet<>();
         roles.add("ADMIN");
 
@@ -74,8 +81,6 @@ public class UserController {
     @Transactional(readOnly = true)
     public Page<User> getAllUsers(@RequestParam(name = "page", required = false) Integer page,
                                   @RequestParam(name = "size", required = false) Integer size) {
-        logger.info("Start getAllUsers");
-
         page = MoreObjects.firstNonNull(page, 0);
         size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
 
@@ -86,11 +91,9 @@ public class UserController {
         });
     }
 
-    @GetMapping(value = "", params = {"id"})
+    @GetMapping(value = "/{id}")
     @Transactional(readOnly = true)
-    public User getUserInfoById(@RequestParam(name = "id") Long id) {
-        logger.info("Start getUserInfoById");
-
+    public User getUserInfoById(@PathVariable(name = "id") Long id) {
         User internalUser = userRepository.findById(id).orElse(null);
         if (internalUser == null) {
             throw new ResourceNotFoundException("User " + id + " not found");
@@ -102,8 +105,6 @@ public class UserController {
     @GetMapping(value = "", params = {"username"})
     @Transactional(readOnly = true)
     public User getUserInfoByUsername(@RequestParam(name = "username", required = false) String username) {
-        logger.info("Start getUserInfoByUsername");
-
         User internalUser = userRepository.findByUsername(username);
         if (internalUser == null) {
             throw new ResourceNotFoundException("User " + username + " not found");
@@ -115,8 +116,6 @@ public class UserController {
     @GetMapping(value = "", params = {"uid"})
     @Transactional(readOnly = true)
     public User getUserInfoByUid(@RequestParam(name = "uid", required = false) String uid) {
-        logger.info("Start getUserInfoByUid");
-
         User internalUser = userRepository.findByUid(uid);
         if (internalUser == null) {
             throw new ResourceNotFoundException("User " + uid + " not found");
@@ -125,16 +124,14 @@ public class UserController {
         return userHelper.toExternalUser(internalUser);
     }
 
-    @GetMapping(value = "/{id}")
+    @GetMapping(value = "/{id}/details")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER_ALL', 'USER_GET')")
     public User getUserDetailsById(@PathVariable("id") long id) {
-        logger.info("Start getUserDetailsById");
-
         CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails == null) {
             throw new UserCredentialsAbsenceException("User credentials are required to get user details");
-        } else if (userDetails.getId() != id){
+        } else if (userDetails.getId() != id) {
             throw new UserUnauthorziedException("Not authorized to get the user details");
         }
 
@@ -150,12 +147,10 @@ public class UserController {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER_ALL', 'USER_GET')")
     public User getUserDetailsByUid(@RequestParam("uid") String uid) {
-        logger.info("Start getUserInfoByUid");
-
         CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails == null) {
             throw new UserCredentialsAbsenceException("User credentials are required to get user details");
-        } else if (!userDetails.getUid().equals(uid)){
+        } else if (!userDetails.getUid().equals(uid)) {
             throw new UserUnauthorziedException("Not authorized to get the user details");
         }
 
@@ -169,14 +164,12 @@ public class UserController {
 
     @GetMapping(value = "/details", params = {"username"})
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyAuthority('USER_ALL', 'USER_GET') or principal.username == #username")
+    @PreAuthorize("hasAnyAuthority('USER_ALL', 'USER_GET')")
     public User getUserDetailsByUsername(@RequestParam("username") String username) {
-        logger.info("Start getUserInfoByUsername");
-
         CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails == null) {
             throw new UserCredentialsAbsenceException("User credentials are required to get user details");
-        } else if (!userDetails.getUsername().equals(username)){
+        } else if (!userDetails.getUsername().equals(username)) {
             throw new UserUnauthorziedException("Not authorized to get the user details");
         }
 
@@ -192,8 +185,6 @@ public class UserController {
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER_ALL', 'USER_GET')")
     public User getCurrentUserDetails() {
-        logger.info("Start getCurrentUserDetails");
-
         CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails == null) {
             throw new UserCredentialsAbsenceException("User credentials are required to get current user details");
@@ -205,5 +196,28 @@ public class UserController {
         }
 
         return userHelper.toExternalUserDetails(internalUser);
+    }
+
+    @GetMapping(value = "/{id}/likedBlogs")
+    @Transactional(readOnly = true)
+    @PreAuthorize("hasAnyAuthority('USER_ALL', 'USER_GET')")
+    public List<Blog> getUserLikedBlogsById(@PathVariable(name = "id") Long id) {
+        Optional<User> internalUserOptional = userRepository.findById(id);
+        if (!internalUserOptional.isPresent()) {
+            throw new ResourceNotFoundException("User " + id + " not found");
+        }
+        User internalUser = internalUserOptional.get();
+
+        List<Tuple> tuples = userRepository.findLikedBlogsByUserId(internalUser.getId());
+        List<Blog> likedBlogs = new ArrayList<>();
+        for (Tuple tuple : tuples) {
+            TupleWrapper tupleWrapper = new TupleWrapper(tuple);
+            Blog blog = tupleWrapper.toObject(Blog.class);
+            if (blog != null) {
+                likedBlogs.add(blog);
+            }
+        }
+
+        return likedBlogs;
     }
 }

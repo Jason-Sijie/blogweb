@@ -6,12 +6,16 @@ import BlogSearch from "../../stateful/BlogSearch";
 
 /**
  * @param props : {
- *   authorId : "",
+ *   currentUser : {
+ *     username : "",
+ *     id : "",
+ *     uid : ""
+ *   }
  * }
  * @returns {JSX.Element}
  * @constructor
  */
-const HomeContent = (props) => {
+const UserHomeContent = (props) => {
   return (
     <Container className={"shadow-lg p-3 pt-5 mb-5 bg-white rounded"} style={{minHeight: "800px"}}>
       <BlogSearch pageSize={2}
@@ -21,4 +25,4 @@ const HomeContent = (props) => {
   )
 }
 
-export default HomeContent;
+export default UserHomeContent;

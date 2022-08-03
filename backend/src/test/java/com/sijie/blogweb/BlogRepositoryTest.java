@@ -38,10 +38,10 @@ class BlogRepositoryTest {
 		blog.setBid("1");
 		blog.setTitle("foo");
 		blog.setDescription("foo");
-		blog.setViews(0);
+		blog.setViews(0l);
 		blog.setGmtCreate(new Date());
 		blog.setGmtUpdate(new Date());
-		blog.setLikes(0);
+		blog.setLikes(0l);
 		blog.setAuthorId("fooId");
 		blog.setCategoryId("fooId");
 

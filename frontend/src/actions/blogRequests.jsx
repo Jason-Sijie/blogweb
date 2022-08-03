@@ -1,7 +1,6 @@
 import {stringify} from "qs";
 import {api} from "../config";
 import axios from "axios";
-import {ACTIONS} from "../constants/actions";
 
 export const getBlogsWithParams = (params, successCallback = (data) => {}, failureCallback = (error) => {}) => {
   params = stringify(params, {arrayFormat: "repeat", skipNulls: true});
@@ -13,6 +12,7 @@ export const getBlogsWithParams = (params, successCallback = (data) => {}, failu
       successCallback(promise.data)
     }).catch(error => {
       console.log(error)
+      failureCallback(error.response)
     })
 }
 
@@ -25,6 +25,7 @@ export const getBlogDetailById = (id, successCallback = (data) => {}, failureCal
     successCallback(promise.data)
   }).catch(error => {
     console.log(error)
+    failureCallback(error.response)
   })
 }
 
@@ -47,7 +48,7 @@ export const updateBlogContent = (blog, successCallback = (data) => {}, failureC
   }).then(promise => {
     successCallback(promise.data)
   }).catch(error => {
-    console.log(error.response)
-    failureCallback(error)
+    console.log(error)
+    failureCallback(error.response)
   })
 }

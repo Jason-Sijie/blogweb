@@ -11,4 +11,6 @@ public class Profile {
     private String aboutMe;
     private String email;
     private Map<String, String> links;
+    private Long totalViews;
+    private Long totalLikes;
 }

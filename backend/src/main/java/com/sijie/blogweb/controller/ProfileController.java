@@ -6,7 +6,11 @@ import com.sijie.blogweb.exception.ResourceAlreadyExistsException;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
 import com.sijie.blogweb.exception.UserCredentialsAbsenceException;
 import com.sijie.blogweb.helper.AuthPrincipalHelper;
+import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.model.Profile;
+import com.sijie.blogweb.model.User;
+import com.sijie.blogweb.repository.BlogRepository;
+import com.sijie.blogweb.repository.UserRepository;
 import com.sijie.blogweb.repository.redis.ProfileRepository;
 import com.sijie.blogweb.repository.redis.transaction.RedisTransaction;
 import com.sijie.blogweb.repository.redis.transaction.RedisTransactionType;
@@ -20,6 +24,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
+import java.util.List;
+import java.util.Optional;
 
 import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
 
@@ -30,6 +36,10 @@ public class ProfileController {
 
     @Autowired
     private ProfileRepository profileRepository;
+    @Autowired
+    private BlogRepository blogRepository;
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping(value = "/users/profiles", consumes = {"application/json"})
     @Transactional(isolation = Isolation.SERIALIZABLE)
@@ -85,6 +95,21 @@ public class ProfileController {
         if (profile == null) {
             throw new ResourceNotFoundException("Profile with user id: " + userId + " not found");
         }
+
+        Optional<User> user = userRepository.findById(userId);
+        if (!user.isPresent()) {
+            throw new ResourceNotFoundException("User " + userId + " not found");
+        }
+
+        List<Blog> blogs = blogRepository.findAllByAuthorId(user.get().getUid());
+        long totalViews = 0;
+        long totalLikes = 0;
+        for (Blog blog : blogs) {
+            totalViews += blog.getViews();
+            totalLikes += blog.getLikes();
+        }
+        profile.setTotalLikes(totalLikes);
+        profile.setTotalViews(totalViews);
 
         return transformToExternalProfile(profile);
     }

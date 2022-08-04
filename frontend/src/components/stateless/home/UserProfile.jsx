@@ -6,7 +6,9 @@ import {link} from "@uiw/react-md-editor";
  *   name : "",
  *   email : "",
  *   aboutMe: "",
- *   links: {}
+ *   links: {},
+ *   totalViews: num,
+ *   totalLikes: num
  * }
  * @returns {JSX.Element}
  * @constructor
@@ -41,7 +43,7 @@ const UserProfile = (props) => {
     <Card className={"shadow p-3 mb-5 bg-white rounded"}>
       <Card.Img className={"home_profile_avatar"} variant="top" src="/images/profile_avatar.jpg" />
       <Card.Body>
-        <Card.Title as={"h2"}>
+        <Card.Title as={"h1"}>
           {props.name}
         </Card.Title>
 
@@ -61,7 +63,7 @@ const UserProfile = (props) => {
               Blog Views:
             </Col>
             <Col xs={6} className={"text-center"}>
-              100
+              {props.totalViews}
             </Col>
           </Row>
         </Card.Text>
@@ -73,7 +75,7 @@ const UserProfile = (props) => {
               Blog Likes:
             </Col>
             <Col xs={6} className={"text-center"}>
-              100
+              {props.totalLikes}
             </Col>
           </Row>
         </Card.Text>

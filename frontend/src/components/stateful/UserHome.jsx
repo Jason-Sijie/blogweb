@@ -4,6 +4,7 @@ import UserHomeHeader from "../stateless/home/UserHomeHeader";
 import UserProfile from "../stateless/home/UserProfile";
 import UserHomeContent from "../stateless/home/UserHomeContent";
 import {getProfileById} from "../../actions/profileRequest";
+import LoadingSpinner from "../stateless/util/LoadingSpinner";
 
 
 /**
@@ -40,18 +41,6 @@ class UserHome extends Component {
     })
   }
 
-  loadingPage = () => {
-    return (
-      <Container style={{padding: "100px"}}>
-        <Row style={{justifyContent: "center"}}>
-          <Col xs={"3"}>
-            <Spinner animation="border" size="large" style={{width: "150px", height: "150px"}} />
-          </Col>
-        </Row>
-      </Container>
-    )
-  }
-
   errorPage = () => {
     return (
       <Container className={"shadow"} style={{padding: "20px"}}>
@@ -63,7 +52,7 @@ class UserHome extends Component {
 
   render() {
     if (this.state.loading === true) {
-      return this.loadingPage()
+      return <LoadingSpinner/>
     } else if (this.state.error != null) {
       return this.errorPage()
     } else {

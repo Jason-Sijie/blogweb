@@ -7,6 +7,7 @@ import BlogHeader from "../stateless/blog/BlogHeader";
 import TagList from "../stateless/util/TagList";
 import TagListToasts from "../stateless/util/TagListToasts";
 import {getBlogDetailById, updateBlogContent} from "../../actions/blogRequests";
+import LoadingSpinner from "../stateless/util/LoadingSpinner";
 
 /**
  * @Params props: {
@@ -28,7 +29,8 @@ class BlogDetail extends Component {
         authorId: ""
       },
       newTag: "",
-      isEdit: false
+      isEdit: false,
+      loading: true
     }
     this.refreshBlogDetail()
   }
@@ -68,6 +70,11 @@ class BlogDetail extends Component {
         updatedTitle: data.title || "",
         updatedDescription: data.description || "",
         updatedTags: data.tags || [],
+        loading: false
+      })
+    }, (error) => {
+      this.setState({
+        loading: false
       })
     });
   }
@@ -212,10 +219,10 @@ class BlogDetail extends Component {
           <Card.Header>
             <Row style={{justifyContent: "space-between"}}>
               <Col xs={"auto"}>
-                Create Time: <div style={{color:"grey"}}>{new Date(this.state.blog.gmtCreate).toLocaleString()}</div>
+                Create Time: <div style={{color:"grey"}}>{new Date(this.state.blog.gmtCreate).toDateString()}</div>
               </Col>
               <Col xs={"auto"}>
-                Last Modified: <div style={{color:"grey"}}>{new Date(this.state.blog.gmtUpdate).toLocaleString()}</div>
+                Last Modified: <div style={{color:"grey"}}>{new Date(this.state.blog.gmtUpdate).toDateString()}</div>
               </Col>
             </Row>
           </Card.Header>
@@ -226,13 +233,17 @@ class BlogDetail extends Component {
   }
 
   render() {
-    return(
-      <Container>
-        <BlogHeader {...this.state.blog} />
-        {this.metadataPanel()}
-        {this.blogContent()}
-      </Container>
-    )
+    if (this.state.loading) {
+      return <LoadingSpinner/>
+    } else {
+      return(
+        <Container>
+          <BlogHeader {...this.state.blog} />
+          {this.metadataPanel()}
+          {this.blogContent()}
+        </Container>
+      )
+    }
   }
 }
 

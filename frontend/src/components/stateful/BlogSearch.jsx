@@ -1,8 +1,9 @@
 import React, {Component} from "react";
-import {Container, Row} from "react-bootstrap";
+import {Col, Container, Row, Spinner} from "react-bootstrap";
 import SearchPanel from "./SearchPanel";
 import BlogList from "../stateless/blog/BlogList";
 import {getBlogsWithParams} from "../../actions/blogRequests";
+import LoadingSpinner from "../stateless/util/LoadingSpinner";
 
 /**
  * props : {
@@ -19,7 +20,8 @@ class BlogSearch extends Component {
       currentPage: 0,
       authorId: props.authorId || null,
       tagNames: null,
-      blogTitle: null
+      blogTitle: null,
+      loading: true
     }
 
     getBlogsWithParams({
@@ -29,7 +31,12 @@ class BlogSearch extends Component {
       this.setState({
         content : data.content,
         totalPages : data.totalPages,
-        currentPage : data.number
+        currentPage : data.number,
+        loading: false
+      })
+    }, (error) => {
+      this.setState({
+        loading: false
       })
     })
   }
@@ -60,22 +67,26 @@ class BlogSearch extends Component {
   }
 
   render() {
-    return (
-      <Container>
-        <SearchPanel getBlogsWithSearchParams={this.getBlogsWithSearchParams}
-                     updateSearchParams={this.updateSearchParams}
-                     pageSize={this.props.pageSize}
-                     searchButtonText={this.props.searchButtonText || "Search Blogs"}
-                     searchPanelTitle={this.props.searchPanelTitle || "Search Panel"} />
+    if (this.state.loading) {
+      return <LoadingSpinner />
+    } else {
+      return (
+        <Container>
+          <SearchPanel getBlogsWithSearchParams={this.getBlogsWithSearchParams}
+                       updateSearchParams={this.updateSearchParams}
+                       pageSize={this.props.pageSize}
+                       searchButtonText={this.props.searchButtonText || "Search Blogs"}
+                       searchPanelTitle={this.props.searchPanelTitle || "Search Panel"} />
 
-        <BlogList content={this.state.content}
-                  currentPage={this.state.currentPage}
-                  totalPages={this.state.totalPages}
-                  pageSize={this.props.pageSize}
-                  getBlogsWithSearchParams={this.getBlogsWithSearchParams}
-        />
-      </Container>
-    )
+          <BlogList content={this.state.content}
+                    currentPage={this.state.currentPage}
+                    totalPages={this.state.totalPages}
+                    pageSize={this.props.pageSize}
+                    getBlogsWithSearchParams={this.getBlogsWithSearchParams}
+          />
+        </Container>
+      )
+    }
   }
 }
 

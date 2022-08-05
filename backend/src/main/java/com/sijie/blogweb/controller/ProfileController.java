@@ -91,6 +91,17 @@ public class ProfileController {
     @Transactional(isolation = READ_COMMITTED)
     @RedisTransaction(type = RedisTransactionType.ReadOnly)
     public Profile getProfileById(@PathVariable("id") Long userId) {
+        return getExternalProfileFromUserId(userId);
+    }
+
+    @GetMapping(value = "/users/profiles", params = {"userId"})
+    @Transactional(isolation = READ_COMMITTED)
+    @RedisTransaction(type = RedisTransactionType.ReadOnly)
+    public Profile getProfileByUserId(@RequestParam Long userId) {
+        return getExternalProfileFromUserId(userId);
+    }
+
+    private Profile getExternalProfileFromUserId(Long userId) {
         Profile profile = profileRepository.getProfile(userId);
         if (profile == null) {
             throw new ResourceNotFoundException("Profile with user id: " + userId + " not found");
@@ -98,7 +109,7 @@ public class ProfileController {
 
         Optional<User> user = userRepository.findById(userId);
         if (!user.isPresent()) {
-            throw new ResourceNotFoundException("User " + userId + " not found");
+            throw new ResourceNotFoundException("User with id: " + userId + " not found");
         }
 
         List<Blog> blogs = blogRepository.findAllByAuthorId(user.get().getUid());
@@ -110,18 +121,6 @@ public class ProfileController {
         }
         profile.setTotalLikes(totalLikes);
         profile.setTotalViews(totalViews);
-
-        return transformToExternalProfile(profile);
-    }
-
-    @GetMapping(value = "/users/profiles", params = {"userId"})
-    @Transactional(isolation = READ_COMMITTED)
-    @RedisTransaction(type = RedisTransactionType.ReadOnly)
-    public Profile getProfileByUserId(@RequestParam Long userId) {
-        Profile profile = profileRepository.getProfile(userId);
-        if (profile == null) {
-            throw new ResourceNotFoundException("Profile with user id: " + userId + " not found");
-        }
 
         return transformToExternalProfile(profile);
     }

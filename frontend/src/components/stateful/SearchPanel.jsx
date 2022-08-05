@@ -37,7 +37,10 @@ class SearchPanel extends Component {
       return tag.name !== target
     })
 
-    this.setState({tags: [...newTags, {"name": target}]});
+    this.setState({
+      tags: [...newTags, {"name": target}],
+      newTag: ""
+    });
   }
 
   changeStateOnEvent = (key) => {
@@ -91,6 +94,7 @@ class SearchPanel extends Component {
                   <Row>
                     <Col xs={"5"}>
                       <Form.Control type="text"
+                                    value={this.state.newTag}
                                     onChange={this.changeStateOnEvent("newTag")}/>
                     </Col>
                     <Col xs={"3"}>
@@ -108,7 +112,7 @@ class SearchPanel extends Component {
                 </Row>
 
                 <Row className={"pe-3 ps-3"}>
-                  <Button style={{width: "20%"}}
+                  <Button style={{width: "100%"}}
                           variant={"primary"}
                           onClick={this.performSearch} >
                     {this.props.searchButtonText}

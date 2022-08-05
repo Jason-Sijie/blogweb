@@ -12,7 +12,7 @@ export const getBlogsWithParams = (params, successCallback = (data) => {}, failu
       successCallback(promise.data)
     }).catch(error => {
       console.log(error)
-      failureCallback(error.response)
+      failureCallback(error.response || defaultErrorResponse)
     })
 }
 
@@ -25,7 +25,7 @@ export const getBlogDetailById = (id, successCallback = (data) => {}, failureCal
     successCallback(promise.data)
   }).catch(error => {
     console.log(error)
-    failureCallback(error.response)
+    failureCallback(error.response || defaultErrorResponse)
   })
 }
 
@@ -49,6 +49,37 @@ export const updateBlogContent = (blog, successCallback = (data) => {}, failureC
     successCallback(promise.data)
   }).catch(error => {
     console.log(error)
-    failureCallback(error.response)
+    failureCallback(error.response || defaultErrorResponse)
   })
+}
+
+export const createBlog = (blog, successCallback = (data) => {}, failureCallback = (error) => {}) => {
+  const url = api.blogWeb.blog;
+  let headers = {
+    "Content-Type": "application/json"
+  };
+
+  if (localStorage.getItem("token") != null) {
+    const token = JSON.parse(localStorage.getItem("token"));
+    headers = {
+      ...headers,
+      "Authorization": token.type + " " + token.content
+    }
+  }
+
+  axios.post(url, blog,{
+    headers: headers
+  }).then(promise => {
+    successCallback(promise.data)
+  }).catch(error => {
+    console.log(error)
+    failureCallback(error.response || defaultErrorResponse)
+  })
+}
+
+
+const defaultErrorResponse = {
+  data: {
+    message: "Sorry! The service is now unavailable."
+  }
 }

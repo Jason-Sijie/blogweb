@@ -1,5 +1,6 @@
 import {Component} from "react";
-import {Col, Container, Row, Spinner} from "react-bootstrap";
+import {Col, Container, Row} from "react-bootstrap";
+import {Navigate} from 'react-router-dom';
 import UserHomeHeader from "../stateless/home/UserHomeHeader";
 import UserProfile from "../stateless/home/UserProfile";
 import UserHomeContent from "../stateless/home/UserHomeContent";
@@ -14,7 +15,8 @@ import LoadingSpinner from "../stateless/util/LoadingSpinner";
  *     username : "",
  *     id : "",
  *     uid : ""
- *   }
+ *   },
+ *   handleModalShow : (title, content, path) => {}
  * }
  */
 class UserHome extends Component {
@@ -41,20 +43,11 @@ class UserHome extends Component {
     })
   }
 
-  errorPage = () => {
-    return (
-      <Container className={"shadow"} style={{padding: "20px"}}>
-        <h2>ERROR {this.state.error.status || ""}</h2>
-        <h3>{this.state.error.message || "Cannot load page"}</h3>
-      </Container>
-    )
-  }
-
   render() {
     if (this.state.loading === true) {
       return <LoadingSpinner/>
     } else if (this.state.error != null) {
-      return this.errorPage()
+      return <Navigate replace to="/error" state={this.state.error}/>
     } else {
       return(
         <Container fluid style={{margin: 0, padding: 0}}>
@@ -64,7 +57,9 @@ class UserHome extends Component {
               <UserProfile {...this.state.profile}/>
             </Col>
             <Col xs={8} style={{margin: "3% 0%"}}>
-              <UserHomeContent authorId={this.props.currentUser.uid} />
+              <UserHomeContent authorId={this.props.currentUser.uid}
+                               name={this.state.profile.name}
+                               handleModalShow={this.props.handleModalShow}/>
             </Col>
           </Row>
         </Container>

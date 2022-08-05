@@ -32,7 +32,7 @@ export const acquireJwtCredentials = (username, password) => dispatch => {
       payload: {
         title: "Login Succeeded",
         content: "",
-        path: "/"
+        path: "/home"
       }
     })
 
@@ -43,7 +43,7 @@ export const acquireJwtCredentials = (username, password) => dispatch => {
       type: ACTIONS.MODAL.SHOW_MODAL,
       payload: {
         title: "Login Failed",
-        content: error.response.data.message
+        content: error.response != null ? error.response.data.message : defaultErrorMessage
       },
     })
   })
@@ -69,7 +69,7 @@ export const acquireCurrentUserDetails = (token) => dispatch => {
       type: ACTIONS.MODAL.SHOW_MODAL,
       payload: {
         title: "Failed to get current user details",
-        content: error.response.data.message
+        content: error.response != null ? error.response.data.message : defaultErrorMessage
       },
     })
   })
@@ -102,6 +102,6 @@ export const logout = () => dispatch => {
       }
     })
   }
-
-
 }
+
+const defaultErrorMessage = "Sorry! The service is now unavailable."

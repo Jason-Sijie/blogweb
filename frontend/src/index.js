@@ -4,7 +4,7 @@ import {Provider} from "react-redux";
 import {ReduxRouter} from "@lagunovsky/redux-react-router";
 
 import reportWebVitals from './reportWebVitals';
-import App from './containers/App.jsx';
+import App from './components/App.jsx';
 import store from "./store";
 import {browserHistory} from "./utils/history";
 

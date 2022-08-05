@@ -4,9 +4,9 @@ import { connect } from "react-redux";
 import {acquireJwtCredentials, logout} from "../actions/userAction";
 import {handleModalShow, handleModalClose} from "../actions/modalAction";
 
-import AppHeader from "../components/stateless/AppHeader";
+import AppHeader from "./stateless/util/AppHeader";
 import {AppRoutes} from "../utils/routes";
-import GlobalModal from "../components/stateful/GlobalModal";
+import GlobalModal from "./stateful/GlobalModal";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/app_style.css";

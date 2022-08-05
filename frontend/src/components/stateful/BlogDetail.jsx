@@ -8,6 +8,7 @@ import TagList from "../stateless/util/TagList";
 import TagListToasts from "../stateless/util/TagListToasts";
 import {getBlogDetailById, updateBlogContent} from "../../actions/blogRequests";
 import LoadingSpinner from "../stateless/util/LoadingSpinner";
+import {Navigate} from "react-router-dom";
 
 /**
  * @Params props: {
@@ -16,7 +17,8 @@ import LoadingSpinner from "../stateless/util/LoadingSpinner";
  *     id : int,
  *     uid : "",
  *     username : ""
- *   }
+ *   },
+ *   handleModalShow : (title, content, path) => {}
  * }
  */
 class BlogDetail extends Component {
@@ -51,7 +53,10 @@ class BlogDetail extends Component {
       return tag.name !== target
     })
 
-    this.setState({updatedTags: [...newTags, {"name": target}]});
+    this.setState({
+      updatedTags: [...newTags, {"name": target}],
+      newTag: ""
+    });
   }
 
   changeStateOnEvent = (key) => {
@@ -74,7 +79,8 @@ class BlogDetail extends Component {
       })
     }, (error) => {
       this.setState({
-        loading: false
+        loading: false,
+        error: error.data
       })
     });
   }
@@ -87,8 +93,12 @@ class BlogDetail extends Component {
       description: this.state.updatedDescription,
       tags: this.state.updatedTags
     }, (data) => {
-      alert("Updated Successfully")
+      this.props.handleModalShow("Updated Blog Successfully", "Blog Title: " + data.title, "/blogs/" + data.id);
       this.refreshBlogDetail();
+    }, (error) => {
+      console.log(error)
+      let message = error.data != null ? error.data.message : ""
+      this.props.handleModalShow("Failed to update the blog", message, "");
     })
   }
 
@@ -103,7 +113,7 @@ class BlogDetail extends Component {
                             value={this.state.updatedTitle}
                             onChange={this.changeStateOnEvent("updatedTitle")}/>
             </Form.Group>
-            <Form.Group className="mb-3" controlId="blogContent">
+            <Form.Group className="mb-3" controlId="blogDescription">
               <Form.Label>Blog Description</Form.Label>
               <Form.Control as="textarea"
                             rows={3}
@@ -115,6 +125,7 @@ class BlogDetail extends Component {
               <Row>
                 <Col xs={"8"}>
                   <Form.Control type="text"
+                                value={this.state.newTag}
                                 onChange={this.changeStateOnEvent("newTag")}/>
                 </Col>
                 <Col xs={"4"}>
@@ -144,7 +155,7 @@ class BlogDetail extends Component {
         {this.blogMetadataForm(isEdit)}
 
         <Row style={{padding: "30px 30px"}}>
-          {isEdit? (
+          {isEdit ? (
             <MDEditor
               value={this.state.updatedContent}
               onChange={(value) => {this.setState({updatedContent: value})}}
@@ -163,53 +174,45 @@ class BlogDetail extends Component {
   displayEditPanel = () => {
     let shouldDisplay = this.props.currentUser != null && this.props.currentUser.uid === this.state.blog.authorId
 
-    if (shouldDisplay) {
-      return this.editPanel()
-    } else {
-      return (
-        <Card.Body>
-          <Row style={{justifyContent: "space-between"}}>
-            <Col xs={"10"} style={{margin: "10px 0px"}}>
-              <TagList tags={this.state.updatedTags || []} fontSize={"18px"}/>
-            </Col>
-          </Row>
-        </Card.Body>
-      )
-    }
+    return shouldDisplay ? (
+      this.editPanel()
+    ) : (
+      <Card.Body>
+        <Row style={{justifyContent: "space-between"}}>
+          <Col xs={"10"} style={{margin: "10px 0px"}}>
+            <TagList tags={this.state.updatedTags || []} fontSize={"18px"}/>
+          </Col>
+        </Row>
+      </Card.Body>
+    )
   }
 
   editPanel = () => {
-    let isEdit = this.state.isEdit;
-
-    if (isEdit) {
-      return(
-        <Card.Body>
-          <Row style={{justifyContent: "right"}}>
-            <Col xs={"2"} xxl={"1"}>
-              <Button style={{width: "100%"}} variant={"secondary"} onClick={() => {this.setState({isEdit: false})}}>Back</Button>
-            </Col>
-            <Col xs={"2"} xxl={"1"}>
-              <Button style={{width: "100%"}} variant={"primary"} onClick={this.updateBlogContentWithMessage}>
-                Submit
-              </Button>
-            </Col>
-          </Row>
-        </Card.Body>
-      )
-    } else {
-      return (
-        <Card.Body>
-          <Row style={{justifyContent: "space-between"}}>
-            <Col xs={"10"} style={{margin: "10px 0px"}}>
-              <TagList tags={this.state.updatedTags || []} fontSize={"18px"}/>
-            </Col>
-            <Col xs={"2"} xl={"1"} style={{margin: "10px 0px"}}>
-              <Button style={{width: "100%"}} variant={"primary"} onClick={() => {this.setState({isEdit: true})}}>Edit</Button>
-            </Col>
-          </Row>
-        </Card.Body>
-      )
-    }
+    return this.state.isEdit ? (
+      <Card.Body>
+        <Row style={{justifyContent: "right"}}>
+          <Col xs={"2"} xxl={"1"}>
+            <Button style={{width: "100%"}} variant={"secondary"} onClick={() => {this.setState({isEdit: false})}}>Back</Button>
+          </Col>
+          <Col xs={"2"} xxl={"1"}>
+            <Button style={{width: "100%"}} variant={"primary"} onClick={this.updateBlogContentWithMessage}>
+              Submit
+            </Button>
+          </Col>
+        </Row>
+      </Card.Body>
+    ) : (
+      <Card.Body>
+        <Row style={{justifyContent: "space-between"}}>
+          <Col xs={"10"} style={{margin: "10px 0px"}}>
+            <TagList tags={this.state.updatedTags || []} fontSize={"18px"}/>
+          </Col>
+          <Col xs={"2"} xl={"1"} style={{margin: "10px 0px"}}>
+            <Button style={{width: "100%"}} variant={"primary"} onClick={() => {this.setState({isEdit: true})}}>Edit</Button>
+          </Col>
+        </Row>
+      </Card.Body>
+    )
   }
 
   metadataPanel = () => {
@@ -219,10 +222,10 @@ class BlogDetail extends Component {
           <Card.Header>
             <Row style={{justifyContent: "space-between"}}>
               <Col xs={"auto"}>
-                Create Time: <div style={{color:"grey"}}>{new Date(this.state.blog.gmtCreate).toDateString()}</div>
+                Create Time: <div style={{color:"grey"}}>{new Date(this.state.blog.gmtCreate).toLocaleString()}</div>
               </Col>
               <Col xs={"auto"}>
-                Last Modified: <div style={{color:"grey"}}>{new Date(this.state.blog.gmtUpdate).toDateString()}</div>
+                Last Modified: <div style={{color:"grey"}}>{new Date(this.state.blog.gmtUpdate).toLocaleString()}</div>
               </Col>
             </Row>
           </Card.Header>
@@ -235,14 +238,14 @@ class BlogDetail extends Component {
   render() {
     if (this.state.loading) {
       return <LoadingSpinner/>
+    } else if (this.state.error != null) {
+      return <Navigate replace to="/error" state={this.state.error}/>
     } else {
-      return(
-        <Container>
-          <BlogHeader {...this.state.blog} />
-          {this.metadataPanel()}
-          {this.blogContent()}
-        </Container>
-      )
+      return <Container>
+        <BlogHeader {...this.state.blog} />
+        {this.metadataPanel()}
+        {this.blogContent()}
+      </Container>
     }
   }
 }

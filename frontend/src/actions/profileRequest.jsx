@@ -10,6 +10,12 @@ export const getProfileById = (id, successCallback = (data) => {}, failureCallba
       successCallback(promise.data)
     }).catch(error => {
       console.log(error)
-      failureCallback(error.response)
+      failureCallback(error.response || defaultErrorResponse)
   })
+}
+
+const defaultErrorResponse = {
+  data: {
+    message: "Sorry! The service is now unavailable."
+  }
 }

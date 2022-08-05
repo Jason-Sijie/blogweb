@@ -14,3 +14,7 @@ export const api = {
     }
 };
 
+export const setting = {
+    pageSize: 4
+}
+

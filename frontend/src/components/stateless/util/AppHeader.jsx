@@ -19,17 +19,17 @@ const AppHeader = (props) => {
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top" style={{height: "70px"}}>
       <Container fluid style={{margin: "0 5%", fontSize: "20px"}}>
-        <Navbar.Brand href="/" style={{fontSize: "30px", marginRight: "2%"}}>Write Something</Navbar.Brand>
+        <Navbar.Brand href="/" style={{fontSize: "30px", marginRight: "2%"}}>Mark it Down</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
             <MyNavLink path={"/home"} text={"Home"}/>
-            <MyNavLink path={"/blogs"} text={"Blogs"}/>
-            <NavDropdown title="Dropdown" id="collasible-nav-dropdown">
-              <NavDropdown.Item href="#action/3.1">Action</NavDropdown.Item>
-              <NavDropdown.Item href="#action/3.2">Another action</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item href="#action/3.4">Separated link</NavDropdown.Item>
+            <MyNavLink path={"/blogs"} text={"All Blogs"}/>
+            <NavDropdown title="Categories" id="collasible-nav-dropdown">
+              <NavDropdown.Item disabled href="/blogs">Computer Science</NavDropdown.Item>
+              <NavDropdown.Item disabled href="/blogs">Entertainment</NavDropdown.Item>
+              <NavDropdown.Item disabled href="/blogs">Living</NavDropdown.Item>
+              <NavDropdown.Item disabled href="/blogs">Others</NavDropdown.Item>
             </NavDropdown>
           </Nav>
           <Nav>

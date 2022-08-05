@@ -4,11 +4,13 @@ import SearchPanel from "./SearchPanel";
 import BlogList from "../stateless/blog/BlogList";
 import {getBlogsWithParams} from "../../actions/blogRequests";
 import LoadingSpinner from "../stateless/util/LoadingSpinner";
+import {Navigate} from "react-router-dom";
 
 /**
  * props : {
  *   pageSize : int,
  *   authorId : "" (optional),
+ *   title: "" (optional),
  *   searchButtonText : "" (optional),
  *   searchPanelTitle : "" (optional)
  * }
@@ -36,7 +38,8 @@ class BlogSearch extends Component {
       })
     }, (error) => {
       this.setState({
-        loading: false
+        loading: false,
+        error: error.data
       })
     })
   }
@@ -55,6 +58,11 @@ class BlogSearch extends Component {
         currentPage: data.number,
         totalPages: data.totalPages
       })
+    }, (error) => {
+      this.setState({
+        loading: false,
+        error: error.data
+      })
     });
   }
 
@@ -66,12 +74,27 @@ class BlogSearch extends Component {
     })
   }
 
+  header = () => {
+    return this.props.title ? (
+      <Row style={{justifyContent: "center", padding: "20px"}}>
+        <Col xs={"12"} className={"text-center"}>
+          <h3>{this.props.title}</h3>
+        </Col>
+      </Row>
+    ) : (
+      <></>
+    )
+  }
+
   render() {
     if (this.state.loading) {
       return <LoadingSpinner />
+    } else if (this.state.error != null) {
+      return <Navigate replace to="/error" state={this.state.error}/>
     } else {
       return (
         <Container>
+          {this.header()}
           <SearchPanel getBlogsWithSearchParams={this.getBlogsWithSearchParams}
                        updateSearchParams={this.updateSearchParams}
                        pageSize={this.props.pageSize}

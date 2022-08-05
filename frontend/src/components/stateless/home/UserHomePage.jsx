@@ -1,7 +1,3 @@
-import {Col, Container, Row} from "react-bootstrap";
-import UserHomeHeader from "./UserHomeHeader";
-import UserHomeContent from "./UserHomeContent";
-import UserProfile from "./UserProfile";
 import {useParams} from "react-router-dom";
 import UserHome from "../../stateful/UserHome";
 
@@ -11,7 +7,8 @@ import UserHome from "../../stateful/UserHome";
  *     username : "",
  *     id : "",
  *     uid : ""
- *   }
+ *   },
+ *   handleModalShow : (title, content, path) => {}
  * }
  * @returns {JSX.Element}
  * @constructor
@@ -20,7 +17,9 @@ const UserHomePage = (props) => {
   const id = useParams().id
 
   return (
-    <UserHome userId={id} currentUser={props.currentUser}/>
+    <UserHome userId={id}
+              currentUser={props.currentUser}
+              handleModalShow={props.handleModalShow}/>
   )
 }
 

@@ -3,13 +3,9 @@ import BlogSearch from "../../stateful/BlogSearch";
 
 /**
  * @param props : {
- *   getBlogsWithParams : (params) => {},
- *   blogListPage : {
- *     content: [],
- *     number: int,
- *     totalPages: int
- *   }
- *   pageSize : int
+ *   pageSize : int,
+ *   searchButtonText : "",
+ *   title : "" (optional)
  * }
  * @returns {JSX.Element}
  * @constructor
@@ -17,7 +13,8 @@ import BlogSearch from "../../stateful/BlogSearch";
 const BlogListPage = (props) => {
   return (
     <BlogSearch pageSize={props.pageSize}
-                searchButtonText={"Search Blogs"}/>
+                searchButtonText={props.searchButtonText}
+                title={props.title} />
   )
 }
 

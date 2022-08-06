@@ -1,7 +1,7 @@
 import {Component} from "react";
 import { connect } from "react-redux";
 
-import {acquireJwtCredentials, logout} from "../actions/userAction";
+import {acquireJwtCredentials, logout, registerGuestUser} from "../actions/userAction";
 import {handleModalShow, handleModalClose} from "../actions/modalAction";
 
 import AppHeader from "./stateless/util/AppHeader";
@@ -45,6 +45,9 @@ const mapDispatchToProps = (dispatch) => {
         },
         logout: () => {
           logout()(dispatch);
+        },
+        registerUser: (username, password) => {
+          registerGuestUser(username, password)(dispatch);
         }
       },
       modal: {

@@ -1,12 +1,10 @@
 package com.sijie.blogweb.helper;
 
-import com.sijie.blogweb.exception.InvalidParameterException;
 import com.sijie.blogweb.exception.ResourceAlreadyExistsException;
 import com.sijie.blogweb.model.Role;
 import com.sijie.blogweb.model.User;
 import com.sijie.blogweb.repository.RoleRepository;
 import com.sijie.blogweb.repository.UserRepository;
-import org.apache.logging.log4j.util.Strings;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -36,12 +34,8 @@ public class UserHelper {
     }
 
     public User validateAndBuildNewUser(User inputUser, Set<String> roles) {
-        if (Strings.isEmpty(inputUser.getUsername())) {
-            throw new InvalidParameterException("Invalid Parameter: username cannot be empty");
-        }
-        if (Strings.isEmpty(inputUser.getPassword())) {
-            throw new InvalidParameterException("Invalid Parameter: password cannot be empty");
-        }
+        ResourceFormatValidator.validateUsername(inputUser.getUsername());
+        ResourceFormatValidator.validatePassword(inputUser.getPassword());
         String username = inputUser.getUsername();
         String password = inputUser.getPassword();
 

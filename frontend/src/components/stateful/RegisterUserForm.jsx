@@ -2,13 +2,11 @@ import {Component} from "react";
 import {Button, Col, FloatingLabel, Form, Row} from "react-bootstrap";
 
 /**
- * @param props : {
- *   acquireJwtCredentials: (username, password) => {},
+ * props : {
+ *   registerUser: (username, password) => {}
  * }
- * @returns {JSX.Element}
- * @constructor
  */
-class LoginForm extends Component{
+class RegisterUserForm extends Component{
 
   constructor(props) {
     super(props);
@@ -18,8 +16,8 @@ class LoginForm extends Component{
     };
   }
 
-  performLogin = () => {
-    this.props.acquireJwtCredentials(this.state.username, this.state.password)
+  registerUser = () => {
+    this.props.registerUser(this.state.username, this.state.password)
   }
 
   changeStateOnEvent = (key) => {
@@ -34,7 +32,7 @@ class LoginForm extends Component{
     return (
       <Form className={"shadow p-3 mb-5 bg-white rounded"}>
         <Row>
-          <h2> Log in </h2>
+          <h2>Create new account</h2>
         </Row>
         <FloatingLabel controlId="floatingLoginEmail" label="Email address" className="mt-2 mb-4">
           <Form.Control type="email"
@@ -51,13 +49,10 @@ class LoginForm extends Component{
                         required />
         </FloatingLabel>
 
-        <Row style={{justifyContent:"space-between"}} className={"mb-2"}>
-          <Col xs={"8"}>
-            New to MarkItDown? <a href="/users/register">Create an account</a>
-          </Col>
+        <Row style={{justifyContent:"right"}} className={"mb-2"}>
           <Col xs={"3"}>
-            <Button style={{width: "100%"}} variant="primary" onClick={this.performLogin}>
-              Log in
+            <Button style={{width: "100%"}} variant="primary" onClick={this.registerUser}>
+              Register
             </Button>
           </Col>
         </Row>
@@ -66,4 +61,4 @@ class LoginForm extends Component{
   }
 }
 
-export default LoginForm;
+export default RegisterUserForm;

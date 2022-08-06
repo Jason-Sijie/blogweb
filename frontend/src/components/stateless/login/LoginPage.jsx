@@ -12,7 +12,7 @@ const LoginPage = (props) => {
 
   return (
     <Container>
-      <Row style={{justifyContent:"center", marginTop: "10%"}}>
+      <Row style={{justifyContent:"center", marginTop:"10%"}}>
         <Col xs={"6"} >
           <LoginForm {...props}/>
         </Col>

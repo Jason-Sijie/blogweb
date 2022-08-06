@@ -104,4 +104,37 @@ export const logout = () => dispatch => {
   }
 }
 
+export const registerGuestUser = (username, password) => dispatch => {
+  console.log("Start registering guest user");
+
+  const url = api.blogWeb.register;
+
+  axios.post(url, {
+    username: username,
+    password: password
+  }, {
+    headers: {
+      "Content-Type": "application/json"
+    },
+  }).then((promise) => {
+    dispatch({
+      type: ACTIONS.MODAL.SHOW_MODAL,
+      payload: {
+        title: "Registration Succeeded",
+        content: "Successfully created user: " + username,
+        path: "/login"
+      }
+    })
+  }).catch((error) => {
+    console.log(error.response)
+    dispatch({
+      type: ACTIONS.MODAL.SHOW_MODAL,
+      payload: {
+        title: "Failed to create new user: " + username,
+        content: error.response != null ? error.response.data.message : defaultErrorMessage
+      },
+    })
+  })
+}
+
 const defaultErrorMessage = "Sorry! The service is now unavailable."

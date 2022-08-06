@@ -1,5 +1,6 @@
 import {Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
 import {Link} from "react-router-dom";
+import {website} from "../../../config";
 
 /**
  * @param props: {
@@ -19,18 +20,12 @@ const AppHeader = (props) => {
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top" style={{height: "70px"}}>
       <Container fluid style={{margin: "0 5%", fontSize: "20px"}}>
-        <Navbar.Brand href="/" style={{fontSize: "30px", marginRight: "2%"}}>Mark it Down</Navbar.Brand>
+        <Navbar.Brand href="/" style={{fontSize: "30px", marginRight: "2%"}}>{website.name}</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">
             <MyNavLink path={"/home"} text={"Home"}/>
             <MyNavLink path={"/blogs"} text={"All Blogs"}/>
-            <NavDropdown title="Categories" id="collasible-nav-dropdown">
-              <NavDropdown.Item disabled href="/blogs">Computer Science</NavDropdown.Item>
-              <NavDropdown.Item disabled href="/blogs">Entertainment</NavDropdown.Item>
-              <NavDropdown.Item disabled href="/blogs">Living</NavDropdown.Item>
-              <NavDropdown.Item disabled href="/blogs">Others</NavDropdown.Item>
-            </NavDropdown>
           </Nav>
           <Nav>
             {isLogin ? (
@@ -40,7 +35,7 @@ const AppHeader = (props) => {
               </>
             ) : (
               <>
-                <MyNavLink path={"/register"} text={"Register"}/>
+                <MyNavLink path={"/users/register"} text={"Register"}/>
                 <MyNavLink path={"/login"} text={"Login"}/>
               </>
             )}

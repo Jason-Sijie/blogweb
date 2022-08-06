@@ -14,7 +14,6 @@ class SearchPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isOpen: false,
       blogTitle: "",
       tags: [],
       newTag: ""
@@ -69,10 +68,6 @@ class SearchPanel extends Component {
     });
   }
 
-  updateIsOpen = () => {
-    this.setState({isOpen: !this.state.isOpen})
-  }
-
   render() {
     return (
       <Container className={"shadow p-3 mb-5 bg-white rounded"}>
@@ -92,14 +87,14 @@ class SearchPanel extends Component {
                 <Form.Group className="mb-3" controlId="tags">
                   <Form.Label>Tag Name</Form.Label>
                   <Row>
-                    <Col xs={"5"}>
+                    <Col xs={"8"}>
                       <Form.Control type="text"
                                     value={this.state.newTag}
                                     onChange={this.changeStateOnEvent("newTag")}/>
                     </Col>
-                    <Col xs={"3"}>
+                    <Col xs={"4"}>
                       <Button style={{width: "100%"}}
-                              variant={"secondary"}
+                              variant={"success"}
                               onClick={this.AddTagToTags}>
                         Add Tag to Search params
                       </Button>

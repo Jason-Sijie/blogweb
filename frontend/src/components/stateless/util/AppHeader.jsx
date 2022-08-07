@@ -1,6 +1,7 @@
-import {Container, Nav, Navbar, NavDropdown} from "react-bootstrap";
+import {Button, Container, Nav, Navbar, NavDropdown, Offcanvas} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import {website} from "../../../config";
+import {useState} from "react";
 
 /**
  * @param props: {
@@ -16,6 +17,10 @@ import {website} from "../../../config";
  */
 const AppHeader = (props) => {
   const {currentUser, isLogin} = props
+  const [show, setShow] = useState(false);
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
 
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top" style={{height: "70px"}}>
@@ -31,7 +36,9 @@ const AppHeader = (props) => {
             {isLogin ? (
               <>
                 <MyNavLink path={"/home"} text={"Hello " + currentUser.username}/>
-                <MyNavLink path={"/logout"} text={"Logout"}/>
+                <Button variant="primary" onClick={handleShow} style={{backgroundColor: "transparent"}}>
+                  More Options
+                </Button>
               </>
             ) : (
               <>
@@ -41,6 +48,18 @@ const AppHeader = (props) => {
             )}
           </Nav>
         </Navbar.Collapse>
+
+        <Offcanvas show={show} placement='end' onHide={handleClose}>
+          <Offcanvas.Header closeButton>
+            <Offcanvas.Title>Offcanvas</Offcanvas.Title>
+          </Offcanvas.Header>
+          <Offcanvas.Body>
+            <MyNavLink path={"/home"} text={"Home "}/>
+            <MyNavLink path={"/blogs/create"} text={"Write New Blog"}/>
+            <MyNavLink path={"/users/" + currentUser.id + "/profile"} text={"Edit Profile"}/>
+            <MyNavLink path={"/logout"} text={"Logout"}/>
+          </Offcanvas.Body>
+        </Offcanvas>
       </Container>
     </Navbar>
   )

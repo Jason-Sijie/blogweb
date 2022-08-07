@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {Col, Container, Row} from "react-bootstrap";
+import {Button, Col, Container, Offcanvas, Row} from "react-bootstrap";
 import {Navigate} from 'react-router-dom';
 import UserHomeHeader from "../stateless/home/UserHomeHeader";
 import UserProfile from "../stateless/home/UserProfile";
@@ -24,7 +24,8 @@ class UserHome extends Component {
     super(props);
     this.state = {
       loading: true,
-      error: null
+      error: null,
+      show: false
     }
 
     getProfileById(props.userId, (data) => {
@@ -63,7 +64,7 @@ class UserHome extends Component {
             <Col xs={3} style={{margin: "0% 2% 4% 4%", position: "relative", top: "-200px"}}>
               <UserProfile {...this.state.profile}/>
             </Col>
-            <Col xs={8} style={{margin: "3% 0%"}}>
+            <Col xs={8}>
               <UserHomeContent authorId={this.props.currentUser.uid}
                                name={this.state.profile.name}
                                handleModalShow={this.props.handleModalShow}/>

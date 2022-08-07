@@ -11,6 +11,7 @@ import ErrorPage from "../components/stateless/util/ErrorPage";
 import {setting} from "../config";
 import CreateBlogPage from "../components/stateless/blog/CreateBlogPage";
 import RegisterPage from "../components/stateless/login/RegisterPage";
+import UserProfilePage from "../components/stateless/home/UserProfilePage";
 
 export function AppRoutes(props){
   return (
@@ -47,9 +48,13 @@ export function AppRoutes(props){
         <HomePage currentUser={props.user.currentUser}
                   handleModalShow={props.action.modal.handleModalShow}/>
       }/>
-      <Route path="/home/users/:id" element={
+      <Route path="/users/:id/home" element={
         <UserHomePage currentUser={props.user.currentUser}
                       handleModalShow={props.action.modal.handleModalShow}/>
+      }/>
+      <Route path="/users/:id/profile" element={
+        <UserProfilePage currentUser={props.user.currentUser}
+                         handleModalShow={props.action.modal.handleModalShow}/>
       }/>
       <Route path={"/error"} element={
         <ErrorPage />

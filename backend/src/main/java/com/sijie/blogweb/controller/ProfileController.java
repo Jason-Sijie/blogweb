@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
@@ -157,7 +158,7 @@ public class ProfileController {
 
     private Profile transformToExternalProfile(Profile profile) {
         if (profile.getLinks() == null) {
-            profile.setLinks(new HashMap<>());
+            profile.setLinks(new ArrayList<>());
         }
         return profile;
     }

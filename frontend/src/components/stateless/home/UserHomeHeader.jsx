@@ -18,7 +18,7 @@ const UserHomeHeader = (props) => {
         <p>{props.name}</p>
       </Row>
       <Row className="home_header_description">
-        <p>Email: {props.email}</p>
+        <p>Contact Email: {props.email}</p>
       </Row>
     </Container>
   )

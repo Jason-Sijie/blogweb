@@ -18,7 +18,8 @@ class LoginForm extends Component{
     };
   }
 
-  performLogin = () => {
+  performLogin = (event) => {
+    event.preventDefault();
     this.props.acquireJwtCredentials(this.state.username, this.state.password)
   }
 
@@ -32,13 +33,13 @@ class LoginForm extends Component{
 
   render() {
     return (
-      <Form className={"shadow p-3 mb-5 bg-white rounded"}>
+      <Form className={"shadow p-3 mb-5 bg-white rounded"} onSubmit={this.performLogin}>
         <Row>
           <h2> Log in </h2>
         </Row>
         <FloatingLabel controlId="floatingLoginEmail" label="Email address" className="mt-2 mb-4">
           <Form.Control type="email"
-                        placeholder="name@example.com"
+                        placeholder="Email address"
                         onChange={this.changeStateOnEvent("username")}
                         required />
         </FloatingLabel>
@@ -56,7 +57,7 @@ class LoginForm extends Component{
             New to MarkItDown? <a href="/users/register">Create an account</a>
           </Col>
           <Col xs={"3"}>
-            <Button style={{width: "100%"}} variant="primary" onClick={this.performLogin}>
+            <Button type="submit" style={{width: "100%"}} variant="primary">
               Log in
             </Button>
           </Col>

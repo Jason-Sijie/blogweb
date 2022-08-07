@@ -16,7 +16,8 @@ class RegisterUserForm extends Component{
     };
   }
 
-  registerUser = () => {
+  registerUser = (event) => {
+    event.preventDefault();
     this.props.registerUser(this.state.username, this.state.password)
   }
 
@@ -30,17 +31,16 @@ class RegisterUserForm extends Component{
 
   render() {
     return (
-      <Form className={"shadow p-3 mb-5 bg-white rounded"}>
+      <Form className={"shadow p-3 mb-5 bg-white rounded"} onSubmit={this.registerUser}>
         <Row>
           <h2>Create new account</h2>
         </Row>
         <FloatingLabel controlId="floatingLoginEmail" label="Email address" className="mt-2 mb-4">
           <Form.Control type="email"
-                        placeholder="name@example.com"
+                        placeholder="Email Address"
                         onChange={this.changeStateOnEvent("username")}
                         required />
         </FloatingLabel>
-
 
         <FloatingLabel controlId="floatingLoginPassword" label="Password" className="mb-4">
           <Form.Control type="password"
@@ -51,7 +51,7 @@ class RegisterUserForm extends Component{
 
         <Row style={{justifyContent:"right"}} className={"mb-2"}>
           <Col xs={"3"}>
-            <Button style={{width: "100%"}} variant="primary" onClick={this.registerUser}>
+            <Button style={{width: "100%"}} variant="primary" type="submit">
               Register
             </Button>
           </Col>

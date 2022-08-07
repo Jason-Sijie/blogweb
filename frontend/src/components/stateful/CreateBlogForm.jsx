@@ -24,9 +24,6 @@ class CreateBlogForm extends Component {
       content: "",
       newTag: "",
       tags: []
-      // error: this.isCurrentUserLoggedIn() ? null : {
-      //   message: "Sorry. You have to log in first to create a blog."
-      // }
     }
   }
 

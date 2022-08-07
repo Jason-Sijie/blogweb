@@ -23,12 +23,12 @@ const UserProfile = (props) => {
       </Card.Text>
       <Card.Text  style={{margin: "20px 0"}}>
         <ListGroup>
-        {Object.keys(links).map((keyName, keyIndex) => {
+        {links.map((link) => {
           return(
-            <ListGroup.Item action variant="light" href={links[keyName]}>
+            <ListGroup.Item action variant="light" href={link.href}>
               <Row>
-                <Col xs={"3"} style={{alignSelf: "left"}}>{keyName}:</Col>
-                <Col xs={"9"} style={{alignSelf: "right"}}>{links[keyName]}</Col>
+                <Col xs={"4"} style={{alignSelf: "left"}}>{link.name}:</Col>
+                <Col xs={"8"} style={{alignSelf: "right"}}>{link.href}</Col>
               </Row>
             </ListGroup.Item>
           )

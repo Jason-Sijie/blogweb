@@ -36,10 +36,17 @@ class UserHome extends Component {
       })
     }, (error) => {
       console.log(error)
-      this.setState({
-        loading: false,
-        error: error.data
-      })
+      if (props.currentUser != null && props.currentUser.id != null && props.userId.toString() === props.currentUser.id.toString()) {
+        // need to create profile
+        this.props.handleModalShow("No User Profile",
+          "You need to create your user profile first. Please click the \"Close\" button to jump to Profile Creation Page", "/users/" + props.userId + "/profile")
+      } else {
+        // service error
+        this.setState({
+          loading: false,
+          error: error.data,
+        })
+      }
     })
   }
 

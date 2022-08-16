@@ -12,7 +12,8 @@ import {Pagination} from "react-bootstrap";
  */
 const Pages = (props) => {
   const left = Math.max(0, props.currentPage - props.leftNum);
-  const right = Math.min(props.totalPages - 1, props.currentPage + props.rightNum);
+  const right = Math.max(Math.min(props.totalPages - 1, props.currentPage + props.rightNum), 0);
+  console.log("right:", right, "left:", left)
   const pageArray = [...Array(right - left + 1).keys()].map((x) => x + left);
 
   const clickAction = (pageNum) => {

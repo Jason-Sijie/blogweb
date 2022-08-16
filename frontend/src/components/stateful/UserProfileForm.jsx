@@ -149,7 +149,7 @@ class UserProfileForm extends Component {
         aboutMe: this.state.aboutMe,
         links: this.state.links
       }, (data) => {
-        this.props.handleModalShow("Profile Creation Succeeded", "Successfully created profile under User: " + data.userId, "/home/users/" + data.userId)
+        this.props.handleModalShow("Profile Creation Succeeded", "Successfully created profile under User: " + data.userId, "/users/" + data.userId + "/home")
       }, (error) => {
         this.props.handleModalShow("Failed to create profile", "Failed to create profile under User: " + this.props.userId, "")
       })

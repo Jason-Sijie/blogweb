@@ -38,6 +38,25 @@
 			</dependencies>
 		</profile>
 
+		<!-- prod profile -->
+		<profile>
+			<id>prod</id>
+			<properties>
+				<profiles.active>prod</profiles.active>
+				<maven.test.skip>true</maven.test.skip>
+			</properties>
+			<activation>
+				<activeByDefault>false</activeByDefault>
+			</activation>
+			<dependencies>
+				<dependency>
+					<groupId>mysql</groupId>
+					<artifactId>mysql-connector-java</artifactId>
+					<scope>runtime</scope>
+				</dependency>
+			</dependencies>
+		</profile>
+
 		<!-- test profile -->
 		<profile>
 			<id>test</id>
@@ -145,6 +164,11 @@
 					</excludes>
 				</configuration>
 			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-resources-plugin</artifactId>
+				<version>3.1.0</version>
+			</plugin>  
 		</plugins>
 	</build>
 

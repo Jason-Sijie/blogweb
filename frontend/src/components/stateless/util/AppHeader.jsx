@@ -1,4 +1,4 @@
-import {Button, Container, Nav, Navbar, NavDropdown, Offcanvas} from "react-bootstrap";
+import {Button, Container, Nav, Navbar, ListGroup, Offcanvas} from "react-bootstrap";
 import {Link} from "react-router-dom";
 import {website} from "../../../config";
 import {useState} from "react";
@@ -54,10 +54,25 @@ const AppHeader = (props) => {
             <Offcanvas.Title>Offcanvas</Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>
-            <MyNavLink path={"/home"} text={"Home "}/>
-            <MyNavLink path={"/blogs/create"} text={"Write New Blog"}/>
-            <MyNavLink path={"/users/" + currentUser.id + "/profile"} text={"Edit Profile"}/>
-            <MyNavLink path={"/logout"} text={"Logout"}/>
+            {/* <Nav variant="pills" defaultActiveKey="/home">
+              <Nav.Item>
+                <Nav.Link href="/home">Active</Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link eventKey="link-1">Option 2</Nav.Link>
+              </Nav.Item>
+              <Nav.Item>
+                <Nav.Link eventKey="disabled" disabled>
+                  Disabled
+                </Nav.Link>
+              </Nav.Item>
+            </Nav> */}
+            <ListGroup>
+              <MyNavLink path={"/home"} text={<ListGroup.Item>Home</ListGroup.Item>}/>
+              <MyNavLink path={"/blogs/create"} text={<ListGroup.Item>Write New Blog</ListGroup.Item>}/>
+              <MyNavLink path={"/users/" + currentUser.id + "/profile"} text={<ListGroup.Item>Edit Profile</ListGroup.Item>}/>
+              <MyNavLink path={"/logout"} text={<ListGroup.Item>Logout</ListGroup.Item>}/>
+            </ListGroup>
           </Offcanvas.Body>
         </Offcanvas>
       </Container>
@@ -67,10 +82,14 @@ const AppHeader = (props) => {
 
 const MyNavLink = (props) => {
   const {path, text} = props;
+  const [hover, setHover] = useState(false);
 
   return <Nav.Link>
     <Link style={{ color: 'inherit', textDecoration: 'inherit'}} to={path}>
-      {text}
+      <Button onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
+        style={{backgroundColor: (hover == true) ? "lightgrey" : "transparent", border: "0px", width: "100%"}}>
+        {text}
+      </Button>
     </Link>
   </Nav.Link>
 }

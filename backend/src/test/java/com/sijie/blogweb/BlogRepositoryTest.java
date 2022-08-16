@@ -3,6 +3,7 @@ package com.sijie.blogweb;
 import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.repository.BlogRepository;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,6 +24,14 @@ class BlogRepositoryTest {
 	@Autowired
 	BlogRepository blogRepository;
 
+	@BeforeEach
+	public void setUp() {
+		Blog b1 = blogRepository.findByBid("1");
+		if (b1 != null) {
+			blogRepository.delete(b1);
+		}
+	}
+
 	@Test
 	public void testBlogCreateAndQueryByBid() {
 		Blog blog = createDummyBlog();
@@ -31,6 +40,7 @@ class BlogRepositoryTest {
 		Blog result = blogRepository.findByBid("1");
 		logger.info("The result blog id: " + result.getId() + ", bid: " + result.getBid());
 		assertEquals(blog.getTitle(), result.getTitle());
+		blogRepository.delete(result);
 	}
 
 	private Blog createDummyBlog() {

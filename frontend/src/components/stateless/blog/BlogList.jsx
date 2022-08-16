@@ -1,4 +1,4 @@
-import {Container, Row} from "react-bootstrap";
+import {Container, Row, Col} from "react-bootstrap";
 import BlogItem from "./BlogItem";
 import Pages from "../util/Pages";
 
@@ -31,9 +31,15 @@ const BlogList = (props) => {
         );
       })}
 
+      {props.totalPages === 0 ? (<>
+        <Row style={{textAlign: "center", padding: "20px 0px 40px"}}>
+          <h1>No Result</h1>
+        </Row>
+      </>) : (<></>)}
+
       <Row>
         <Pages currentPage={props.currentPage}
-               totalPages={props.totalPages || 10}
+               totalPages={props.totalPages == null ? 10 : props.totalPages}
                pageSize={props.pageSize}
                leftNum={3}
                rightNum={3}
@@ -41,7 +47,6 @@ const BlogList = (props) => {
       </Row>
     </Container>
   )
-
 }
 
 export default BlogList;

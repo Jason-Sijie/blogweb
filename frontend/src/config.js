@@ -1,17 +1,17 @@
 const backend = {
-    host: "http://localhost:",
-    port: "9001",
+    host: process.env.REACT_APP_BACKEND_URL || "http://localhost",
+    port: process.env.REACT_APP_BACKEND_PORT || "9001",
 }
 
 export const api = {
     blogWeb: {
-        baseUrl: backend.host + backend.port,
-        blog: backend.host + backend.port + "/blogs",
-        category: backend.host + backend.port + "/categories",
-        user: backend.host + backend.port + "/users",
-        login: backend.host + backend.port + "/login",
-        register: backend.host + backend.port + "/users/guest",
-        self: backend.host + backend.port + "/users/self"
+        baseUrl: backend.host + ":" +  backend.port,
+        blog: backend.host + ":" + backend.port + "/blogs",
+        category: backend.host + ":" + backend.port + "/categories",
+        user: backend.host + ":" + backend.port + "/users",
+        login: backend.host + ":" + backend.port + "/login",
+        register: backend.host + ":" + backend.port + "/users/guest",
+        self: backend.host + ":" + backend.port + "/users/self"
     }
 };
 

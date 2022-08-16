@@ -1,4 +1,4 @@
-package com.sijie.blogweb.config.dev;
+package com.sijie.blogweb.config;
 
 import lombok.Getter;
 import lombok.Setter;

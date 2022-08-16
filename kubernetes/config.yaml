@@ -1,0 +1,16 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blogweb-react-config
+data:
+  env: |
+    REACT_APP_BACKEND_URL=http://k8s-default-blogwebb-eabc49d4fc-f4e995cea6b07e02.elb.us-west-1.amazonaws.com
+    REACT_APP_BACKEND_PORT=9000
+--- 
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: blogweb-backend-config
+data:
+  application-properties: |
+    cors.allowedOrigins=*

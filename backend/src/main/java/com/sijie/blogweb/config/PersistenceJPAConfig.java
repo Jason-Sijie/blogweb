@@ -1,4 +1,4 @@
-package com.sijie.blogweb.config.dev;
+package com.sijie.blogweb.config;
 
 import com.alibaba.druid.pool.DruidDataSource;
 import com.alibaba.druid.spring.boot.autoconfigure.DruidDataSourceBuilder;
@@ -22,7 +22,6 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 import javax.sql.DataSource;
 import java.util.Properties;
 
-@Profile("dev")
 @Configuration
 @EnableTransactionManagement
 @EnableJpaRepositories(

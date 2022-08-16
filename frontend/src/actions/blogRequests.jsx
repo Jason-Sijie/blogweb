@@ -6,9 +6,11 @@ export const getBlogsWithParams = (params, successCallback = (data) => {}, failu
   params = stringify(params, {arrayFormat: "repeat", skipNulls: true});
   console.log("Get blogs with params: ", params)
   const url = api.blogWeb.blog + "?" + params;
+  console.log("Request URL: ", url)
 
   axios.get(url)
     .then(promise => {
+      console.log(promise.data)
       successCallback(promise.data)
     }).catch(error => {
       console.log(error)

@@ -1,6 +1,6 @@
 import {Button, Container, Nav, Navbar, ListGroup, Offcanvas} from "react-bootstrap";
 import {Link} from "react-router-dom";
-import {website} from "../../../config";
+import {appConfig} from "../../../config";
 import {useState} from "react";
 
 /**
@@ -25,7 +25,7 @@ const AppHeader = (props) => {
   return (
     <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top" style={{height: "70px"}}>
       <Container fluid style={{margin: "0 5%", fontSize: "20px"}}>
-        <Navbar.Brand href="/" style={{fontSize: "30px", marginRight: "2%"}}>{website.name}</Navbar.Brand>
+        <Navbar.Brand href="/" style={{fontSize: "30px", marginRight: "2%"}}>{appConfig.websiteName}</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse id="responsive-navbar-nav">
           <Nav className="me-auto">

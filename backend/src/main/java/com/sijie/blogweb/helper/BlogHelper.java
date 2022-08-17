@@ -7,6 +7,7 @@ import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.model.Category;
 import com.sijie.blogweb.model.Tag;
 import com.sijie.blogweb.model.User;
+import com.sijie.blogweb.repository.BlogRepository;
 import com.sijie.blogweb.repository.CategoryRepository;
 import com.sijie.blogweb.repository.TagRepository;
 import com.sijie.blogweb.repository.UserRepository;
@@ -21,7 +22,7 @@ import org.springframework.stereotype.Component;
 import java.util.*;
 
 @Component
-@Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Scope(scopeName = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class BlogHelper {
     private static final Logger logger = LoggerFactory.getLogger(BlogHelper.class);
 
@@ -178,5 +179,4 @@ public class BlogHelper {
         }
         return internalTags;
     }
-
 }

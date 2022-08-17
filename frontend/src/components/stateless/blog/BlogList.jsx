@@ -39,7 +39,7 @@ const BlogList = (props) => {
 
       <Row>
         <Pages currentPage={props.currentPage}
-               totalPages={props.totalPages == null ? 10 : props.totalPages}
+               totalPages={props.totalPages || 0}
                pageSize={props.pageSize}
                leftNum={3}
                rightNum={3}

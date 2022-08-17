@@ -79,6 +79,56 @@ export const createBlog = (blog, successCallback = (data) => {}, failureCallback
   })
 }
 
+export const likeBlogById = (blogId, successCallback = (data) => {}, failureCallback = (error) => {}) => {
+  const url = api.blogWeb.blog + "/" + blogId + "/like";
+  let headers = {
+    "Content-Type": "application/json"
+  };
+
+  if (localStorage.getItem("token") != null) {
+    const token = JSON.parse(localStorage.getItem("token"));
+    headers = {
+      ...headers,
+      "Authorization": token.type + " " + token.content
+    }
+  }
+
+  axios.put(url, null,{
+    headers: headers
+  }).then(promise => {
+    console.log(promise.data)
+    successCallback(promise.data)
+  }).catch(error => {
+    console.log(error)
+    failureCallback(error.response || defaultErrorResponse)
+  })
+}
+
+export const unlikeBlogById = (blogId, successCallback = (data) => {}, failureCallback = (error) => {}) => {
+  const url = api.blogWeb.blog + "/" + blogId + "/unlike";
+  let headers = {
+    "Content-Type": "application/json"
+  };
+
+  if (localStorage.getItem("token") != null) {
+    const token = JSON.parse(localStorage.getItem("token"));
+    headers = {
+      ...headers,
+      "Authorization": token.type + " " + token.content
+    }
+  }
+
+  axios.put(url, null,{
+    headers: headers
+  }).then(promise => {
+    console.log(promise.data)
+    successCallback(promise.data)
+  }).catch(error => {
+    console.log(error)
+    failureCallback(error.response || defaultErrorResponse)
+  })
+}
+
 
 const defaultErrorResponse = {
   data: {

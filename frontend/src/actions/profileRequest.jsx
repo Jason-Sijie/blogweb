@@ -7,6 +7,7 @@ export const getProfileById = (id, successCallback = (data) => {}, failureCallba
 
   axios.get(url)
     .then(promise => {
+      console.log(promise.data)
       successCallback(promise.data)
     }).catch(error => {
       console.log(error)

@@ -3,7 +3,7 @@
     background-repeat: no-repeat;
     /*background-size: cover;*/
     background-size: 100vw 100%;
-    min-height: 500px;
+    min-height: 300px;
 }
 
 .blog_header_title {
@@ -12,7 +12,7 @@
     font-weight: bold;
     font-size: 70px;
     color: white;
-    padding: 0 80px 5%;
+    padding: 0 70px 3%;
 }
 
 .blog_header_description {

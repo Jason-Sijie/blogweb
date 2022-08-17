@@ -6,6 +6,8 @@ import UserProfile from "../stateless/home/UserProfile";
 import UserHomeContent from "../stateless/home/UserHomeContent";
 import {getProfileById} from "../../actions/profileRequest";
 import LoadingSpinner from "../stateless/util/LoadingSpinner";
+import { getLikedBlogsByUserId } from "../../actions/userRequests";
+import { appConfig } from "../../config";
 
 
 /**
@@ -25,10 +27,15 @@ class UserHome extends Component {
     this.state = {
       loading: true,
       error: null,
-      show: false
+      likedBlogs: {
+        content: [],
+        totalPages: 0,
+        number: 0
+      }
     }
 
-    getProfileById(props.userId, (data) => {
+    getProfileById(this.props.userId, (data) => {
+      console.log("succeeded to get profile")
       this.setState({
         loading: false,
         profile: {
@@ -49,6 +56,32 @@ class UserHome extends Component {
         })
       }
     })
+
+    getLikedBlogsByUserId({
+      userId: props.userId,
+      page: 0,
+      size: appConfig.blogListPageSize
+    }, (data) => {
+      this.setState({
+        likedBlogs: data
+      })
+    }, error => {
+      this.props.handleModalShow("Failed to retrieve liked blogs", error.message, "")
+    })
+  }
+
+  getLikedBlogsWithParams = (params) => {
+    getLikedBlogsByUserId({
+      userId: this.props.userId,
+      page: params.page,
+      size: params.size || appConfig.blogListPageSize
+    }, (data) => {
+      this.setState({
+        likedBlogs: data
+      })
+    }, error => {
+      this.props.handleModalShow("Failed to retrieve liked blogs", error.message, "")
+    })
   }
 
   render() {
@@ -65,8 +98,10 @@ class UserHome extends Component {
               <UserProfile {...this.state.profile}/>
             </Col>
             <Col xs={8}>
-              <UserHomeContent authorId={this.props.currentUser.uid}
+              <UserHomeContent authorId={this.props.userId}
                                name={this.state.profile.name}
+                               likedBlogs={this.state.likedBlogs}
+                               getLikedBlogsWithParams={this.getLikedBlogsWithParams}
                                handleModalShow={this.props.handleModalShow}/>
             </Col>
           </Row>

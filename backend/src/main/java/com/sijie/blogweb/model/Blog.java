@@ -64,7 +64,7 @@ public class Blog {
     )
     private Set<Tag> tags;
 
-    @ManyToMany(fetch = FetchType.LAZY)
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(
             schema = "blog_web",
             name = "blog_like",

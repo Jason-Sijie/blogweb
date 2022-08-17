@@ -1,26 +1,21 @@
-const backend = {
-    host: process.env.REACT_APP_BACKEND_URL || "http://localhost",
-    port: process.env.REACT_APP_BACKEND_PORT || "9001",
-}
+const backendHost = process.env.REACT_APP_BACKEND_URL || "http://localhost"
+const backendPort = process.env.REACT_APP_BACKEND_PORT || "9001"
+const backend = backendHost + ":" + backendPort
 
 export const api = {
     blogWeb: {
-        baseUrl: backend.host + ":" +  backend.port,
-        blog: backend.host + ":" + backend.port + "/blogs",
-        category: backend.host + ":" + backend.port + "/categories",
-        user: backend.host + ":" + backend.port + "/users",
-        login: backend.host + ":" + backend.port + "/login",
-        register: backend.host + ":" + backend.port + "/users/guest",
-        self: backend.host + ":" + backend.port + "/users/self"
+        baseUrl: backend,
+        blog: backend + "/blogs",
+        category: backend + "/categories",
+        user: backend + "/users",
+        login: backend + "/login",
+        register: backend + "/users/guest",
+        self: backend + "/users/self"
     }
 };
 
-export const website = {
-    name: "MarkItDown"
+export const appConfig = {
+    websiteName: "MarkItDown",
+    blogListPageSize: parseInt(process.env.REACT_APP_BLOG_LIST_PAGE_SIZE) || 4,
+    tokenTTLInMS: parseInt(process.env.REACT_APP_TOKEN_TTL_IN_MS) || 7200000
 }
-
-export const setting = {
-    pageSize: 4,
-    tokenTTLInMS: 7200000
-}
-

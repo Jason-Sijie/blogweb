@@ -1,7 +1,7 @@
 // reference: https://dev.to/igorovic/simplest-way-to-persist-redux-state-to-localstorage-e67
 
 // localStorage.js
-import {setting} from "../config";
+import {appConfig} from "../config";
 
 const KEY='redux'
 
@@ -29,7 +29,7 @@ export const saveState = (state) => {
   try {
     const item = {
       state: state,
-      expiry: new Date().getTime() + setting.tokenTTLInMS
+      expiry: new Date().getTime() + appConfig.tokenTTLInMS
     };
     console.log("save state: ", item)
     localStorage.setItem(KEY, JSON.stringify(item));

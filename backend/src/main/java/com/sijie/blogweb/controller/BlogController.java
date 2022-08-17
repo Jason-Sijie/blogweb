@@ -10,8 +10,10 @@ import com.sijie.blogweb.exception.UserCredentialsAbsenceException;
 import com.sijie.blogweb.exception.UserUnauthorziedException;
 import com.sijie.blogweb.helper.BlogHelper;
 import com.sijie.blogweb.model.Blog;
+import com.sijie.blogweb.model.User;
 import com.sijie.blogweb.repository.redis.BlogContentRepository;
 import com.sijie.blogweb.repository.BlogRepository;
+import com.sijie.blogweb.repository.UserRepository;
 import com.sijie.blogweb.security.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -39,14 +41,17 @@ public class BlogController {
     private final BlogRepository blogRepository;
     private final BlogHelper blogHelper;
     private final BlogContentRepository blogContentRepository;
+    private final UserRepository userRepository;
 
     @Autowired
     public BlogController(BlogRepository blogRepository,
                           BlogContentRepository blogContentRepository,
-                          BlogHelper blogHelper) {
+                          BlogHelper blogHelper,
+                          UserRepository userRepository) {
         this.blogRepository = blogRepository;
         this.blogContentRepository = blogContentRepository;
         this.blogHelper = blogHelper;
+        this.userRepository = userRepository;
     }
 
     @PostMapping(value = "", consumes = {"application/json"})
@@ -96,6 +101,32 @@ public class BlogController {
 
         logger.info("Update Blog " + internalBlog);
         return internalBlog;
+    }
+
+    @GetMapping(value = "/{id}/isLiked")
+    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @RedisTransaction(type = RedisTransactionType.ReadOnly)
+    public Blog isBlogLikedByUser(@PathVariable("id") long id) {
+        Optional<Blog> result = blogRepository.findById(id);
+        if (!result.isPresent()) {
+            throw new ResourceNotFoundException("Blog with id: " + id + " not found");
+        }
+        Blog blog = result.get();
+
+        CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
+        if (userDetails == null) {
+            throw new UserCredentialsAbsenceException("User credentials are required");
+        }
+
+        boolean isLiked = false;
+        for (User likedUser : blog.getLikedUsers()) {
+            if (likedUser.getId().equals(userDetails.getId())) {
+                isLiked = true;
+                break;
+            }
+        }
+
+        return isLiked ? blog : null;
     }
 
     @PutMapping(value = "/{id}/like")
@@ -202,13 +233,19 @@ public class BlogController {
 
     @GetMapping(value = "", params = {"authorId"})
     @Transactional(readOnly = true)
-    public Page<Blog> getBlogsByAuthorId(@RequestParam("authorId") String authorId,
+    public Page<Blog> getBlogsByAuthorId(@RequestParam("authorId") Long authorId,
                                            @RequestParam(name = "page", required = false) Integer page,
                                            @RequestParam(name = "size", required = false) Integer size) {
         page = MoreObjects.firstNonNull(page, 0);
         size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
 
-        return blogRepository.findAllByAuthorId(authorId, PageRequest.of(page, size));
+        Optional<User> authorOptional = userRepository.findById(authorId);
+        if (!authorOptional.isPresent()) {
+            return Page.empty();
+        }
+        User author = authorOptional.get();
+
+        return blogRepository.findAllByAuthorId(author.getUid(), PageRequest.of(page, size));
     }
 
     @GetMapping(value = "", params = {"tagName"})
@@ -251,7 +288,7 @@ public class BlogController {
 
     @GetMapping(value = "", params = {"authorId", "tagNames"})
     @Transactional(readOnly = true)
-    public Page<Blog> getBlogsByAuthorIdAndTagNames(@RequestParam("authorId") String authorId,
+    public Page<Blog> getBlogsByAuthorIdAndTagNames(@RequestParam("authorId") Long authorId,
                                                     @RequestParam("tagNames") List<String> tagNames,
                                                     @RequestParam(name = "page", required = false) Integer page,
                                                     @RequestParam(name = "size", required = false) Integer size) {
@@ -259,9 +296,15 @@ public class BlogController {
             return Page.empty();
         }
 
-        List<Blog> result = blogRepository.findBlogsByAuthorIdAndTagsName(authorId, tagNames.get(0));
+        Optional<User> authorOptional = userRepository.findById(authorId);
+        if (!authorOptional.isPresent()) {
+            return Page.empty();
+        }
+        User author = authorOptional.get();
+
+        List<Blog> result = blogRepository.findBlogsByAuthorIdAndTagsName(author.getUid(), tagNames.get(0));
         for (int i = 1; i < tagNames.size(); i++) {
-            List<Blog> blogs = blogRepository.findBlogsByAuthorIdAndTagsName(authorId, tagNames.get(0));
+            List<Blog> blogs = blogRepository.findBlogsByAuthorIdAndTagsName(author.getUid(), tagNames.get(i));
             result = result.stream().filter(element -> {
                 for (Blog blog : blogs) {
                     if (blog.getId() == element.getId()) {

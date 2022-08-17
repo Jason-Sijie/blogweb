@@ -8,7 +8,7 @@ import BlogListPage from "../components/stateless/blog/BlogListPage";
 import LogoutPage from "../components/stateless/login/LogoutPage";
 import HomePage from "../components/stateless/home/HomePage";
 import ErrorPage from "../components/stateless/util/ErrorPage";
-import {setting} from "../config";
+import {appConfig} from "../config";
 import CreateBlogPage from "../components/stateless/blog/CreateBlogPage";
 import RegisterPage from "../components/stateless/login/RegisterPage";
 import UserProfilePage from "../components/stateless/home/UserProfilePage";
@@ -17,12 +17,12 @@ export function AppRoutes(props){
   return (
     <Routes>
       <Route path="/" exact element={
-        <BlogListPage pageSize={setting.pageSize}
+        <BlogListPage pageSize={appConfig.blogListPageSize}
                       searchButtonText={"Search Blogs"}
                       title={"All Blogs on Site"}/>
       }/>
       <Route path="/blogs" exact element={
-        <BlogListPage pageSize={setting.pageSize}
+        <BlogListPage pageSize={appConfig.blogListPageSize}
                       searchButtonText={"Search Blogs"}
                       title={"All Blogs on Site"}/>
       }/>

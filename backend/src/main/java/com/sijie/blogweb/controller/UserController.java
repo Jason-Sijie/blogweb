@@ -17,6 +17,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Isolation;
@@ -201,23 +202,19 @@ public class UserController {
     @GetMapping(value = "/{id}/likedBlogs")
     @Transactional(readOnly = true)
     @PreAuthorize("hasAnyAuthority('USER_ALL', 'USER_GET')")
-    public List<Blog> getUserLikedBlogsById(@PathVariable(name = "id") Long id) {
+    public Page<Blog> getUserLikedBlogsById(@PathVariable(name = "id") Long id,
+                                            @RequestParam(name = "page", required = false) Integer page,
+                                            @RequestParam(name = "size", required = false) Integer size) {
+        page = MoreObjects.firstNonNull(page, 0);
+        size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
+
         Optional<User> internalUserOptional = userRepository.findById(id);
         if (!internalUserOptional.isPresent()) {
             throw new ResourceNotFoundException("User " + id + " not found");
         }
         User internalUser = internalUserOptional.get();
 
-        List<Tuple> tuples = userRepository.findLikedBlogsByUserId(internalUser.getId());
-        List<Blog> likedBlogs = new ArrayList<>();
-        for (Tuple tuple : tuples) {
-            TupleWrapper tupleWrapper = new TupleWrapper(tuple);
-            Blog blog = tupleWrapper.toObject(Blog.class);
-            if (blog != null) {
-                likedBlogs.add(blog);
-            }
-        }
-
-        return likedBlogs;
+        return userHelper.getUserLikedBlogs(internalUser, page, size);
     }
+
 }

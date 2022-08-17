@@ -25,12 +25,12 @@ jobs:
         server-id: github # Value of the distributionManagement/repository/id field of the pom.xml
         settings-path: ${{ github.workspace }} # location for the settings.xml file
 
-    - name: Test on test env
-      run: ./mvnw test -Ptest
-      working-directory: ${{env.backend-dir}}
+    # - name: Test on test env
+    #   run: ./mvnw test -Ptest
+    #   working-directory: ${{env.backend-dir}}
 
-    - name: Build on dev env
-      run: ./mvnw package -Pdev -Dmaven.test.skip
+    - name: Build on prod env
+      run: ./mvnw package -Pprod -Dmaven.test.skip
       working-directory: ${{env.backend-dir}}
 
     - name: Untar target jar

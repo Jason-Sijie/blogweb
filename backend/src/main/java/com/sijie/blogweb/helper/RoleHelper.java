@@ -17,7 +17,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 @Component
-@Scope(scopeName = ConfigurableBeanFactory.SCOPE_PROTOTYPE)
+@Scope(scopeName = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class RoleHelper {
 
     private final PrivilegeRepository privilegeRepository;

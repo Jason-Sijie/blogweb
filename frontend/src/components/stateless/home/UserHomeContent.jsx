@@ -1,8 +1,10 @@
 import {Container, Tab, Tabs} from "react-bootstrap";
 import React from "react";
 import BlogSearch from "../../stateful/BlogSearch";
-import {setting} from "../../../config";
+import {appConfig} from "../../../config";
 import CreateBlogForm from "../../stateful/CreateBlogForm";
+import BlogList from "../blog/BlogList";
+import { getLikedBlogsByUserId } from "../../../actions/userRequests";
 
 /**
  * @param props : {
@@ -13,6 +15,12 @@ import CreateBlogForm from "../../stateful/CreateBlogForm";
  *   },
  *   authorId : "",
  *   name : "",
+ *   likedBlogs: {
+ *     content: [],
+ *     totalPage: ,
+ *     number: ,
+ *   },
+ *   getLikedBlogsWithParams: (params) => {}
  *   handleModalShow : (title, content, path) => {}
  * }
  * @returns {JSX.Element}
@@ -27,7 +35,7 @@ const UserHomeContent = (props) => {
           fill >
       <Tab eventKey="blogs" title={props.name + "'s Blogs"}>
         <Container className={"shadow-lg p-3 mb-5 bg-white rounded"} style={{minHeight: "800px"}}>
-          <BlogSearch pageSize={setting.pageSize}
+          <BlogSearch pageSize={appConfig.blogListPageSize}
                       authorId={props.authorId}
                       searchButtonText={"Search blogs under " + props.name}
                       title={"All Blogs written by " + props.name}/>
@@ -37,6 +45,15 @@ const UserHomeContent = (props) => {
         <Container className={"shadow-lg p-3 mb-5 bg-white rounded"} style={{minHeight: "600px"}}>
           <CreateBlogForm currentUser={props.currentUser}
                           handleModalShow={props.handleModalShow} />
+        </Container>
+      </Tab>
+      <Tab eventKey="likedBlogs" title={props.name + " liked blogs"}>
+        <Container className={"shadow-lg p-3 mb-5 bg-white rounded"} style={{minHeight: "600px"}}>
+          <BlogList content={props.likedBlogs.content}
+                    currentPage={props.likedBlogs.number}
+                    totalPages={props.likedBlogs.totalPages}
+                    pageSize={appConfig.blogListPageSize}
+                    getBlogsWithSearchParams={props.getLikedBlogsWithParams} />
         </Container>
       </Tab>
     </Tabs>

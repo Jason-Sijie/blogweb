@@ -242,7 +242,9 @@ class BlogDetail extends Component {
       return <Navigate replace to="/error" state={this.state.error}/>
     } else {
       return <Container>
-        <BlogHeader {...this.state.blog} />
+        <BlogHeader {...this.state.blog} 
+                    currentUser={this.props.currentUser} 
+                    refreshBlogDetail={this.refreshBlogDetail}/>
         {this.metadataPanel()}
         {this.blogContent()}
       </Container>

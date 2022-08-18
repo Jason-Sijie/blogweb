@@ -1,7 +1,9 @@
 import {Card, Col, ListGroup, Row} from "react-bootstrap";
+import { Link } from "react-router-dom";
 
 /**
  * @param props : {
+ *   userId: num,
  *   name : "",
  *   email : "",
  *   aboutMe: "",
@@ -40,11 +42,20 @@ const UserProfile = (props) => {
 
   return (
     <Card className={"shadow p-3 mb-5 bg-white rounded"}>
-      <Card.Img className={"home_profile_avatar"} variant="top" src="/images/profile_avatar.jpg" />
+      <div className={"home_profile_avatar"}>
+        <Card.Img style={{width: "100%", height: "100%"}} variant="top" src="/images/profile_avatar.jpg" />
+      </div>
       <Card.Body>
-        <Card.Title as={"h1"}>
-          {props.name}
-        </Card.Title>
+        <Link to={"/users/" + props.userId + "/home"}>
+          <Card.Title as={"h1"}>
+            {props.name}
+          </Card.Title>
+        </Link>
+        
+        
+        <Card.Text as={"h4"}>
+          {props.email}
+        </Card.Text>
 
         <hr />
         <Card.Text as={"h4"}>

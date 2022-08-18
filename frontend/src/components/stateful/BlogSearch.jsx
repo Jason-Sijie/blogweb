@@ -20,13 +20,13 @@ class BlogSearch extends Component {
     super(props);
     this.state = {
       currentPage: 0,
-      authorId: props.authorId || null,
       tagNames: null,
       blogTitle: null,
       loading: true
     }
 
     getBlogsWithParams({
+      authorId: props.authorId,
       page: this.state.currentPage,
       size: props.pageSize
     }, (data) => {
@@ -46,7 +46,7 @@ class BlogSearch extends Component {
 
   getBlogsWithSearchParams = (params) => {
     params = {
-      authorId: this.state.authorId,
+      authorId: this.props.authorId,
       tagNames: this.state.tagNames,
       blogTitle: this.state.blogTitle,
       ...params
@@ -93,7 +93,7 @@ class BlogSearch extends Component {
       return <Navigate replace to="/error" state={this.state.error}/>
     } else {
       return (
-        <Container>
+        <div className="m-2 p-3">
           {this.header()}
           <SearchPanel getBlogsWithSearchParams={this.getBlogsWithSearchParams}
                        updateSearchParams={this.updateSearchParams}
@@ -107,7 +107,7 @@ class BlogSearch extends Component {
                     pageSize={this.props.pageSize}
                     getBlogsWithSearchParams={this.getBlogsWithSearchParams}
           />
-        </Container>
+        </div>
       )
     }
   }

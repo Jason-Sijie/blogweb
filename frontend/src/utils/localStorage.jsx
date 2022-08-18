@@ -29,7 +29,7 @@ export const saveState = (state) => {
   try {
     const item = {
       state: state,
-      expiry: new Date().getTime() + appConfig.tokenTTLInMS
+      expiry: new Date().getTime() + appConfig.pageStaleTimeInMS
     };
     console.log("save state: ", item)
     localStorage.setItem(KEY, JSON.stringify(item));

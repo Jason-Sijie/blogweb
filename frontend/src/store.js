@@ -8,6 +8,8 @@ import modalReducer from "./reducers/modalReducer";
 import {browserHistory} from "./utils/history";
 import {loadState, saveState} from "./utils/localStorage";
 import debounce from "debounce";
+import { ACTIONS } from "./constants/actions";
+import { isTokenExpired } from "./utils/tokenExpire";
 
 const store = createStore(combineReducers({
   router: createRouterReducer(browserHistory),
@@ -25,6 +27,10 @@ store.subscribe(
   debounce(() => {
     saveState(store.getState());
   }, 800)
+);
+
+store.subscribe(
+  isTokenExpired(store)
 );
 
 export default store;

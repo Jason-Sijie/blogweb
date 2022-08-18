@@ -22,7 +22,7 @@ const BlogList = (props) => {
   }
 
   return (
-    <Container>
+    <Container fluid>
       {(props.content || []).map((item, idx) => {
         return (
           <Row key={idx} style={{margin: "10px 0"}}>

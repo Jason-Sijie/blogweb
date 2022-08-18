@@ -16,9 +16,11 @@ import BlogDetail from "../../stateful/BlogDetail";
 const BlogDetailPage = (props) => {
   let params = useParams()
   return (
-    <BlogDetail blogId={params.id}
-                currentUser={props.currentUser}
-                handleModalShow={props.handleModalShow}/>
+    <div style={{margin: "0 15%"}}>
+      <BlogDetail blogId={params.id}
+                  currentUser={props.currentUser}
+                  handleModalShow={props.handleModalShow}/>
+    </div>
   )
 }
 

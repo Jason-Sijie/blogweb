@@ -35,7 +35,7 @@ export const colorsInHex = [
 	"#FAEBD7",
 	"#00FFFF",
 	"#7FFFD4",
-  "#F0FFFF",
+    "#F0FFFF",
 	"#F5F5DC",
 	"#FFE4C4",
 	"#000000",

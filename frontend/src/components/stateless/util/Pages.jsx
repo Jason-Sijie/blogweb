@@ -39,8 +39,8 @@ const Pages = (props) => {
       })}
 
       <Pagination.Ellipsis disabled />
-      <Pagination.Next onClick={() => clickAction(Math.min(props.currentPage+1, props.totalPages-1))}/>
-      <Pagination.Last onClick={() => clickAction(props.totalPages-1)}/>
+      <Pagination.Next onClick={() => clickAction(Math.min(props.currentPage+1, Math.max(props.totalPages-1, 0)))}/>
+      <Pagination.Last onClick={() => clickAction(Math.max(props.totalPages-1, 0))}/>
     </Pagination>
   );
 };

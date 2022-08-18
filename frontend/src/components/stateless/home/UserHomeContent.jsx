@@ -4,6 +4,7 @@ import BlogSearch from "../../stateful/BlogSearch";
 import {appConfig} from "../../../config";
 import CreateBlogForm from "../../stateful/CreateBlogForm";
 import BlogList from "../blog/BlogList";
+import "../../../styles/tab_style.css";
 
 /**
  * @param props : {
@@ -27,27 +28,27 @@ import BlogList from "../blog/BlogList";
  */
 const UserHomeContent = (props) => {
   return (
-    <Tabs defaultActiveKey="blogs"
+    <Tabs className="nav-tabs m-3"
+          defaultActiveKey="blogs"
           id="user-home-content-tab"
-          className="mb-3"
           style={{fontSize: "25px"}}
           fill >
-      <Tab eventKey="blogs" title={props.name + "'s Blogs"}>
-        <Container className={"shadow-lg p-3 mb-5 bg-white rounded"} style={{minHeight: "800px"}}>
+      <Tab className="nav-link" eventKey="blogs" title={props.name + "'s Blogs"}>
+        <Container className={"shadow-lg bg-white rounded p-3 m-3"} style={{minHeight: "800px"}} fluid>
           <BlogSearch pageSize={appConfig.blogListPageSize}
                       authorId={props.authorId}
                       searchButtonText={"Search blogs under " + props.name}
                       title={"All Blogs written by " + props.name}/>
         </Container>
       </Tab>
-      <Tab eventKey="createBlog" title="Write New Blog">
-        <Container className={"shadow-lg p-3 mb-5 bg-white rounded"} style={{minHeight: "600px"}}>
+      <Tab className="nav-link" eventKey="createBlog" title="Write New Blog">
+        <Container className={"shadow-lg bg-white rounded m-3 p-3"} style={{minHeight: "600px"}} fluid>
           <CreateBlogForm currentUser={props.currentUser}
                           handleModalShow={props.handleModalShow} />
         </Container>
       </Tab>
-      <Tab eventKey="likedBlogs" title={props.name + " liked blogs"}>
-        <Container className={"shadow-lg p-3 mb-5 bg-white rounded"} style={{minHeight: "600px"}}>
+      <Tab className="nav-link" eventKey="likedBlogs" title={props.name + " liked blogs"}>
+        <Container className={"shadow-lg bg-white rounded m-3 p-3"} style={{minHeight: "600px"}} fluid>
           <BlogList content={props.likedBlogs.content}
                     currentPage={props.likedBlogs.number}
                     totalPages={props.likedBlogs.totalPages}

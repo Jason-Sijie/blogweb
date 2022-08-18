@@ -24,5 +24,8 @@
 }
 
 .home_profile_avatar {
-    min-height: 400px;
+    width: 100%;
+    /* min-height: 400px; */
+    /* max-height: 20px; */
+    
 }

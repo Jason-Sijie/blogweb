@@ -133,7 +133,7 @@ class CreateBlogForm extends Component {
 
   render() {
     return this.state.error == null ? (
-      <Container style={{minHeight: "500px"}}>
+      <Container style={{minHeight: "500px"}} fluid>
         {this.blogMetadataForm()}
         <Row style={{padding: "30px 30px"}}>
           <MDEditor

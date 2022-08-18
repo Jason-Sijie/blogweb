@@ -70,7 +70,7 @@ class SearchPanel extends Component {
 
   render() {
     return (
-      <Container className={"shadow p-3 mb-5 bg-white rounded"}>
+      <Container fluid className={"shadow p-3 mb-5 bg-white rounded"}>
         <Accordion>
           <Accordion.Item eventKey="0">
             <Accordion.Header><h4>Search Panel</h4></Accordion.Header>

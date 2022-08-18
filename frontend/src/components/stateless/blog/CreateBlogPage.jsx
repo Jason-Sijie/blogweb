@@ -1,3 +1,4 @@
+import { Container } from "react-bootstrap";
 import CreateBlogForm from "../../stateful/CreateBlogForm";
 
 /**
@@ -14,8 +15,10 @@ import CreateBlogForm from "../../stateful/CreateBlogForm";
  */
 const CreateBlogPage = (props) => {
   return (
-    <CreateBlogForm currentUser={props.currentUser}
-                    handleModalShow={props.handleModalShow} />
+    <Container>
+      <CreateBlogForm currentUser={props.currentUser}
+                      handleModalShow={props.handleModalShow} />
+    </Container>
   )
 }
 

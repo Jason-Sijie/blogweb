@@ -1,7 +1,7 @@
 import {Button, Container, Nav, Navbar, ListGroup, Offcanvas} from "react-bootstrap";
-import {Link} from "react-router-dom";
 import {appConfig} from "../../../config";
 import {useState} from "react";
+import MyNavLink from "./MyNavLink";
 
 /**
  * @param props: {
@@ -23,11 +23,11 @@ const AppHeader = (props) => {
   const handleShow = () => setShow(true);
 
   return (
-    <Navbar collapseOnSelect expand="lg" bg="dark" variant="dark" fixed="top" style={{height: "70px"}}>
-      <Container fluid style={{margin: "0 5%", fontSize: "20px"}}>
+    <Navbar collapseOnSelect expand="lg" bg="black" variant="dark" fixed="top" style={{height: "70px"}}>
+      <Container fluid style={{margin: "0 3%", fontSize: "25px"}}>
         <Navbar.Brand href="/" style={{fontSize: "30px", marginRight: "2%"}}>{appConfig.websiteName}</Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse id="responsive-navbar-nav">
+        <Navbar.Collapse id="responsive-navbar-nav" style={{backgroundColor: "black"}}>
           <Nav className="me-auto">
             <MyNavLink path={"/home"} text={"Home"}/>
             <MyNavLink path={"/blogs"} text={"All Blogs"}/>
@@ -36,8 +36,8 @@ const AppHeader = (props) => {
             {isLogin ? (
               <>
                 <MyNavLink path={"/home"} text={"Hello " + currentUser.username}/>
-                <Button variant="primary" onClick={handleShow} style={{backgroundColor: "transparent"}}>
-                  More Options
+                <Button variant="primary" onClick={handleShow} style={{backgroundColor: "grey", border: "0", minWidth:"100px"}} >
+                  Menu
                 </Button>
               </>
             ) : (
@@ -51,22 +51,9 @@ const AppHeader = (props) => {
 
         <Offcanvas show={show} placement='end' onHide={handleClose}>
           <Offcanvas.Header closeButton>
-            <Offcanvas.Title>Offcanvas</Offcanvas.Title>
+            <Offcanvas.Title>Menu</Offcanvas.Title>
           </Offcanvas.Header>
           <Offcanvas.Body>
-            {/* <Nav variant="pills" defaultActiveKey="/home">
-              <Nav.Item>
-                <Nav.Link href="/home">Active</Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey="link-1">Option 2</Nav.Link>
-              </Nav.Item>
-              <Nav.Item>
-                <Nav.Link eventKey="disabled" disabled>
-                  Disabled
-                </Nav.Link>
-              </Nav.Item>
-            </Nav> */}
             <ListGroup>
               <MyNavLink path={"/home"} text={<ListGroup.Item>Home</ListGroup.Item>}/>
               <MyNavLink path={"/blogs/create"} text={<ListGroup.Item>Write New Blog</ListGroup.Item>}/>
@@ -78,20 +65,6 @@ const AppHeader = (props) => {
       </Container>
     </Navbar>
   )
-}
-
-const MyNavLink = (props) => {
-  const {path, text} = props;
-  const [hover, setHover] = useState(false);
-
-  return <Nav.Link>
-    <Link style={{ color: 'inherit', textDecoration: 'inherit'}} to={path}>
-      <Button onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
-        style={{backgroundColor: (hover === true) ? "lightgrey" : "transparent", border: "0px", width: "100%"}}>
-        {text}
-      </Button>
-    </Link>
-  </Nav.Link>
 }
 
 export default AppHeader;

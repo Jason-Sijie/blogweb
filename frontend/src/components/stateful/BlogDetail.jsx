@@ -151,7 +151,7 @@ class BlogDetail extends Component {
     let isEdit = this.state.isEdit;
 
     return (
-      <Container style={{minHeight: "500px"}}>
+      <div className="p-2" style={{minHeight: "500px"}}>
         {this.blogMetadataForm(isEdit)}
 
         <Row style={{padding: "30px 30px"}}>
@@ -164,10 +164,11 @@ class BlogDetail extends Component {
             />
           ) : (
             <MDEditor.Markdown source={this.state.updatedContent}
-                               height={"800px"}/>
+                               height={"800px"} 
+                               warpperElement={'light'}/>
           )}
         </Row>
-      </Container>
+      </div>
     )
   }
 
@@ -217,21 +218,19 @@ class BlogDetail extends Component {
 
   metadataPanel = () => {
     return(
-      <Container>
-        <Card>
-          <Card.Header>
-            <Row style={{justifyContent: "space-between"}}>
-              <Col xs={"auto"}>
-                Create Time: <div style={{color:"grey"}}>{new Date(this.state.blog.gmtCreate).toLocaleString()}</div>
-              </Col>
-              <Col xs={"auto"}>
-                Last Modified: <div style={{color:"grey"}}>{new Date(this.state.blog.gmtUpdate).toLocaleString()}</div>
-              </Col>
-            </Row>
-          </Card.Header>
-          {this.displayEditPanel()}
-        </Card>
-      </Container>
+      <Card>
+        <Card.Header>
+          <Row style={{justifyContent: "space-between"}}>
+            <Col xs={"auto"}>
+              Create Time: <div style={{color:"grey"}}>{new Date(this.state.blog.gmtCreate).toLocaleString()}</div>
+            </Col>
+            <Col xs={"auto"}>
+              Last Modified: <div style={{color:"grey"}}>{new Date(this.state.blog.gmtUpdate).toLocaleString()}</div>
+            </Col>
+          </Row>
+        </Card.Header>
+        {this.displayEditPanel()}
+      </Card>
     )
   }
 
@@ -241,13 +240,13 @@ class BlogDetail extends Component {
     } else if (this.state.error != null) {
       return <Navigate replace to="/error" state={this.state.error}/>
     } else {
-      return <Container>
+      return <div>
         <BlogHeader {...this.state.blog} 
                     currentUser={this.props.currentUser} 
                     refreshBlogDetail={this.refreshBlogDetail}/>
         {this.metadataPanel()}
         {this.blogContent()}
-      </Container>
+      </div>
     }
   }
 }

@@ -87,7 +87,7 @@ const MyNavLink = (props) => {
   return <Nav.Link>
     <Link style={{ color: 'inherit', textDecoration: 'inherit'}} to={path}>
       <Button onMouseEnter={() => setHover(true)} onMouseLeave={() => setHover(false)}
-        style={{backgroundColor: (hover == true) ? "lightgrey" : "transparent", border: "0px", width: "100%"}}>
+        style={{backgroundColor: (hover === true) ? "lightgrey" : "transparent", border: "0px", width: "100%"}}>
         {text}
       </Button>
     </Link>

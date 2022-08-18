@@ -1,5 +1,6 @@
 import {api} from "../config";
 import axios from "axios";
+import {defaultErrorResponse, getBackendRequestBasicHeader} from "../utils/requestUtil";
 
 export const getProfileById = (id, successCallback = (data) => {}, failureCallback = (error) => {}) => {
   console.log("Get profile by user id: ", id)
@@ -21,17 +22,8 @@ export const createProfile = (profile, successCallback = (data) => {}, failureCa
   }
   console.log("Creating profile: ", profile)
   const url = api.blogWeb.user + "/profiles";
-  let headers = {
-    "Content-Type": "application/json"
-  };
-
-  if (localStorage.getItem("token") != null) {
-    const token = JSON.parse(localStorage.getItem("token"));
-    headers = {
-      ...headers,
-      "Authorization": token.type + " " + token.content
-    }
-  }
+  
+  let headers = getBackendRequestBasicHeader();
 
   axios.post(url, profile,{
     headers: headers
@@ -49,17 +41,8 @@ export const updateProfile = (profile, successCallback = (data) => {}, failureCa
   }
   console.log("Updating profile: ", profile)
   const url = api.blogWeb.user + "/" + profile.id + "/profiles";
-  let headers = {
-    "Content-Type": "application/json"
-  };
-
-  if (localStorage.getItem("token") != null) {
-    const token = JSON.parse(localStorage.getItem("token"));
-    headers = {
-      ...headers,
-      "Authorization": token.type + " " + token.content
-    }
-  }
+  
+  let headers = getBackendRequestBasicHeader();
 
   axios.put(url, profile,{
     headers: headers
@@ -69,10 +52,4 @@ export const updateProfile = (profile, successCallback = (data) => {}, failureCa
     console.log(error)
     failureCallback(error.response || defaultErrorResponse)
   })
-}
-
-const defaultErrorResponse = {
-  data: {
-    message: "Sorry! The service is now unavailable."
-  }
 }

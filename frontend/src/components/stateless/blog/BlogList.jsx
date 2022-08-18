@@ -1,4 +1,4 @@
-import {Container, Row, Col} from "react-bootstrap";
+import {Container, Row} from "react-bootstrap";
 import BlogItem from "./BlogItem";
 import Pages from "../util/Pages";
 

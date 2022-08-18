@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {Button, Col, Form, Row, Dropdown, Collapse, Container, Accordion} from "react-bootstrap";
+import {Button, Col, Form, Row, Container, Accordion} from "react-bootstrap";
 import TagListToasts from "../stateless/util/TagListToasts";
 
 /**

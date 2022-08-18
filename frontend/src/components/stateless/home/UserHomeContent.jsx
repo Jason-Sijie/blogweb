@@ -4,7 +4,6 @@ import BlogSearch from "../../stateful/BlogSearch";
 import {appConfig} from "../../../config";
 import CreateBlogForm from "../../stateful/CreateBlogForm";
 import BlogList from "../blog/BlogList";
-import { getLikedBlogsByUserId } from "../../../actions/userRequests";
 
 /**
  * @param props : {

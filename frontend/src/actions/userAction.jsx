@@ -1,7 +1,6 @@
 import axios from "axios";
 import {api} from "../config";
 import {ACTIONS} from "../constants/actions";
-import {push} from "@lagunovsky/redux-react-router";
 
 export const acquireJwtCredentials = (username, password) => dispatch => {
   const url = api.blogWeb.login;

@@ -1,6 +1,7 @@
 import {stringify} from "qs";
 import {api} from "../config";
 import axios from "axios";
+import {defaultErrorResponse, getBackendRequestBasicHeader} from "../utils/requestUtil";
 
 export const getBlogsWithParams = (params, successCallback = (data) => {}, failureCallback = (error) => {}) => {
   params = stringify(params, {arrayFormat: "repeat", skipNulls: true});
@@ -33,17 +34,7 @@ export const getBlogDetailById = (id, successCallback = (data) => {}, failureCal
 
 export const updateBlogContent = (blog, successCallback = (data) => {}, failureCallback = (error) => {}) => {
   const url = api.blogWeb.blog + "/" + blog.id;
-  let headers = {
-    "Content-Type": "application/json"
-  };
-
-  if (localStorage.getItem("token") != null) {
-    const token = JSON.parse(localStorage.getItem("token"));
-    headers = {
-      ...headers,
-      "Authorization": token.type + " " + token.content
-    }
-  }
+  let headers = getBackendRequestBasicHeader();
 
   axios.put(url, blog,{
     headers: headers
@@ -57,17 +48,7 @@ export const updateBlogContent = (blog, successCallback = (data) => {}, failureC
 
 export const createBlog = (blog, successCallback = (data) => {}, failureCallback = (error) => {}) => {
   const url = api.blogWeb.blog;
-  let headers = {
-    "Content-Type": "application/json"
-  };
-
-  if (localStorage.getItem("token") != null) {
-    const token = JSON.parse(localStorage.getItem("token"));
-    headers = {
-      ...headers,
-      "Authorization": token.type + " " + token.content
-    }
-  }
+  let headers = getBackendRequestBasicHeader();
 
   axios.post(url, blog,{
     headers: headers
@@ -81,17 +62,7 @@ export const createBlog = (blog, successCallback = (data) => {}, failureCallback
 
 export const likeBlogById = (blogId, successCallback = (data) => {}, failureCallback = (error) => {}) => {
   const url = api.blogWeb.blog + "/" + blogId + "/like";
-  let headers = {
-    "Content-Type": "application/json"
-  };
-
-  if (localStorage.getItem("token") != null) {
-    const token = JSON.parse(localStorage.getItem("token"));
-    headers = {
-      ...headers,
-      "Authorization": token.type + " " + token.content
-    }
-  }
+  let headers = getBackendRequestBasicHeader();
 
   axios.put(url, null,{
     headers: headers
@@ -106,17 +77,7 @@ export const likeBlogById = (blogId, successCallback = (data) => {}, failureCall
 
 export const unlikeBlogById = (blogId, successCallback = (data) => {}, failureCallback = (error) => {}) => {
   const url = api.blogWeb.blog + "/" + blogId + "/unlike";
-  let headers = {
-    "Content-Type": "application/json"
-  };
-
-  if (localStorage.getItem("token") != null) {
-    const token = JSON.parse(localStorage.getItem("token"));
-    headers = {
-      ...headers,
-      "Authorization": token.type + " " + token.content
-    }
-  }
+  let headers = getBackendRequestBasicHeader();
 
   axios.put(url, null,{
     headers: headers
@@ -127,11 +88,4 @@ export const unlikeBlogById = (blogId, successCallback = (data) => {}, failureCa
     console.log(error)
     failureCallback(error.response || defaultErrorResponse)
   })
-}
-
-
-const defaultErrorResponse = {
-  data: {
-    message: "Sorry! The service is now unavailable."
-  }
 }

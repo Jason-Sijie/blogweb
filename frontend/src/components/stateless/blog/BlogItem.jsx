@@ -1,4 +1,4 @@
-import {Row, Col, Card, Button, Image} from "react-bootstrap";
+import {Row, Col, Card, Button} from "react-bootstrap";
 import TagList from "../util/TagList";
 import {Link} from "react-router-dom";
 

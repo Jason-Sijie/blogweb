@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {Button, Col, Container, Offcanvas, Row} from "react-bootstrap";
+import {Col, Container, Row} from "react-bootstrap";
 import {Navigate} from 'react-router-dom';
 import UserHomeHeader from "../stateless/home/UserHomeHeader";
 import UserProfile from "../stateless/home/UserProfile";

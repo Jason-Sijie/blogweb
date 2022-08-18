@@ -1,5 +1,4 @@
-import {Button, Card, Col, ListGroup, Row} from "react-bootstrap";
-import {link} from "@uiw/react-md-editor";
+import {Card, Col, ListGroup, Row} from "react-bootstrap";
 
 /**
  * @param props : {

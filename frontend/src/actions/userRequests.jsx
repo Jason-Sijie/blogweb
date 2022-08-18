@@ -1,5 +1,6 @@
 import {api, appConfig} from "../config";
 import axios from "axios";
+import { defaultErrorResponse, getBackendRequestBasicHeader } from "../utils/requestUtil";
 
 export const getLikedBlogsByUserId = (params, successCallback = (data) => {}, failureCallback = (error) => {}) => {
   let {userId, page, size} = params
@@ -9,17 +10,7 @@ export const getLikedBlogsByUserId = (params, successCallback = (data) => {}, fa
   console.log("Get user " + userId + " liked blogs")
   const url = api.blogWeb.user + "/" + userId + "/likedBlogs?authorId=" + userId + "&page=" + page + "&size=" + size;
 
-  let headers = {
-    "Content-Type": "application/json"
-  };
-
-  if (localStorage.getItem("token") != null) {
-    const token = JSON.parse(localStorage.getItem("token"));
-    headers = {
-      ...headers,
-      "Authorization": token.type + " " + token.content
-    }
-  }
+  let headers = getBackendRequestBasicHeader();
 
   axios.get(url, {
     headers: headers
@@ -36,17 +27,7 @@ export const isBlogLikedByCurrentUser = (blogId, successCallback = (data) => {},
   console.log("Is blogs " + blogId + " liked by current user")
   const url = api.blogWeb.blog + "/" + blogId + "/isLiked";
 
-  let headers = {
-    "Content-Type": "application/json"
-  };
-
-  if (localStorage.getItem("token") != null) {
-    const token = JSON.parse(localStorage.getItem("token"));
-    headers = {
-      ...headers,
-      "Authorization": token.type + " " + token.content
-    }
-  }
+  let headers = getBackendRequestBasicHeader();
 
   axios.get(url, {
     headers: headers
@@ -57,10 +38,4 @@ export const isBlogLikedByCurrentUser = (blogId, successCallback = (data) => {},
     console.log(error)
     failureCallback(error.response || defaultErrorResponse)
   })
-}
-
-const defaultErrorResponse = {
-  data: {
-    message: "Sorry! The service is now unavailable."
-  }
 }

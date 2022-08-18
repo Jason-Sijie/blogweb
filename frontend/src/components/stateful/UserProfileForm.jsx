@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {Button, Col, Container, FloatingLabel, Form, InputGroup, ListGroup, Row} from "react-bootstrap";
+import {Button, Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
 import {createProfile, getProfileById, updateProfile} from "../../actions/profileRequest";
 import LoadingSpinner from "../stateless/util/LoadingSpinner";
 import {Navigate} from "react-router-dom";

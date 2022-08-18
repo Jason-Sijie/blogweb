@@ -1,5 +1,5 @@
 import React, {Component} from "react";
-import {Col, Container, Row, Spinner} from "react-bootstrap";
+import {Col, Container, Row} from "react-bootstrap";
 import SearchPanel from "./SearchPanel";
 import BlogList from "../stateless/blog/BlogList";
 import {getBlogsWithParams} from "../../actions/blogRequests";

@@ -1,5 +1,4 @@
-import {Col, Container, Row} from "react-bootstrap";
-import OverlayIcon from "../util/OverlayIcon";
+import {Container, Row} from "react-bootstrap";
 
 import "../../../styles/home_style.css";
 

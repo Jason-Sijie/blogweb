@@ -53,7 +53,7 @@ class BlogHeader extends Component {
       return;
     }
     console.log("handle like button")
-    if (this.state.liked == true) {
+    if (this.state.liked === true) {
       unlikeBlogById(this.props.id, (data) => {
         this.props.refreshBlogDetail()
         this.setState({

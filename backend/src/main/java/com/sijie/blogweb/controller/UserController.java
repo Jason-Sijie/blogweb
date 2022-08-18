@@ -201,7 +201,6 @@ public class UserController {
 
     @GetMapping(value = "/{id}/likedBlogs")
     @Transactional(readOnly = true)
-    @PreAuthorize("hasAnyAuthority('USER_ALL', 'USER_GET')")
     public Page<Blog> getUserLikedBlogsById(@PathVariable(name = "id") Long id,
                                             @RequestParam(name = "page", required = false) Integer page,
                                             @RequestParam(name = "size", required = false) Integer size) {

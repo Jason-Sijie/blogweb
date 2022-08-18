@@ -89,17 +89,31 @@ public class ProfileController {
     }
 
     @GetMapping(value = "/users/{id}/profiles")
-    @Transactional(isolation = READ_COMMITTED)
-    @RedisTransaction(type = RedisTransactionType.ReadOnly)
+    @Transactional(readOnly = true)
     public Profile getProfileById(@PathVariable("id") Long userId) {
         return getExternalProfileFromUserId(userId);
     }
 
     @GetMapping(value = "/users/profiles", params = {"userId"})
-    @Transactional(isolation = READ_COMMITTED)
-    @RedisTransaction(type = RedisTransactionType.ReadOnly)
+    @Transactional(readOnly = true)
     public Profile getProfileByUserId(@RequestParam Long userId) {
         return getExternalProfileFromUserId(userId);
+    }
+
+    @GetMapping(value = "/users/profiles", params = {"uid"})
+    @Transactional(readOnly = true)
+    public Profile getProfileByUserId(@RequestParam(name = "uid") String uid) {
+        User user = userRepository.findByUid(uid);
+        if (user == null) {
+            throw new ResourceNotFoundException("Profile with uid: " + uid + " not found");
+        }
+
+        Profile profile = profileRepository.getProfile(user.getId());
+        if (profile == null) {
+            throw new ResourceNotFoundException("Profile with user id: " + user.getId() + " not found");
+        }
+
+        return populateBlogsAggregateInfo(profile, user);
     }
 
     private Profile getExternalProfileFromUserId(Long userId) {
@@ -113,7 +127,11 @@ public class ProfileController {
             throw new ResourceNotFoundException("User with id: " + userId + " not found");
         }
 
-        List<Blog> blogs = blogRepository.findAllByAuthorId(user.get().getUid());
+        return populateBlogsAggregateInfo(profile, user.get());
+    }
+
+    private Profile populateBlogsAggregateInfo(Profile profile, User user) {
+        List<Blog> blogs = blogRepository.findAllByAuthorId(user.getUid());
         long totalViews = 0;
         long totalLikes = 0;
         for (Blog blog : blogs) {

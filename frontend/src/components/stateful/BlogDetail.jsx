@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {Button, Card, Col, Container, Form, Row} from "react-bootstrap";
+import {Button, Card, Col, Container, Form, Offcanvas, Row} from "react-bootstrap";
 import MDEditor from '@uiw/react-md-editor';
 
 import "../../styles/blog_style.css";
@@ -9,6 +9,8 @@ import TagListToasts from "../stateless/util/TagListToasts";
 import {getBlogDetailById, updateBlogContent} from "../../actions/blogRequests";
 import LoadingSpinner from "../stateless/util/LoadingSpinner";
 import {Navigate} from "react-router-dom";
+import { getProfileById, getProfileByUid } from "../../actions/profileRequest";
+import UserProfile from "../stateless/home/UserProfile";
 
 /**
  * @Params props: {
@@ -30,6 +32,11 @@ class BlogDetail extends Component {
         gmtUpdate: "",
         authorId: ""
       },
+      profile: {
+        name: "",
+        email: ""
+      },
+      profileShow: false,
       newTag: "",
       isEdit: false,
       loading: true
@@ -77,12 +84,22 @@ class BlogDetail extends Component {
         updatedTags: data.tags || [],
         loading: false
       })
+
+      getProfileByUid(this.state.blog.authorId, data => {
+        this.setState({
+          profile: data
+        })
+      }, error => {
+        console.log(error.message)
+      })
+
     }, (error) => {
       this.setState({
         loading: false,
         error: error.data
       })
     });
+
   }
 
   updateBlogContentWithMessage = () => {
@@ -178,13 +195,11 @@ class BlogDetail extends Component {
     return shouldDisplay ? (
       this.editPanel()
     ) : (
-      <Card.Body>
-        <Row style={{justifyContent: "space-between"}}>
-          <Col xs={"10"} style={{margin: "10px 0px"}}>
-            <TagList tags={this.state.updatedTags || []} fontSize={"18px"}/>
-          </Col>
-        </Row>
-      </Card.Body>
+      <Row style={{justifyContent: "space-between"}}>
+        <Col xs={"10"} style={{margin: "10px 0px"}}>
+          <TagList tags={this.state.updatedTags || []} fontSize={"18px"}/>
+        </Col>
+      </Row>
     )
   }
 
@@ -229,7 +244,27 @@ class BlogDetail extends Component {
             </Col>
           </Row>
         </Card.Header>
-        {this.displayEditPanel()}
+        <Card.Body>
+          <Row style={{justifyContent: "space-between"}}>
+            <Col>
+              <Button variant="light"
+                      onClick={() => this.setState({profileShow: true})}>
+                <h5>{"Author: " + this.state.profile.name + ", Email: " + this.state.profile.email}</h5>
+              </Button>
+              <Offcanvas show={this.state.profileShow} style={{width: "25%"}}
+                          onHide={() => this.setState({profileShow: false})}>
+                <Offcanvas.Header closeButton>
+                  <Offcanvas.Title>Author Profile</Offcanvas.Title>
+                </Offcanvas.Header>
+                <Offcanvas.Body>
+                  <UserProfile {...this.state.profile} />
+                </Offcanvas.Body>
+              </Offcanvas>
+            </Col>
+          </Row>
+          <hr></hr>
+          {this.displayEditPanel()}
+        </Card.Body>
       </Card>
     )
   }

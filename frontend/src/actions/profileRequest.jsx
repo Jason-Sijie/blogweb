@@ -16,6 +16,20 @@ export const getProfileById = (id, successCallback = (data) => {}, failureCallba
   })
 }
 
+export const getProfileByUid = (uid, successCallback = (data) => {}, failureCallback = (error) => {}) => {
+  console.log("Get profile by uid: ", uid)
+  const url = api.blogWeb.user + "/profiles?uid=" + uid;
+
+  axios.get(url)
+    .then(promise => {
+      console.log(promise.data)
+      successCallback(promise.data)
+    }).catch(error => {
+      console.log(error)
+      failureCallback(error.response || defaultErrorResponse)
+  })
+}
+
 export const createProfile = (profile, successCallback = (data) => {}, failureCallback = (error) => {}) => {
   if (profile == null || profile.id == null) {
     return;

@@ -130,7 +130,7 @@ class UserProfileForm extends Component {
     if (this.state.hasProfile) {
       // update profile
       updateProfile({
-        id: this.props.userId,
+        userId: this.props.userId,
         name: this.state.name,
         email: this.state.email,
         aboutMe: this.state.aboutMe,

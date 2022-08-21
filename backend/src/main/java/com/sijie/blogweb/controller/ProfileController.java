@@ -9,6 +9,7 @@ import com.sijie.blogweb.helper.AuthPrincipalHelper;
 import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.model.Profile;
 import com.sijie.blogweb.model.User;
+import com.sijie.blogweb.model.response.BasicHttpResponse;
 import com.sijie.blogweb.repository.BlogRepository;
 import com.sijie.blogweb.repository.UserRepository;
 import com.sijie.blogweb.repository.redis.ProfileRepository;
@@ -18,18 +19,14 @@ import com.sijie.blogweb.security.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.core.parameters.P;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
-
-import static org.springframework.transaction.annotation.Isolation.READ_COMMITTED;
-
 
 @RestController
 public class ProfileController {
@@ -53,16 +50,32 @@ public class ProfileController {
             throw new UserCredentialsAbsenceException("You must log in before creating a new profile");
         }
 
-        Profile internalProfile = profileRepository.getProfile(profile.getUserId());
+        Profile internalProfile = profileRepository.getProfileContent(profile.getUserId());
         if (internalProfile != null) {
             throw new ResourceAlreadyExistsException("User " + profile.getUserId() + " already had a profile.");
         }
 
         validateNewProfile(profile);
-        profileRepository.setProfile(profile);
+        profileRepository.setProfileContent(profile);
         logger.info("Create new Profile: " + profile);
 
         return profile;
+    }
+
+    @PostMapping(value = "/users/profiles/avatar", consumes = {"application/json"})
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @RedisTransaction(type = RedisTransactionType.ReadThenWrite)
+    public BasicHttpResponse uploadProfileAvatar(@RequestBody byte[] avatar) {
+        CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
+        if (userDetails == null) {
+            throw new UserCredentialsAbsenceException("You must log in before creating a new profile");
+        }
+
+        profileRepository.setProfileAvatar(userDetails.getId(), avatar);
+        BasicHttpResponse response = new BasicHttpResponse();
+        response.setMessage("Successfully upload user: " + userDetails.getId() + " avatar");
+        response.setStatus(200);
+        return response;
     }
 
     @PutMapping(value = "/users/{id}/profiles", consumes = {"application/json"})
@@ -76,16 +89,26 @@ public class ProfileController {
             throw new UserCredentialsAbsenceException("You must be logged in to update your profile");
         }
 
-        Profile internalProfile = profileRepository.getProfile(userId);
+        Profile internalProfile = profileRepository.getProfileContent(userId);
         if (internalProfile == null) {
             throw new ResourceNotFoundException("Profile with user id: " + userId + " not found");
         }
 
         internalProfile = validateAndUpdateProfile(inputProfile, internalProfile);
-        profileRepository.setProfile(internalProfile);
+        profileRepository.setProfileContent(internalProfile);
         logger.info("Update profile: " + internalProfile);
 
         return internalProfile;
+    }
+
+    @GetMapping(value = "/users/{id}/profiles/avatar", produces = {"image/jpeg"})
+    @Transactional(readOnly = true)
+    public byte[] getProfileAvatarById(@PathVariable("id") Long userId) {
+        byte[] avatar = profileRepository.getProfileAvatar(userId);
+        if (avatar == null) {
+            throw new ResourceNotFoundException("Profile avatar with user id: " + userId + " not found");
+        }
+        return avatar;
     }
 
     @GetMapping(value = "/users/{id}/profiles")
@@ -108,7 +131,7 @@ public class ProfileController {
             throw new ResourceNotFoundException("Profile with uid: " + uid + " not found");
         }
 
-        Profile profile = profileRepository.getProfile(user.getId());
+        Profile profile = profileRepository.getProfileContent(user.getId());
         if (profile == null) {
             throw new ResourceNotFoundException("Profile with user id: " + user.getId() + " not found");
         }
@@ -117,7 +140,7 @@ public class ProfileController {
     }
 
     private Profile getExternalProfileFromUserId(Long userId) {
-        Profile profile = profileRepository.getProfile(userId);
+        Profile profile = profileRepository.getProfileContent(userId);
         if (profile == null) {
             throw new ResourceNotFoundException("Profile with user id: " + userId + " not found");
         }

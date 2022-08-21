@@ -25,6 +25,10 @@ class CreateBlogForm extends Component {
       newTag: "",
       tags: []
     }
+
+    if (!this.isCurrentUserLoggedIn()) {
+      this.props.handleModalShow("Cannot write new blog", "You must login first", "/login")
+    }
   }
 
   isCurrentUserLoggedIn = () => {

@@ -33,7 +33,7 @@ const UserHomeContent = (props) => {
           id="user-home-content-tab"
           style={{fontSize: "25px"}}
           fill >
-      <Tab className="nav-link" eventKey="blogs" title={props.name + "'s Blogs"}>
+      <Tab className="nav-link" eventKey="blogs" title={"Blogs"}>
         <Container className={"shadow-lg bg-white rounded p-3 m-3"} style={{minHeight: "800px"}} fluid>
           <BlogSearch pageSize={appConfig.blogListPageSize}
                       authorId={props.authorId}
@@ -41,13 +41,16 @@ const UserHomeContent = (props) => {
                       title={"All Blogs written by " + props.name}/>
         </Container>
       </Tab>
-      <Tab className="nav-link" eventKey="createBlog" title="Write New Blog">
+      {(props.currentUser != null && props.currentUser.id === parseInt(props.authorId)) ? (
+      <Tab className="nav-link" eventKey="createBlog" title="New Blog">
         <Container className={"shadow-lg bg-white rounded m-3 p-3"} style={{minHeight: "600px"}} fluid>
           <CreateBlogForm currentUser={props.currentUser}
                           handleModalShow={props.handleModalShow} />
         </Container>
       </Tab>
-      <Tab className="nav-link" eventKey="likedBlogs" title={props.name + " liked blogs"}>
+      ) : (<></>)}
+      
+      <Tab className="nav-link" eventKey="likedBlogs" title={"Likes"}>
         <Container className={"shadow-lg bg-white rounded m-3 p-3"} style={{minHeight: "600px"}} fluid>
           <BlogList content={props.likedBlogs.content}
                     currentPage={props.likedBlogs.number}

@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {Button, Card, Col, Container, Form, Offcanvas, Row} from "react-bootstrap";
+import {Button, Card, Col, Form, Offcanvas, Row} from "react-bootstrap";
 import MDEditor from '@uiw/react-md-editor';
 
 import "../../styles/blog_style.css";
@@ -123,7 +123,7 @@ class BlogDetail extends Component {
     if (isEdit) {
       return (
         <Row style={{padding: "30px 30px 0px"}}>
-          <Form className={"shadow p-3 mb-5 bg-white rounded"}>
+          <Form className={"shadow p-3 bg-white rounded"}>
             <Form.Group className="mb-3" controlId="blogTitle">
               <Form.Label>Blog Title</Form.Label>
               <Form.Control type="text"
@@ -220,10 +220,10 @@ class BlogDetail extends Component {
     ) : (
       <Card.Body>
         <Row style={{justifyContent: "space-between"}}>
-          <Col xs={"10"} style={{margin: "10px 0px"}}>
+          <Col xs={"10"} >
             <TagList tags={this.state.updatedTags || []} fontSize={"18px"}/>
           </Col>
-          <Col xs={"2"} xl={"1"} style={{margin: "10px 0px"}}>
+          <Col xs={"2"} xxl={"1"} >
             <Button style={{width: "100%"}} variant={"primary"} onClick={() => {this.setState({isEdit: true})}}>Edit</Button>
           </Col>
         </Row>
@@ -246,10 +246,13 @@ class BlogDetail extends Component {
         </Card.Header>
         <Card.Body>
           <Row style={{justifyContent: "space-between"}}>
-            <Col>
-              <Button variant="light"
+            <Col style={{marginLeft: "1%", alignSelf: "center"}}>
+              <h5>Author Info: </h5>
+            </Col>
+            <Col xs="auto" style={{marginRight: "1%"}}>
+              <Button variant="light" style={{textAlign: "center"}}
                       onClick={() => this.setState({profileShow: true})}>
-                <h5>{"Author: " + this.state.profile.name + ", Email: " + this.state.profile.email}</h5>
+                {this.state.profile.name + ", " + this.state.profile.email}
               </Button>
               <Offcanvas show={this.state.profileShow} style={{width: "25%"}}
                           onHide={() => this.setState({profileShow: false})}>

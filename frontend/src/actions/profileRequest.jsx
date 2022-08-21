@@ -31,7 +31,7 @@ export const getProfileByUid = (uid, successCallback = (data) => {}, failureCall
 }
 
 export const createProfile = (profile, successCallback = (data) => {}, failureCallback = (error) => {}) => {
-  if (profile == null || profile.id == null) {
+  if (profile == null || profile.userId == null) {
     return;
   }
   console.log("Creating profile: ", profile)
@@ -50,15 +50,34 @@ export const createProfile = (profile, successCallback = (data) => {}, failureCa
 }
 
 export const updateProfile = (profile, successCallback = (data) => {}, failureCallback = (error) => {}) => {
-  if (profile == null || profile.id == null) {
+  if (profile == null || profile.userId == null) {
     return;
   }
   console.log("Updating profile: ", profile)
-  const url = api.blogWeb.user + "/" + profile.id + "/profiles";
+  const url = api.blogWeb.user + "/" + profile.userId + "/profiles";
   
   let headers = getBackendRequestBasicHeader();
 
   axios.put(url, profile,{
+    headers: headers
+  }).then(promise => {
+    successCallback(promise.data)
+  }).catch(error => {
+    console.log(error)
+    failureCallback(error.response || defaultErrorResponse)
+  })
+}
+
+export const uploadProfileAvatar = (avatar, successCallback = (data) => {}, failureCallback = (error) => {}) => {
+  if (avatar == null) {
+    return;
+  }
+  console.log("Uploading avatar")
+  const url = api.blogWeb.user + "/profiles/avatar";
+  
+  let headers = getBackendRequestBasicHeader();
+
+  axios.post(url, avatar,{
     headers: headers
   }).then(promise => {
     successCallback(promise.data)

@@ -1,5 +1,6 @@
 import {Card, Col, ListGroup, Row} from "react-bootstrap";
 import { Link } from "react-router-dom";
+import {api} from "../../../config";
 
 /**
  * @param props : {
@@ -43,7 +44,10 @@ const UserProfile = (props) => {
   return (
     <Card className={"shadow p-3 mb-5 bg-white rounded"}>
       <div className={"home_profile_avatar"}>
-        <Card.Img style={{width: "100%", height: "100%"}} variant="top" src="/images/profile_avatar.jpg" />
+        <Card.Img className="home_profile_avatar"
+                  style={{padding: "10%"}}
+                  variant="top" 
+                  src={api.blogWeb.user + "/" + props.userId + "/profiles/avatar"} />
       </div>
       <Card.Body>
         <Link to={"/users/" + props.userId + "/home"}>

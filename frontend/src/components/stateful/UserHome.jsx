@@ -27,6 +27,7 @@ class UserHome extends Component {
     this.state = {
       loading: true,
       error: null,
+      showProfile: false,
       likedBlogs: {
         content: [],
         totalPages: 0,
@@ -94,11 +95,12 @@ class UserHome extends Component {
         <Container fluid style={{margin: 0, padding: 0}}>
           <UserHomeHeader {...this.state.profile}/>
           <Row>
-            <Col xs={3} style={{margin: "0% 2% 4% 4%", position: "relative", top: "-200px"}}>
+            <Col xs={3} style={{margin: "0% 2% 4% 2%", position: "relative", top: "-200px"}}>
               <UserProfile {...this.state.profile}/>
             </Col>
             <Col xs={8}>
               <UserHomeContent authorId={this.props.userId}
+                               currentUser={this.props.currentUser}
                                name={this.state.profile.name}
                                likedBlogs={this.state.likedBlogs}
                                getLikedBlogsWithParams={this.getLikedBlogsWithParams}

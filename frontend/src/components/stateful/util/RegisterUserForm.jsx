@@ -12,12 +12,17 @@ class RegisterUserForm extends Component{
     super(props);
     this.state = {
       username: "",
-      password: ""
+      password: "",
+      password2: ""
     };
   }
 
   registerUser = (event) => {
     event.preventDefault();
+    if (this.state.password2 !== this.state.password) {
+      this.props.handleModalShow("Error", "Please repeat your password correctly")
+      return;
+    }
     this.props.registerUser(this.state.username, this.state.password)
   }
 
@@ -46,6 +51,13 @@ class RegisterUserForm extends Component{
           <Form.Control type="password"
                         placeholder="Password"
                         onChange={this.changeStateOnEvent("password")}
+                        required />
+        </FloatingLabel>
+
+        <FloatingLabel controlId="floatingLoginPassword2" label="Repeat password" className="mb-4">
+          <Form.Control type="password"
+                        placeholder="Password"
+                        onChange={this.changeStateOnEvent("password2")}
                         required />
         </FloatingLabel>
 

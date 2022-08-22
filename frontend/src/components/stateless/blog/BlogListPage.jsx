@@ -15,15 +15,17 @@ const BlogListPage = (props) => {
   let query = useQuery();
   const tagNamesString = query.get("tagNames");
   let tagNames = []
-  if (tagNamesString != null && tagNamesString != "") {
+  if (tagNamesString != null && tagNamesString !== "") {
     tagNames = tagNamesString.split(",")
   }
 
   return (
-    <BlogSearch pageSize={props.pageSize}
+    <div style={{padding: "0 10%"}}>
+      <BlogSearch pageSize={props.pageSize}
                 tagNames={tagNames}
                 searchButtonText={props.searchButtonText}
                 title={props.title} />
+    </div>
   )
 }
 

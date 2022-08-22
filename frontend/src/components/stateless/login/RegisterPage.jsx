@@ -3,7 +3,8 @@ import RegisterUserForm from "../../stateful/util/RegisterUserForm";
 
 /**
  * @param props : {
- *   registerUser: (username, password) => {}
+ *   registerUser: (username, password) => {},
+ *   handleModalShow: (title, message, path) => {} 
  * }
  * @returns {JSX.Element}
  * @constructor

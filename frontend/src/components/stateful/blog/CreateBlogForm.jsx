@@ -27,7 +27,7 @@ class CreateBlogForm extends Component {
     }
 
     if (!this.isCurrentUserLoggedIn()) {
-      this.props.handleModalShow("Cannot write new blog", "You must login first", "/login")
+      this.props.handleModalShow("Cannot write new blog", "You must sign in first", "/login")
     }
   }
 

@@ -38,7 +38,8 @@ export function AppRoutes(props){
         <LoginPage acquireJwtCredentials={props.action.user.acquireJwtCredentials}/>
       }/>
       <Route path="/users/register" element={
-        <RegisterPage registerUser={props.action.user.registerUser}/>
+        <RegisterPage registerUser={props.action.user.registerUser}
+                      handleModalShow={props.action.modal.handleModalShow}/>
       }/>
       <Route path="/logout" element={
         <LogoutPage logout={props.action.user.logout}

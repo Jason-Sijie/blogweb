@@ -42,8 +42,8 @@ const AppHeader = (props) => {
               </>
             ) : (
               <>
-                <MyNavLink path={"/users/register"} text={"Register"}/>
-                <MyNavLink path={"/login"} text={"Login"}/>
+                <MyNavLink path={"/users/register"} text={"Sign Up"}/>
+                <MyNavLink path={"/login"} text={"Sign In"}/>
               </>
             )}
           </Nav>

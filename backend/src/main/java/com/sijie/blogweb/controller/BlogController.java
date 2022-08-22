@@ -220,17 +220,6 @@ public class BlogController {
         return blogRepository.findAll(PageRequest.of(page, size));
     }
 
-    @GetMapping(value = "", params = {"categoryId"})
-    @Transactional(readOnly = true)
-    public Page<Blog> getBlogsByCategoryId(@RequestParam("categoryId") String categoryId,
-                                           @RequestParam(name = "page", required = false) Integer page,
-                                           @RequestParam(name = "size", required = false) Integer size) {
-        page = MoreObjects.firstNonNull(page, 0);
-        size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
-
-        return blogRepository.findAllByCategoryId(categoryId, PageRequest.of(page, size));
-    }
-
     @GetMapping(value = "", params = {"authorId"})
     @Transactional(readOnly = true)
     public Page<Blog> getBlogsByAuthorId(@RequestParam("authorId") Long authorId,
@@ -248,16 +237,16 @@ public class BlogController {
         return blogRepository.findAllByAuthorId(author.getId(), PageRequest.of(page, size));
     }
 
-    @GetMapping(value = "", params = {"tagName"})
-    @Transactional(readOnly = true)
-    public Page<Blog> getBlogsByTagName(@RequestParam("tagName") String tagName,
-                                         @RequestParam(name = "page", required = false) Integer page,
-                                         @RequestParam(name = "size", required = false) Integer size) {
-        page = MoreObjects.firstNonNull(page, 0);
-        size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
+    // @GetMapping(value = "", params = {"tagName"})
+    // @Transactional(readOnly = true)
+    // public Page<Blog> getBlogsByTagName(@RequestParam("tagName") String tagName,
+    //                                      @RequestParam(name = "page", required = false) Integer page,
+    //                                      @RequestParam(name = "size", required = false) Integer size) {
+    //     page = MoreObjects.firstNonNull(page, 0);
+    //     size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
 
-        return blogRepository.findBlogsByTagsName(tagName, PageRequest.of(page, size));
-    }
+    //     return blogRepository.findBlogsByTagsName(tagName, PageRequest.of(page, size));
+    // }
 
     @GetMapping(value = "", params = {"tagNames"})
     @Transactional(readOnly = true)
@@ -319,6 +308,8 @@ public class BlogController {
         size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
         return generatePageBlogResult(result, page, size);
     }
+
+
 
     private Page<Blog> generatePageBlogResult(List<Blog> blogs, int page, int size) {
         List<Blog> pageResult;

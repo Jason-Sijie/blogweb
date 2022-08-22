@@ -1,4 +1,4 @@
-import {Row, Col, Card, Button, NavLink} from "react-bootstrap";
+import {Row, Col, Card, Button} from "react-bootstrap";
 import TagList from "../util/TagList";
 import {Link} from "react-router-dom";
 import { Component } from "react";
@@ -54,16 +54,16 @@ class BlogItem extends Component {
           </Card.Text>
           <Row>
             <Col>
-              <Link to={"/users/ " + this.props.blog.authorId + "/home"} key={this.props.blog.authorId + "home"}>
+              <Link to={"/users/" + this.props.blog.authorId + "/home"} key={this.props.blog.authorId + "home"}>
                 <Button style={{float:"left"}} variant="light" >
                   {this.getAuthorInfo()}
                 </Button>
               </Link>
             </Col>
             <Col>
-              <NavLink to={`/blogs/${this.props.blog.id}`} key={this.props.blog.id}>
+              <Link to={"/blogs/" + this.props.blog.id} key={this.props.blog.id + "blog"}>
                 <Button style={{float:"right"}} variant="primary" >Read More</Button>
-              </NavLink>
+              </Link>
             </Col>
           </Row>
         </Card.Body>

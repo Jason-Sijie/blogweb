@@ -25,7 +25,7 @@ const UserProfilePage = (props) => {
           <Row style={{justifyContent: "center"}}>
             <Col xs={4} lg={3}>
               <NavLink to={"/login"}>
-                <Button style={{width: "100%"}}>To Login</Button>
+                <Button style={{width: "100%"}}>Sign In</Button>
               </NavLink>
             </Col>
           </Row>

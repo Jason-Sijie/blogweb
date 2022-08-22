@@ -51,7 +51,7 @@ class BlogHeader extends Component {
   handleLikedClick = () => {
     console.log("handle like button")
     if (this.props.currentUser == null || this.props.currentUser.id == null) {
-      this.props.handleModalShow("Failed to like the blog", "You need to login first", "")
+      this.props.handleModalShow("Failed to like the blog", "You need to sign in first", "")
     }
     if (this.state.liked === true) {
       unlikeBlogById(this.props.id, (data) => {

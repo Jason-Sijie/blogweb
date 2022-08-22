@@ -13,8 +13,8 @@ export const isTokenExpired = (store) => () => {
       store.dispatch({
         type: ACTIONS.MODAL.SHOW_MODAL,
         payload: {
-          title: "You login token expired",
-          content: "Please login again. Redirect to the login page",
+          title: "You Sign In session expired",
+          content: "Please Sign In again. Redirect to the Sign In page",
           path: "/login"
         }
       })

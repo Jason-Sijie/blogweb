@@ -22,12 +22,12 @@ const HomePage = (props) => {
       <div className={"pt-4"}>
         <Container className={"shadow p-3 mt-5 bg-white rounded"} style={{width: "50%"}}>
           <Row className={"text-center mb-3"}>
-            <h2>You need to login first</h2>
+            <h2>You need to Sign In first</h2>
           </Row>
           <Row style={{justifyContent: "center"}}>
             <Col xs={4} lg={3}>
               <NavLink to={"/login"}>
-                <Button style={{width: "100%"}}>To Login</Button>
+                <Button style={{width: "100%"}}>Sign In</Button>
               </NavLink>
             </Col>
           </Row>

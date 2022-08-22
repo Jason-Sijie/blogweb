@@ -50,7 +50,7 @@ class BlogSearch extends Component {
     params = {
       authorId: this.props.authorId,
       tagNames: this.state.tagNames,
-      blogTitle: this.state.blogTitle,
+      title: this.state.blogTitle,
       ...params
     }
 

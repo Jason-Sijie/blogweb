@@ -1,6 +1,8 @@
 package com.sijie.blogweb.controller;
 
 import com.google.common.base.MoreObjects;
+import com.google.common.base.Strings;
+import com.google.common.base.Supplier;
 import com.sijie.blogweb.exception.handler.InternalFaultException;
 import com.sijie.blogweb.helper.AuthPrincipalHelper;
 import com.sijie.blogweb.repository.redis.transaction.RedisTransaction;
@@ -27,9 +29,12 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.function.Function;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @RestController
@@ -193,123 +198,163 @@ public class BlogController {
         return resultBlog;
     }
 
-    @GetMapping(value = "", params = {"bid"})
-    @Transactional(isolation = Isolation.READ_COMMITTED)
-    @RedisTransaction(type = RedisTransactionType.ReadOnly)
-    public Blog getBlogDetailByBid(@RequestParam String bid) {
-        Blog result = blogRepository.findByBid(bid);
-        if (result == null) {
-            throw new ResourceNotFoundException("Blog with bid: " + bid + " not found");
-        }
-        result.setContent(blogContentRepository.getBlogContent(result.getBid()));
-
-        // increment views
-        result.setViews(result.getViews() + 1);
-        blogRepository.save(result);
-
-        return result;
-    }
-
     @GetMapping(value = "")
     @Transactional(readOnly = true)
-    public Page<Blog> getAllBlogs(@RequestParam(name = "page", required = false) Integer page,
-                                  @RequestParam(name = "size", required = false) Integer size) {
+    public Page<Blog> getAllBlogs(@RequestParam(name = "authorId", required = false) Long authorId,
+                                    @RequestParam(name = "tagNames", required = false) List<String> tagNames,
+                                    @RequestParam(name = "title", required = false) String title,
+                                    @RequestParam(name = "page", required = false) Integer page,
+                                    @RequestParam(name = "size", required = false) Integer size) {
         page = MoreObjects.firstNonNull(page, 0);
         size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
 
-        return blogRepository.findAll(PageRequest.of(page, size));
-    }
-
-    @GetMapping(value = "", params = {"authorId"})
-    @Transactional(readOnly = true)
-    public Page<Blog> getBlogsByAuthorId(@RequestParam("authorId") Long authorId,
-                                           @RequestParam(name = "page", required = false) Integer page,
-                                           @RequestParam(name = "size", required = false) Integer size) {
-        page = MoreObjects.firstNonNull(page, 0);
-        size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
-
-        Optional<User> authorOptional = userRepository.findById(authorId);
-        if (!authorOptional.isPresent()) {
-            return Page.empty();
+        if (isTagNamesEmpty(tagNames) && authorId == null && Strings.isNullOrEmpty(title)) {
+            return blogRepository.findAll(PageRequest.of(page, size));
         }
-        User author = authorOptional.get();
 
-        return blogRepository.findAllByAuthorId(author.getId(), PageRequest.of(page, size));
+        if (isTagNamesEmpty(tagNames)) {
+            if (authorId == null) {
+                // only title not null
+                return blogRepository.findByTitleContainingIgnoreCase(title, PageRequest.of(page, size));
+            } else if (Strings.isNullOrEmpty(title)) {
+                // only authorId not null
+                return blogRepository.findAllByAuthorId(authorId, PageRequest.of(page, size));
+            } else {
+                // both authorId and title not null 
+                return blogRepository.findByAuthorIdAndTitleContainingIgnoreCase(authorId, title, PageRequest.of(page, size));
+            }
+        } else {
+            // tagNames not null
+            List<Blog> previousResult = null;
+            if (authorId == null && Strings.isNullOrEmpty(title)) {
+                // search by tagnames only
+                List<Blog> currentResult = searchBlogsByTagNamesAndOtherParams((tagName) -> {
+                    return blogRepository.findBlogsByTagsName(tagName);
+                }, tagNames);
+                previousResult = intersectTwoBlogLists(previousResult, currentResult);
+            }
+            if (authorId != null) {
+                List<Blog> currentResult = searchBlogsByTagNamesAndOtherParams((tagName) -> {
+                    return blogRepository.findBlogsByAuthorIdAndTagsName(authorId, tagName);
+                }, tagNames);
+                previousResult = intersectTwoBlogLists(previousResult, currentResult);
+            }
+            if (!Strings.isNullOrEmpty(title)) {
+                List<Blog> currentResult = searchBlogsByTagNamesAndOtherParams((tagName) -> {
+                    return blogRepository.findByTitleContainingIgnoreCaseAndTagsName(title, tagName);
+                }, tagNames);
+                previousResult = intersectTwoBlogLists(previousResult, currentResult);
+            }
+
+            return generatePageBlogResult(previousResult, page, size);
+        }        
     }
 
-    // @GetMapping(value = "", params = {"tagName"})
+    private boolean isTagNamesEmpty(List<String> tagNames) {
+        return tagNames == null || tagNames.isEmpty();
+    }
+
+    private List<Blog> searchBlogsByTagNamesAndOtherParams(Function<String, List<Blog>> search, List<String> tagNames) {
+        List<Blog> result = search.apply(tagNames.get(0));
+        for (int i = 1; i < tagNames.size(); i++) {
+            List<Blog> blogs = search.apply(tagNames.get(i));
+            result = intersectTwoBlogLists(result, blogs);
+        }
+        return result;
+    } 
+
+    private List<Blog> intersectTwoBlogLists(List<Blog> preList, List<Blog> curList) {
+        if (preList == null) {
+            return curList;
+        }
+
+        return preList.stream().filter(element -> {
+            for (Blog blog: curList) {
+                if (blog.getId() == element.getId()) {
+                    return true;
+                }
+            }
+            return false;
+        }).collect(Collectors.toList());
+    }
+
+    // @GetMapping(value = "", params = {"authorId"})
     // @Transactional(readOnly = true)
-    // public Page<Blog> getBlogsByTagName(@RequestParam("tagName") String tagName,
-    //                                      @RequestParam(name = "page", required = false) Integer page,
-    //                                      @RequestParam(name = "size", required = false) Integer size) {
+    // public Page<Blog> getBlogsByAuthorId(@RequestParam("authorId") Long authorId,
+    //                                        @RequestParam(name = "page", required = false) Integer page,
+    //                                        @RequestParam(name = "size", required = false) Integer size) {
     //     page = MoreObjects.firstNonNull(page, 0);
     //     size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
 
-    //     return blogRepository.findBlogsByTagsName(tagName, PageRequest.of(page, size));
+    //     Optional<User> authorOptional = userRepository.findById(authorId);
+    //     if (!authorOptional.isPresent()) {
+    //         return Page.empty();
+    //     }
+    //     User author = authorOptional.get();
+
+    //     return blogRepository.findAllByAuthorId(author.getId(), PageRequest.of(page, size));
     // }
 
-    @GetMapping(value = "", params = {"tagNames"})
-    @Transactional(readOnly = true)
-    public Page<Blog> getBlogsByTagNames(@RequestParam("tagNames") List<String> tagNames,
-                                        @RequestParam(name = "page", required = false) Integer page,
-                                        @RequestParam(name = "size", required = false) Integer size) {
-        if (tagNames == null || tagNames.isEmpty()) {
-            return Page.empty();
-        }
+    // @GetMapping(value = "", params = {"tagNames"})
+    // @Transactional(readOnly = true)
+    // public Page<Blog> getBlogsByTagNames(@RequestParam("tagNames") List<String> tagNames,
+    //                                     @RequestParam(name = "page", required = false) Integer page,
+    //                                     @RequestParam(name = "size", required = false) Integer size) {
+    //     if (tagNames == null || tagNames.isEmpty()) {
+    //         return Page.empty();
+    //     }
 
-        List<Blog> result = blogRepository.findBlogsByTagsName(tagNames.get(0));
-        for (int i = 1; i < tagNames.size(); i++) {
-            List<Blog> blogs = blogRepository.findBlogsByTagsName(tagNames.get(i));
-            result = result.stream().filter(element -> {
-                for (Blog blog : blogs) {
-                    if (blog.getId() == element.getId()) {
-                        return true;
-                    }
-                }
-                return false;
-            }).collect(Collectors.toList());
-        }
+    //     List<Blog> result = blogRepository.findBlogsByTagsName(tagNames.get(0));
+    //     for (int i = 1; i < tagNames.size(); i++) {
+    //         List<Blog> blogs = blogRepository.findBlogsByTagsName(tagNames.get(i));
+    //         result = result.stream().filter(element -> {
+    //             for (Blog blog : blogs) {
+    //                 if (blog.getId() == element.getId()) {
+    //                     return true;
+    //                 }
+    //             }
+    //             return false;
+    //         }).collect(Collectors.toList());
+    //     }
 
-        page = MoreObjects.firstNonNull(page, 0);
-        size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
-        return generatePageBlogResult(result, page, size);
-    }
+    //     page = MoreObjects.firstNonNull(page, 0);
+    //     size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
+    //     return generatePageBlogResult(result, page, size);
+    // }
 
-    @GetMapping(value = "", params = {"authorId", "tagNames"})
-    @Transactional(readOnly = true)
-    public Page<Blog> getBlogsByAuthorIdAndTagNames(@RequestParam("authorId") Long authorId,
-                                                    @RequestParam("tagNames") List<String> tagNames,
-                                                    @RequestParam(name = "page", required = false) Integer page,
-                                                    @RequestParam(name = "size", required = false) Integer size) {
-        if (tagNames == null || tagNames.isEmpty()) {
-            return Page.empty();
-        }
+    // @GetMapping(value = "", params = {"authorId", "tagNames"})
+    // @Transactional(readOnly = true)
+    // public Page<Blog> getBlogsByAuthorIdAndTagNames(@RequestParam("authorId") Long authorId,
+    //                                                 @RequestParam("tagNames") List<String> tagNames,
+    //                                                 @RequestParam(name = "page", required = false) Integer page,
+    //                                                 @RequestParam(name = "size", required = false) Integer size) {
+    //     if (tagNames == null || tagNames.isEmpty()) {
+    //         return Page.empty();
+    //     }
 
-        Optional<User> authorOptional = userRepository.findById(authorId);
-        if (!authorOptional.isPresent()) {
-            return Page.empty();
-        }
-        User author = authorOptional.get();
+    //     Optional<User> authorOptional = userRepository.findById(authorId);
+    //     if (!authorOptional.isPresent()) {
+    //         return Page.empty();
+    //     }
+    //     User author = authorOptional.get();
 
-        List<Blog> result = blogRepository.findBlogsByAuthorIdAndTagsName(author.getId(), tagNames.get(0));
-        for (int i = 1; i < tagNames.size(); i++) {
-            List<Blog> blogs = blogRepository.findBlogsByAuthorIdAndTagsName(author.getId(), tagNames.get(i));
-            result = result.stream().filter(element -> {
-                for (Blog blog : blogs) {
-                    if (blog.getId() == element.getId()) {
-                        return true;
-                    }
-                }
-                return false;
-            }).collect(Collectors.toList());
-        }
+    //     List<Blog> result = blogRepository.findBlogsByAuthorIdAndTagsName(author.getId(), tagNames.get(0));
+    //     for (int i = 1; i < tagNames.size(); i++) {
+    //         List<Blog> blogs = blogRepository.findBlogsByAuthorIdAndTagsName(author.getId(), tagNames.get(i));
+    //         result = result.stream().filter(element -> {
+    //             for (Blog blog : blogs) {
+    //                 if (blog.getId() == element.getId()) {
+    //                     return true;
+    //                 }
+    //             }
+    //             return false;
+    //         }).collect(Collectors.toList());
+    //     }
 
-        page = MoreObjects.firstNonNull(page, 0);
-        size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
-        return generatePageBlogResult(result, page, size);
-    }
-
-
+    //     page = MoreObjects.firstNonNull(page, 0);
+    //     size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
+    //     return generatePageBlogResult(result, page, size);
+    // }
 
     private Page<Blog> generatePageBlogResult(List<Blog> blogs, int page, int size) {
         List<Blog> pageResult;

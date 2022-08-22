@@ -74,7 +74,7 @@ class SearchPanel extends Component {
       tagNames: this.state.tags.map((tag) => {
         return tag.name
       }),
-      blogTitle: this.state.blogTitle || null,
+      title: this.state.blogTitle || null,
       page: 0,
       size: this.props.pageSize,
     });
@@ -91,8 +91,6 @@ class SearchPanel extends Component {
                 <Form.Group className="mb-3" controlId="blogTitle">
                   <Form.Label>Blog Name</Form.Label>
                   <Form.Control type="text"
-                                placeholder="Not Support Searching by Blog Title"
-                                disabled
                                 onChange={this.changeStateOnEvent("blogTitle")}/>
                 </Form.Group>
 

@@ -1,8 +1,9 @@
 import {Component} from "react";
 import {Button, Col, FloatingLabel, Form, InputGroup, Row} from "react-bootstrap";
-import {createProfile, getProfileById, updateProfile} from "../../actions/profileRequest";
-import LoadingSpinner from "../stateless/util/LoadingSpinner";
+import {createProfile, getProfileById, updateProfile} from "../../../actions/profileRequest";
+import LoadingSpinner from "../../stateless/util/LoadingSpinner";
 import {Navigate} from "react-router-dom";
+import AvatarEdit from "./AvatarEdit";
 
 /**
  * props : {
@@ -27,28 +28,7 @@ class UserProfileForm extends Component {
     }
 
     if (this.hasPermissionToUpdateProfile(props)) {
-      getProfileById(props.userId, (data) => {
-        // profile existing
-        this.setState({
-          loading: false,
-          hasProfile: true,
-          ...data
-        })
-      }, (error) => {
-        if (error.data.status === "NOT_FOUND") {
-          // no existing profile
-          this.setState({
-            loading: false,
-            hasProfile: false
-          })
-        } else {
-          // service failure
-          this.setState({
-            loading: false,
-            error: error.data
-          })
-        }
-      })
+      this.loadProfileData()
     } else {
       this.state = {
         loading: false,
@@ -57,6 +37,31 @@ class UserProfileForm extends Component {
         }
       }
     }
+  }
+
+  loadProfileData = () => {
+    getProfileById(this.props.userId, (data) => {
+      // profile existing
+      this.setState({
+        loading: false,
+        hasProfile: true,
+        ...data
+      })
+    }, (error) => {
+      if (error.data.status === "NOT_FOUND") {
+        // no existing profile
+        this.setState({
+          loading: false,
+          hasProfile: false
+        })
+      } else {
+        // service failure
+        this.setState({
+          loading: false,
+          error: error.data
+        })
+      }
+    })
   }
 
   hasPermissionToUpdateProfile = (props) => {
@@ -167,6 +172,10 @@ class UserProfileForm extends Component {
           <Row>
             <h2> {this.props.currentUser.username + " User Profile"} </h2>
           </Row>
+
+          <AvatarEdit userId={this.props.userId} 
+                      handleModalShow={this.props.handleModalShow}/>
+
           <FloatingLabel controlId="userProfile.floatingName" label="Name / Alias" className="mt-2 mb-4">
             <Form.Control type="text"
                           value={this.state.name}

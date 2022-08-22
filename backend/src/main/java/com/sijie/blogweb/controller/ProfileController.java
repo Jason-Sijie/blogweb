@@ -23,7 +23,6 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -62,13 +61,13 @@ public class ProfileController {
         return profile;
     }
 
-    @PostMapping(value = "/users/profiles/avatar", consumes = {"application/json"})
+    @PostMapping(value = "/users/profiles/avatar", consumes = {"image/jpeg", "image/png"})
     @Transactional(isolation = Isolation.SERIALIZABLE)
     @RedisTransaction(type = RedisTransactionType.ReadThenWrite)
     public BasicHttpResponse uploadProfileAvatar(@RequestBody byte[] avatar) {
         CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails == null) {
-            throw new UserCredentialsAbsenceException("You must log in before creating a new profile");
+            throw new UserCredentialsAbsenceException("You must log in to update your avatar");
         }
 
         profileRepository.setProfileAvatar(userDetails.getId(), avatar);
@@ -101,7 +100,7 @@ public class ProfileController {
         return internalProfile;
     }
 
-    @GetMapping(value = "/users/{id}/profiles/avatar", produces = {"image/jpeg"})
+    @GetMapping(value = "/users/{id}/profiles/avatar", produces = {"image/jpeg", "image/png"})
     @Transactional(readOnly = true)
     public byte[] getProfileAvatarById(@PathVariable("id") Long userId) {
         byte[] avatar = profileRepository.getProfileAvatar(userId);

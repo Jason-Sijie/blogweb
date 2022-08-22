@@ -53,12 +53,12 @@ export function AppRoutes(props){
         <UserHomePage currentUser={props.user.currentUser}
                       handleModalShow={props.action.modal.handleModalShow}/>
       }/>
-      <Route path="/users/:id/profile" element={
+      <Route path="/users/profile" element={
         <UserProfilePage currentUser={props.user.currentUser}
                          handleModalShow={props.action.modal.handleModalShow}/>
       }/>
       <Route path="/test" element={
-        <TestComponent src="images/profile_avatar.jpg" />
+        <TestComponent src="images/profile_avatar.jpg" handleModalShow={props.action.modal.handleModalShow}/>
       }/>
       <Route path={"/error"} element={
         <ErrorPage />

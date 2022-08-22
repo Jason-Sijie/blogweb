@@ -1,5 +1,5 @@
 import {useParams} from "react-router-dom";
-import UserHome from "../../stateful/UserHome";
+import UserHome from "../../stateful/home/UserHome";
 
 /**
  * @param props : {

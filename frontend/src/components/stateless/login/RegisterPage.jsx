@@ -1,5 +1,5 @@
 import {Col, Container, Row} from "react-bootstrap";
-import RegisterUserForm from "../../stateful/RegisterUserForm";
+import RegisterUserForm from "../../stateful/util/RegisterUserForm";
 
 /**
  * @param props : {

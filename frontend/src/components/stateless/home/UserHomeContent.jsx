@@ -1,8 +1,8 @@
 import {Container, Tab, Tabs} from "react-bootstrap";
 import React from "react";
-import BlogSearch from "../../stateful/BlogSearch";
+import BlogSearch from "../../stateful/blog/BlogSearch";
 import {appConfig} from "../../../config";
-import CreateBlogForm from "../../stateful/CreateBlogForm";
+import CreateBlogForm from "../../stateful/blog/CreateBlogForm";
 import BlogList from "../blog/BlogList";
 import "../../../styles/tab_style.css";
 

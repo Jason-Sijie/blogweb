@@ -1,6 +1,5 @@
 import {Card, Col, ListGroup, Row} from "react-bootstrap";
 import { Link } from "react-router-dom";
-import {api} from "../../../config";
 
 /**
  * @param props : {
@@ -10,7 +9,8 @@ import {api} from "../../../config";
  *   aboutMe: "",
  *   links: {},
  *   totalViews: num,
- *   totalLikes: num
+ *   totalLikes: num,
+ *   avatar: url,
  * }
  * @returns {JSX.Element}
  * @constructor
@@ -44,10 +44,7 @@ const UserProfile = (props) => {
   return (
     <Card className={"shadow p-3 mb-5 bg-white rounded"}>
       <div className={"home_profile_avatar"}>
-        <Card.Img className="home_profile_avatar"
-                  style={{padding: "10%"}}
-                  variant="top" 
-                  src={api.blogWeb.user + "/" + props.userId + "/profiles/avatar"} />
+        <img src={props.avatar} style={{padding: "5%", borderRadius: "50%", objectFit: "cover", width:"100%", height:"100%"}}/>
       </div>
       <Card.Body>
         <Link to={"/users/" + props.userId + "/home"}>
@@ -55,7 +52,6 @@ const UserProfile = (props) => {
             {props.name}
           </Card.Title>
         </Link>
-        
         
         <Card.Text as={"h4"}>
           {props.email}

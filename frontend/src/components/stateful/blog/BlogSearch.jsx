@@ -1,9 +1,9 @@
 import React, {Component} from "react";
-import {Col, Container, Row} from "react-bootstrap";
+import {Col, Row} from "react-bootstrap";
 import SearchPanel from "./SearchPanel";
-import BlogList from "../stateless/blog/BlogList";
-import {getBlogsWithParams} from "../../actions/blogRequests";
-import LoadingSpinner from "../stateless/util/LoadingSpinner";
+import BlogList from "../../stateless/blog/BlogList";
+import {getBlogsWithParams} from "../../../actions/blogRequests";
+import LoadingSpinner from "../../stateless/util/LoadingSpinner";
 import {Navigate} from "react-router-dom";
 
 /**

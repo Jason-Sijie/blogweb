@@ -2,34 +2,27 @@ import { useCallback, useState } from 'react';
 import Cropper from 'react-easy-crop';
 import Resizer from 'react-image-file-resizer';
 import { updateProfile, uploadProfileAvatar } from '../../actions/profileRequest';
+import AvatarEdit from './home/AvatarEdit';
+import ImageCrop from './util/ImageCrop';
 
 const TestComponent = (props) => {
-  const [crop, setCrop] = useState({ x: 0, y: 0 })
-  const [zoom, setZoom] = useState(1)
-  const [array, setArray] = useState(null)
-  const resizeFile = (file) => new Promise(resolve => {
-    Resizer.imageFileResizer(file, 300, 300, 'JPEG', 100, 0,
-    uri => {
-      resolve(uri);
-    }, 'base64' );
-});
+  const [file, setFile] = useState(null)
+  const [show, setShow] = useState(false)
+  const [newSrc, setNewSrc] = useState("")
 
-  const onCropComplete = useCallback((croppedArea, croppedAreaPixels) => {
-    console.log(croppedArea, croppedAreaPixels)
-  }, [])
-
-  let readFileDataAsBase64 = (e) => {
+  let readFileData = (e) => {
     const file = e.target.files[0];
     console.log(file)
+    const url = URL.createObjectURL(file)
+    console.log(url)
+    setFile(url)
+    setShow(true)
 
     const reader = new FileReader();
     reader.onload = (event) => {
       let buffer = event.target.result
       console.log(buffer);
       let bytes = new Uint8Array(buffer);
-      console.log(bytes.toString())
-      setArray("data:image/jpeg;base64," + buffer.toString('base64'));
-
 
       // uploadProfileAvatar(bytes, data => console.log("succeeded: ", data), error => console.log("error: ", error.message))
     };
@@ -42,18 +35,8 @@ const TestComponent = (props) => {
 
   return (
     <div>
-      <input type="file" id="avatar"  accept="image/png, image/jpeg" 
-            onChange={readFileDataAsBase64} />
 
-      {array ? <Cropper
-          image={array}
-          crop={crop}
-          zoom={zoom}
-          aspect={1}
-          onCropChange={setCrop}
-          onCropComplete={onCropComplete}
-          onZoomChange={setZoom}
-        /> : <></>}
+      <AvatarEdit userId="8" handleModalShow={props.handleModalShow}/>
       
     </div>
     

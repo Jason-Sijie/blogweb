@@ -1,4 +1,4 @@
-import LoginForm from "../../stateful/LoginForm";
+import LoginForm from "../../stateful/util/LoginForm";
 import {Col, Container, Row} from "react-bootstrap";
 
 /**

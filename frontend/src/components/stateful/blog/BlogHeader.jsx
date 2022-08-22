@@ -1,7 +1,6 @@
-import {Col, Container, Row} from "react-bootstrap";
-import OverlayIcon from "../util/OverlayIcon";
+import {Col, Row} from "react-bootstrap";
+import OverlayIcon from "../../stateless/util/OverlayIcon";
 
-import "../../../styles/blog_style.css";
 import { Component } from "react";
 import { isBlogLikedByCurrentUser } from "../../../actions/userRequests";
 import { likeBlogById, unlikeBlogById } from "../../../actions/blogRequests";
@@ -15,7 +14,8 @@ import { likeBlogById, unlikeBlogById } from "../../../actions/blogRequests";
  *   views: ,
  *   currentUser: {
  *     id: , 
- *   }
+ *   },
+ *   handleModalShow : (title, content, path) => {}
  * }
  * @returns {JSX.Element}
  */
@@ -49,10 +49,10 @@ class BlogHeader extends Component {
   }
 
   handleLikedClick = () => {
-    if (this.props.currentUser == null || this.props.currentUser.id == null) {
-      return;
-    }
     console.log("handle like button")
+    if (this.props.currentUser == null || this.props.currentUser.id == null) {
+      this.props.handleModalShow("Failed to like the blog", "You need to login first", "")
+    }
     if (this.state.liked === true) {
       unlikeBlogById(this.props.id, (data) => {
         this.props.refreshBlogDetail()

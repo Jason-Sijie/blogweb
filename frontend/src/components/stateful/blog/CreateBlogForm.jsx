@@ -1,8 +1,8 @@
 import {Component} from "react";
 import {Button, Col, Container, Form, Row} from "react-bootstrap";
 import MDEditor from "@uiw/react-md-editor";
-import TagListToasts from "../stateless/util/TagListToasts";
-import {createBlog} from "../../actions/blogRequests";
+import TagListToasts from "../../stateless/util/TagListToasts";
+import {createBlog} from "../../../actions/blogRequests";
 import {Navigate} from "react-router-dom";
 
 /**

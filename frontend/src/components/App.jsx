@@ -6,10 +6,14 @@ import {handleModalShow, handleModalClose} from "../actions/modalAction";
 
 import AppHeader from "./stateless/util/AppHeader";
 import {AppRoutes} from "../utils/routes";
-import GlobalModal from "./stateful/GlobalModal";
+import GlobalModal from "./stateful/util/GlobalModal";
 
 import "bootstrap/dist/css/bootstrap.min.css";
 import "../styles/app_style.css";
+import "../styles/blog_style.css";
+import "../styles/home_style.css";
+import "../styles/tab_style.css";
+import "../styles/util.css";
 
 class App extends Component {
   constructor(props) {

@@ -76,8 +76,31 @@ export const uploadProfileAvatar = (avatar, successCallback = (data) => {}, fail
   const url = api.blogWeb.user + "/profiles/avatar";
   
   let headers = getBackendRequestBasicHeader();
+  headers = {
+    ...headers,
+    "Content-Type": "image/jpeg"
+  }
 
   axios.post(url, avatar,{
+    headers: headers
+  }).then(promise => {
+    successCallback(promise.data)
+  }).catch(error => {
+    console.log(error)
+    failureCallback(error.response || defaultErrorResponse)
+  })
+}
+
+export const getProfileAvatarById = (userId, successCallback = (data) => {}, failureCallback = (error) => {}) => {
+  if (userId == null) {
+    return;
+  }
+  console.log("Getting avatar of user: " + userId)
+  const url = api.blogWeb.user + "/" + userId + "/profiles/avatar";
+  
+  let headers = getBackendRequestBasicHeader();
+
+  axios.get(url, {
     headers: headers
   }).then(promise => {
     successCallback(promise.data)

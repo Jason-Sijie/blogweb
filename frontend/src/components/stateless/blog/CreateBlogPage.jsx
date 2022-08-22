@@ -1,5 +1,5 @@
 import { Container } from "react-bootstrap";
-import CreateBlogForm from "../../stateful/CreateBlogForm";
+import CreateBlogForm from "../../stateful/blog/CreateBlogForm";
 
 /**
  * @param props : {

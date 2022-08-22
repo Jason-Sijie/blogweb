@@ -2,15 +2,15 @@ import {Component} from "react";
 import {Button, Card, Col, Form, Offcanvas, Row} from "react-bootstrap";
 import MDEditor from '@uiw/react-md-editor';
 
-import "../../styles/blog_style.css";
-import BlogHeader from "../stateless/blog/BlogHeader";
-import TagList from "../stateless/util/TagList";
-import TagListToasts from "../stateless/util/TagListToasts";
-import {getBlogDetailById, updateBlogContent} from "../../actions/blogRequests";
-import LoadingSpinner from "../stateless/util/LoadingSpinner";
+import BlogHeader from "./BlogHeader";
+import TagList from "../../stateless/util/TagList";
+import TagListToasts from "../../stateless/util/TagListToasts";
+import {getBlogDetailById, updateBlogContent} from "../../../actions/blogRequests";
+import LoadingSpinner from "../../stateless/util/LoadingSpinner";
 import {Navigate} from "react-router-dom";
-import { getProfileById, getProfileByUid } from "../../actions/profileRequest";
-import UserProfile from "../stateless/home/UserProfile";
+import { getProfileByUid, getProfileAvatarById } from "../../../actions/profileRequest";
+import UserProfile from "../../stateless/home/UserProfile";
+import { api } from "../../../config";
 
 /**
  * @Params props: {
@@ -39,7 +39,8 @@ class BlogDetail extends Component {
       profileShow: false,
       newTag: "",
       isEdit: false,
-      loading: true
+      loading: true,
+      hasAvatar: false
     }
     this.refreshBlogDetail()
   }
@@ -91,6 +92,13 @@ class BlogDetail extends Component {
         })
       }, error => {
         console.log(error.message)
+      })
+
+      getProfileAvatarById(this.props.userId, (data) => {
+        console.log("succeeded to get profile avatar")
+        this.setState({
+          hasAvatar: true
+        })
       })
 
     }, (error) => {
@@ -260,7 +268,8 @@ class BlogDetail extends Component {
                   <Offcanvas.Title>Author Profile</Offcanvas.Title>
                 </Offcanvas.Header>
                 <Offcanvas.Body>
-                  <UserProfile {...this.state.profile} />
+                  <UserProfile {...this.state.profile} 
+                              avatar={this.state.hasAvatar ? api.blogWeb.user + "/" + this.props.userId + "/profiles/avatar" : "/images/profile_avatar_1.png"} />
                 </Offcanvas.Body>
               </Offcanvas>
             </Col>
@@ -281,6 +290,7 @@ class BlogDetail extends Component {
       return <div>
         <BlogHeader {...this.state.blog} 
                     currentUser={this.props.currentUser} 
+                    handleModalShow={this.props.handleModalShow}
                     refreshBlogDetail={this.refreshBlogDetail}/>
         {this.metadataPanel()}
         {this.blogContent()}

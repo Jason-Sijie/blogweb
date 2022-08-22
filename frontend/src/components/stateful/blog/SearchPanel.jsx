@@ -1,6 +1,6 @@
 import {Component} from "react";
 import {Button, Col, Form, Row, Container, Accordion} from "react-bootstrap";
-import TagListToasts from "../stateless/util/TagListToasts";
+import TagListToasts from "../../stateless/util/TagListToasts";
 
 /**
  * props : {

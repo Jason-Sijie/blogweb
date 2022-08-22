@@ -57,7 +57,7 @@ const AppHeader = (props) => {
             <ListGroup>
               <MyNavLink path={"/home"} text={<ListGroup.Item>Home</ListGroup.Item>}/>
               <MyNavLink path={"/blogs/create"} text={<ListGroup.Item>Write New Blog</ListGroup.Item>}/>
-              <MyNavLink path={"/users/" + currentUser.id + "/profile"} text={<ListGroup.Item>Edit Profile</ListGroup.Item>}/>
+              <MyNavLink path={"/users/profile"} text={<ListGroup.Item>Edit Profile</ListGroup.Item>}/>
               <MyNavLink path={"/logout"} text={<ListGroup.Item>Logout</ListGroup.Item>}/>
             </ListGroup>
           </Offcanvas.Body>

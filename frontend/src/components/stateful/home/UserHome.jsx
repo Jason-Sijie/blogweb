@@ -1,13 +1,14 @@
 import {Component} from "react";
 import {Col, Container, Row} from "react-bootstrap";
 import {Navigate} from 'react-router-dom';
-import UserHomeHeader from "../stateless/home/UserHomeHeader";
-import UserProfile from "../stateless/home/UserProfile";
-import UserHomeContent from "../stateless/home/UserHomeContent";
-import {getProfileById} from "../../actions/profileRequest";
-import LoadingSpinner from "../stateless/util/LoadingSpinner";
-import { getLikedBlogsByUserId } from "../../actions/userRequests";
-import { appConfig } from "../../config";
+import UserHomeHeader from "../../stateless/home/UserHomeHeader";
+import UserProfile from "../../stateless/home/UserProfile";
+import UserHomeContent from "../../stateless/home/UserHomeContent";
+import {getProfileAvatarById, getProfileById} from "../../../actions/profileRequest";
+import LoadingSpinner from "../../stateless/util/LoadingSpinner";
+import { getLikedBlogsByUserId } from "../../../actions/userRequests";
+import { appConfig } from "../../../config";
+import {api} from "../../../config";
 
 
 /**
@@ -27,7 +28,7 @@ class UserHome extends Component {
     this.state = {
       loading: true,
       error: null,
-      showProfile: false,
+      hasAvatar: false,
       likedBlogs: {
         content: [],
         totalPages: 0,
@@ -56,6 +57,13 @@ class UserHome extends Component {
           error: error.data,
         })
       }
+    })
+    
+    getProfileAvatarById(this.props.userId, (data) => {
+      console.log("succeeded to get profile avatar")
+      this.setState({
+        hasAvatar: true
+      })
     })
 
     getLikedBlogsByUserId({
@@ -96,7 +104,8 @@ class UserHome extends Component {
           <UserHomeHeader {...this.state.profile}/>
           <Row>
             <Col xs={3} style={{margin: "0% 2% 4% 2%", position: "relative", top: "-200px"}}>
-              <UserProfile {...this.state.profile}/>
+              <UserProfile {...this.state.profile}
+                            avatar={this.state.hasAvatar ? api.blogWeb.user + "/" + this.props.userId + "/profiles/avatar" : "/images/profile_avatar_1.png"} />
             </Col>
             <Col xs={8}>
               <UserHomeContent authorId={this.props.userId}

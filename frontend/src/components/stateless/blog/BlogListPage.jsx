@@ -1,5 +1,5 @@
 import React from "react";
-import BlogSearch from "../../stateful/BlogSearch";
+import BlogSearch from "../../stateful/blog/BlogSearch";
 
 /**
  * @param props : {

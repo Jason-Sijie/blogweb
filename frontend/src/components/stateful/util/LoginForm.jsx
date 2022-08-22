@@ -56,7 +56,7 @@ class LoginForm extends Component{
           <Col xs={"8"}>
             New to MarkItDown? <a href="/users/register">Create an account</a>
           </Col>
-          <Col xs={"3"}>
+          <Col xs={"4"} lg={"3"}>
             <Button type="submit" style={{width: "100%"}} variant="primary">
               Log in
             </Button>

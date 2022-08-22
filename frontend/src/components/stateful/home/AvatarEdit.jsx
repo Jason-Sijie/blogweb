@@ -79,13 +79,13 @@ class AvatarEdit extends Component{
     return (
       <Row>
         {Array.from({ length: 4 }).map((_, idx) => (
-          <Col xs={3}>
-            <Card>
-              <Card.Img variant="top" 
+          <Col xs={3} key={"avatar-col" + idx}>
+            <Card key={"avatar-card" + idx}>
+              <Card.Img variant="top" key={"avatar-img" + idx}
                         style={{borderRadius: "50%", padding: "5%"}}
                         src={"/images/profile_avatar_" + (idx+1) + ".png"} />
               <Card.Body>
-              <Form.Check key={"box_" + idx} 
+              <Form.Check key={"avatar-box" + idx}
                           value={idx}
                           name="avatar" 
                           type="radio" 
@@ -158,6 +158,7 @@ class AvatarEdit extends Component{
         <Row style={{justifyContent: "space-between", height: "100px", margin: "10px 0"}}>
           <Col xs={4} style={{height: "100%", marginLeft: "3%"}}> 
             <img src={this.state.hasAvatar ? api.blogWeb.user + "/" + this.props.userId + "/profiles/avatar" : "/images/profile_avatar_1.png"} 
+                 alt={"avatar_image"}
                  style={{height: "100%", borderRadius: "50%"}}/>
           </Col>
 

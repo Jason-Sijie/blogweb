@@ -8,7 +8,6 @@ import modalReducer from "./reducers/modalReducer";
 import {browserHistory} from "./utils/history";
 import {loadState, saveState} from "./utils/localStorage";
 import debounce from "debounce";
-import { ACTIONS } from "./constants/actions";
 import { isTokenExpired } from "./utils/tokenExpire";
 
 const store = createStore(combineReducers({

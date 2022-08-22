@@ -41,8 +41,8 @@ public class Blog {
     @Column(name = "views", nullable = false)
     private Long views;
 
-    @Column(name = "author_id", length = 36, nullable = false)
-    private String authorId;
+    @Column(name = "author_id", nullable = false)
+    private Long authorId;
 
     @Column(name = "category_id", length = 36, nullable = true)
     private String categoryId;

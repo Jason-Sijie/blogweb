@@ -44,7 +44,9 @@ const UserProfile = (props) => {
   return (
     <Card className={"shadow p-3 mb-5 bg-white rounded"}>
       <div className={"home_profile_avatar"}>
-        <img src={props.avatar} style={{padding: "5%", borderRadius: "50%", objectFit: "cover", width:"100%", height:"100%"}}/>
+        <img src={props.avatar} 
+            alt={"profile_avatar"}
+            style={{padding: "5%", borderRadius: "50%", objectFit: "cover", width:"100%", height:"100%"}}/>
       </div>
       <Card.Body>
         <Link to={"/users/" + props.userId + "/home"}>

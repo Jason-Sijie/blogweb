@@ -33,6 +33,8 @@ export const saveState = (state) => {
     };
     console.log("save state: ", item)
     localStorage.setItem(KEY, JSON.stringify(item));
+
+    localStorage.setItem('token', JSON.stringify(state.userReducer.token));
   } catch {
     // ignore write errors
   }

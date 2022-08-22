@@ -110,16 +110,16 @@ class UserProfileForm extends Component {
       <div>
         {links.map((link, index) => {
           return(
-            <InputGroup className="mb-3">
-              <Form.Control id={"linkName-" + index} type="text" style={{width: "25%", backgroundColor:"lightcyan"}}
+            <InputGroup className="mb-3" key={"link-" + index}>
+              <Form.Control key={"linkName-" + index} type="text" style={{width: "25%", backgroundColor:"lightcyan"}}
                             value={link.name}
                             onChange={this.changeLinkElement(index, 'name')}
                             required />
-              <Form.Control id={"linkValue-" + index} type="text" style={{width: "65%"}}
+              <Form.Control key={"linkValue-" + index} type="text" style={{width: "65%"}}
                             value={link.href}
                             onChange={this.changeLinkElement(index, 'href')}
                             required />
-              <Button id={"linkDelete-" + index} style={{width: "10%"}} variant={"dark"} onClick={() => this.removeLinkFromLinks(link)}>
+              <Button key={"linkDelete-" + index} style={{width: "10%"}} variant={"dark"} onClick={() => this.removeLinkFromLinks(link)}>
                 Delete
               </Button>
             </InputGroup>
@@ -134,6 +134,7 @@ class UserProfileForm extends Component {
 
     if (this.state.hasProfile) {
       // update profile
+      console.log("update profile")
       updateProfile({
         userId: this.props.userId,
         name: this.state.name,
@@ -147,8 +148,9 @@ class UserProfileForm extends Component {
       })
     } else {
       // create new profile
+      console.log("create new profile")
       createProfile({
-        id: this.props.userId,
+        userId: this.props.userId,
         name: this.state.name,
         email: this.state.email,
         aboutMe: this.state.aboutMe,

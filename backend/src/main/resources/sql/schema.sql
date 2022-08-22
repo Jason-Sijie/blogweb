@@ -4,7 +4,7 @@ USE blog_web;
 
 CREATE TABLE IF NOT EXISTS `blog` (
     `id` bigint(20) NOT NULL AUTO_INCREMENT,
-    `author_id` varchar(36) DEFAULT NULL,
+    `author_id` bigint(20) NOT NULL,
     `bid` varchar(36) NOT NULL,
     `category_id` varchar(36) DEFAULT NULL,
     `description` varchar(1024) NOT NULL,

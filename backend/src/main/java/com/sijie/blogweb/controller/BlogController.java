@@ -61,7 +61,7 @@ public class BlogController {
     public Blog createNewBlog(@RequestBody Blog inputBlog) {
         CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails != null) {
-            inputBlog.setAuthorId(userDetails.getUid());
+            inputBlog.setAuthorId(userDetails.getId());
         } else {
             throw new UserCredentialsAbsenceException("You must log in before creating a new blog");
         }
@@ -89,7 +89,7 @@ public class BlogController {
         CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails == null) {
             throw new UserCredentialsAbsenceException("User credentials are required to create new blog");
-        } else if (!userDetails.getUid().equals(internalBlog.getAuthorId())){
+        } else if (userDetails.getId() != internalBlog.getAuthorId()){
             throw new UserUnauthorziedException("User " + userDetails.getUsername() + " is Unauthorized to perform update operation on blog " + internalBlog.getBid());
         }
 
@@ -245,7 +245,7 @@ public class BlogController {
         }
         User author = authorOptional.get();
 
-        return blogRepository.findAllByAuthorId(author.getUid(), PageRequest.of(page, size));
+        return blogRepository.findAllByAuthorId(author.getId(), PageRequest.of(page, size));
     }
 
     @GetMapping(value = "", params = {"tagName"})
@@ -302,9 +302,9 @@ public class BlogController {
         }
         User author = authorOptional.get();
 
-        List<Blog> result = blogRepository.findBlogsByAuthorIdAndTagsName(author.getUid(), tagNames.get(0));
+        List<Blog> result = blogRepository.findBlogsByAuthorIdAndTagsName(author.getId(), tagNames.get(0));
         for (int i = 1; i < tagNames.size(); i++) {
-            List<Blog> blogs = blogRepository.findBlogsByAuthorIdAndTagsName(author.getUid(), tagNames.get(i));
+            List<Blog> blogs = blogRepository.findBlogsByAuthorIdAndTagsName(author.getId(), tagNames.get(i));
             result = result.stream().filter(element -> {
                 for (Blog blog : blogs) {
                     if (blog.getId() == element.getId()) {

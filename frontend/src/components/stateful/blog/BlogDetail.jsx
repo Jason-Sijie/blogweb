@@ -8,7 +8,7 @@ import TagListToasts from "../../stateless/util/TagListToasts";
 import {getBlogDetailById, updateBlogContent} from "../../../actions/blogRequests";
 import LoadingSpinner from "../../stateless/util/LoadingSpinner";
 import {Navigate} from "react-router-dom";
-import { getProfileByUid, getProfileAvatarById } from "../../../actions/profileRequest";
+import { getProfileById, getProfileAvatarById } from "../../../actions/profileRequest";
 import UserProfile from "../../stateless/home/UserProfile";
 import { api } from "../../../config";
 
@@ -86,7 +86,7 @@ class BlogDetail extends Component {
         loading: false
       })
 
-      getProfileByUid(this.state.blog.authorId, data => {
+      getProfileById(this.state.blog.authorId, data => {
         this.setState({
           profile: data
         })
@@ -94,7 +94,7 @@ class BlogDetail extends Component {
         console.log(error.message)
       })
 
-      getProfileAvatarById(this.props.userId, (data) => {
+      getProfileAvatarById(this.state.blog.authorId, (data) => {
         console.log("succeeded to get profile avatar")
         this.setState({
           hasAvatar: true
@@ -269,7 +269,7 @@ class BlogDetail extends Component {
                 </Offcanvas.Header>
                 <Offcanvas.Body>
                   <UserProfile {...this.state.profile} 
-                              avatar={this.state.hasAvatar ? api.blogWeb.user + "/" + this.props.userId + "/profiles/avatar" : "/images/profile_avatar_1.png"} />
+                              avatar={this.state.hasAvatar ? api.blogWeb.user + "/" + this.state.blog.authorId + "/profiles/avatar" : "/images/profile_avatar_1.png"} />
                 </Offcanvas.Body>
               </Offcanvas>
             </Col>

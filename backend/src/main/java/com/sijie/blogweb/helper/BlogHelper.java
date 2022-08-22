@@ -65,13 +65,13 @@ public class BlogHelper {
         }
 
         // validate author
-        String uid = inputBlog.getAuthorId();
-        if (Strings.isNotEmpty(uid)) {
-            User user = userRepository.findByUid(uid);
-            if (user == null) {
-                throw new ResourceNotFoundException("User with uid: " + uid + " not found");
+        Long userId = inputBlog.getAuthorId();
+        if (userId != null) {
+            Optional<User> user = userRepository.findById(userId);
+            if (!user.isPresent()) {
+                throw new ResourceNotFoundException("User: " + userId + " not found");
             }
-            newBlog.setAuthorId(uid);
+            newBlog.setAuthorId(userId);
         } else {
             throw new InvalidParameterException("Invalid parameter: blog's author id cannot be null");
         }

@@ -52,7 +52,7 @@ class BlogRepositoryTest {
 		blog.setGmtCreate(new Date());
 		blog.setGmtUpdate(new Date());
 		blog.setLikes(0l);
-		blog.setAuthorId("fooId");
+		blog.setAuthorId(1l);
 		blog.setCategoryId("fooId");
 
 		return blog;

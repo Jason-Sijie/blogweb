@@ -12,7 +12,6 @@ import {appConfig} from "../config";
 import CreateBlogPage from "../components/stateless/blog/CreateBlogPage";
 import RegisterPage from "../components/stateless/login/RegisterPage";
 import UserProfilePage from "../components/stateless/home/UserProfilePage";
-import TestComponent from '../components/stateful/TestComponent';
 
 export function AppRoutes(props){
   return (
@@ -56,9 +55,6 @@ export function AppRoutes(props){
       <Route path="/users/profile" element={
         <UserProfilePage currentUser={props.user.currentUser}
                          handleModalShow={props.action.modal.handleModalShow}/>
-      }/>
-      <Route path="/test" element={
-        <TestComponent src="images/profile_avatar.jpg" handleModalShow={props.action.modal.handleModalShow}/>
       }/>
       <Route path={"/error"} element={
         <ErrorPage />

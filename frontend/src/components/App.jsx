@@ -16,9 +16,6 @@ import "../styles/tab_style.css";
 import "../styles/util.css";
 
 class App extends Component {
-  constructor(props) {
-    super(props);
-  }
 
   render() {
     return (

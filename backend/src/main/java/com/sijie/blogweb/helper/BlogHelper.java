@@ -7,7 +7,6 @@ import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.model.Category;
 import com.sijie.blogweb.model.Tag;
 import com.sijie.blogweb.model.User;
-import com.sijie.blogweb.repository.BlogRepository;
 import com.sijie.blogweb.repository.CategoryRepository;
 import com.sijie.blogweb.repository.TagRepository;
 import com.sijie.blogweb.repository.UserRepository;
@@ -25,6 +24,7 @@ import java.util.*;
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class BlogHelper {
     private static final Logger logger = LoggerFactory.getLogger(BlogHelper.class);
+    private static final int MAX_TAGS = 10;
 
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
@@ -78,6 +78,9 @@ public class BlogHelper {
 
         // attach tags
         if (inputBlog.getTags() != null) {
+            if (inputBlog.getTags().size() > MAX_TAGS) {
+                throw new InvalidParameterException("Invalid parameter: A blog cannot have more than 10 tags");
+            }
             newBlog.setTags(translateExternalTagsToInternalTags(inputBlog.getTags()));
         }
 
@@ -117,6 +120,9 @@ public class BlogHelper {
 
         // update tags
         if (inputBlog.getTags() != null) {
+            if (inputBlog.getTags().size() > MAX_TAGS) {
+                throw new InvalidParameterException("Invalid parameter: A blog cannot have more than 10 tags");
+            }
             Set<Tag> newTags = translateExternalTagsToInternalTags(inputBlog.getTags());
             internalBlog.setTags(newTags);
         }

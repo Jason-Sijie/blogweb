@@ -7,12 +7,14 @@ import com.sijie.blogweb.exception.handler.InternalFaultException;
 import com.sijie.blogweb.helper.AuthPrincipalHelper;
 import com.sijie.blogweb.repository.redis.transaction.RedisTransaction;
 import com.sijie.blogweb.repository.redis.transaction.RedisTransactionType;
+import com.sijie.blogweb.exception.InvalidParameterException;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
 import com.sijie.blogweb.exception.UserCredentialsAbsenceException;
 import com.sijie.blogweb.exception.UserUnauthorziedException;
 import com.sijie.blogweb.helper.BlogHelper;
 import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.model.User;
+import com.sijie.blogweb.model.request.SortField;
 import com.sijie.blogweb.repository.redis.BlogContentRepository;
 import com.sijie.blogweb.repository.BlogRepository;
 import com.sijie.blogweb.repository.UserRepository;
@@ -20,16 +22,19 @@ import com.sijie.blogweb.security.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-
+import org.springframework.data.domain.Sort;
+import org.springframework.data.domain.Sort.Direction;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -41,22 +46,21 @@ import java.util.stream.Collectors;
 @RequestMapping(value = "/blogs")
 public class BlogController {
     private static Logger logger = LoggerFactory.getLogger(BlogController.class);
-    private static Integer DEFAULT_PAGE_SIZE = 10;
+    private static final Integer DEFAULT_PAGE_SIZE = 10;
+    private static final int MAX_SEARCH_TAGS = 5;  
+    private static final List<String> ALLOWED_SORT_PROPERTIES = Arrays.asList("likes", "views", "gmtCreate", "gmtUpdate");
 
     private final BlogRepository blogRepository;
     private final BlogHelper blogHelper;
     private final BlogContentRepository blogContentRepository;
-    private final UserRepository userRepository;
 
     @Autowired
     public BlogController(BlogRepository blogRepository,
                           BlogContentRepository blogContentRepository,
-                          BlogHelper blogHelper,
-                          UserRepository userRepository) {
+                          BlogHelper blogHelper) {
         this.blogRepository = blogRepository;
         this.blogContentRepository = blogContentRepository;
         this.blogHelper = blogHelper;
-        this.userRepository = userRepository;
     }
 
     @PostMapping(value = "", consumes = {"application/json"})
@@ -204,44 +208,52 @@ public class BlogController {
                                     @RequestParam(name = "tagNames", required = false) List<String> tagNames,
                                     @RequestParam(name = "title", required = false) String title,
                                     @RequestParam(name = "page", required = false) Integer page,
-                                    @RequestParam(name = "size", required = false) Integer size) {
+                                    @RequestParam(name = "size", required = false) Integer size, 
+                                    @RequestParam(name = "sorts", required = false) List<String> sortProperties,
+                                    @RequestParam(name = "directions", required = false) List<Direction> sortDirections) {
         page = MoreObjects.firstNonNull(page, 0);
         size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
 
+        Sort sort = validateAndBuildSortFields(sortProperties, sortDirections);
+
         if (isTagNamesEmpty(tagNames) && authorId == null && Strings.isNullOrEmpty(title)) {
-            return blogRepository.findAll(PageRequest.of(page, size));
+            return blogRepository.findAll(PageRequest.of(page, size, sort));
         }
 
         if (isTagNamesEmpty(tagNames)) {
             if (authorId == null) {
                 // only title not null
-                return blogRepository.findByTitleContainingIgnoreCase(title, PageRequest.of(page, size));
+                return blogRepository.findBlogsByTitleContainingIgnoreCase(title, PageRequest.of(page, size, sort));
             } else if (Strings.isNullOrEmpty(title)) {
                 // only authorId not null
-                return blogRepository.findAllByAuthorId(authorId, PageRequest.of(page, size));
+                return blogRepository.findBlogsByAuthorId(authorId, PageRequest.of(page, size, sort));
             } else {
                 // both authorId and title not null 
-                return blogRepository.findByAuthorIdAndTitleContainingIgnoreCase(authorId, title, PageRequest.of(page, size));
+                return blogRepository.findBlogsByAuthorIdAndTitleContainingIgnoreCase(authorId, title, PageRequest.of(page, size, sort));
             }
         } else {
             // tagNames not null
+            if (tagNames.size() > MAX_SEARCH_TAGS) {
+                throw new InvalidParameterException("Invalid parameter: We do not support search by more than 5 tags");
+            }
+
             List<Blog> previousResult = null;
             if (authorId == null && Strings.isNullOrEmpty(title)) {
                 // search by tagnames only
                 List<Blog> currentResult = searchBlogsByTagNamesAndOtherParams((tagName) -> {
-                    return blogRepository.findBlogsByTagsName(tagName);
+                    return blogRepository.findBlogsByTagsName(tagName, sort);
                 }, tagNames);
                 previousResult = intersectTwoBlogLists(previousResult, currentResult);
             }
             if (authorId != null) {
                 List<Blog> currentResult = searchBlogsByTagNamesAndOtherParams((tagName) -> {
-                    return blogRepository.findBlogsByAuthorIdAndTagsName(authorId, tagName);
+                    return blogRepository.findBlogsByAuthorIdAndTagsName(authorId, tagName, sort);
                 }, tagNames);
                 previousResult = intersectTwoBlogLists(previousResult, currentResult);
             }
             if (!Strings.isNullOrEmpty(title)) {
                 List<Blog> currentResult = searchBlogsByTagNamesAndOtherParams((tagName) -> {
-                    return blogRepository.findByTitleContainingIgnoreCaseAndTagsName(title, tagName);
+                    return blogRepository.findBlogsByTitleContainingIgnoreCaseAndTagsName(title, tagName, sort);
                 }, tagNames);
                 previousResult = intersectTwoBlogLists(previousResult, currentResult);
             }
@@ -278,83 +290,26 @@ public class BlogController {
         }).collect(Collectors.toList());
     }
 
-    // @GetMapping(value = "", params = {"authorId"})
-    // @Transactional(readOnly = true)
-    // public Page<Blog> getBlogsByAuthorId(@RequestParam("authorId") Long authorId,
-    //                                        @RequestParam(name = "page", required = false) Integer page,
-    //                                        @RequestParam(name = "size", required = false) Integer size) {
-    //     page = MoreObjects.firstNonNull(page, 0);
-    //     size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
+    private Sort validateAndBuildSortFields(List<String> sortProperties, List<Direction> sortDirections) {
+        if (CollectionUtils.isEmpty(sortProperties)) {
+            return Sort.unsorted();
+        }
+        if (CollectionUtils.isEmpty(sortDirections) || sortProperties.size() != sortDirections.size()) {
+            throw new InvalidParameterException("Invalid Parameter: Number of sort properties does not match with number of directions");
+        }
 
-    //     Optional<User> authorOptional = userRepository.findById(authorId);
-    //     if (!authorOptional.isPresent()) {
-    //         return Page.empty();
-    //     }
-    //     User author = authorOptional.get();
-
-    //     return blogRepository.findAllByAuthorId(author.getId(), PageRequest.of(page, size));
-    // }
-
-    // @GetMapping(value = "", params = {"tagNames"})
-    // @Transactional(readOnly = true)
-    // public Page<Blog> getBlogsByTagNames(@RequestParam("tagNames") List<String> tagNames,
-    //                                     @RequestParam(name = "page", required = false) Integer page,
-    //                                     @RequestParam(name = "size", required = false) Integer size) {
-    //     if (tagNames == null || tagNames.isEmpty()) {
-    //         return Page.empty();
-    //     }
-
-    //     List<Blog> result = blogRepository.findBlogsByTagsName(tagNames.get(0));
-    //     for (int i = 1; i < tagNames.size(); i++) {
-    //         List<Blog> blogs = blogRepository.findBlogsByTagsName(tagNames.get(i));
-    //         result = result.stream().filter(element -> {
-    //             for (Blog blog : blogs) {
-    //                 if (blog.getId() == element.getId()) {
-    //                     return true;
-    //                 }
-    //             }
-    //             return false;
-    //         }).collect(Collectors.toList());
-    //     }
-
-    //     page = MoreObjects.firstNonNull(page, 0);
-    //     size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
-    //     return generatePageBlogResult(result, page, size);
-    // }
-
-    // @GetMapping(value = "", params = {"authorId", "tagNames"})
-    // @Transactional(readOnly = true)
-    // public Page<Blog> getBlogsByAuthorIdAndTagNames(@RequestParam("authorId") Long authorId,
-    //                                                 @RequestParam("tagNames") List<String> tagNames,
-    //                                                 @RequestParam(name = "page", required = false) Integer page,
-    //                                                 @RequestParam(name = "size", required = false) Integer size) {
-    //     if (tagNames == null || tagNames.isEmpty()) {
-    //         return Page.empty();
-    //     }
-
-    //     Optional<User> authorOptional = userRepository.findById(authorId);
-    //     if (!authorOptional.isPresent()) {
-    //         return Page.empty();
-    //     }
-    //     User author = authorOptional.get();
-
-    //     List<Blog> result = blogRepository.findBlogsByAuthorIdAndTagsName(author.getId(), tagNames.get(0));
-    //     for (int i = 1; i < tagNames.size(); i++) {
-    //         List<Blog> blogs = blogRepository.findBlogsByAuthorIdAndTagsName(author.getId(), tagNames.get(i));
-    //         result = result.stream().filter(element -> {
-    //             for (Blog blog : blogs) {
-    //                 if (blog.getId() == element.getId()) {
-    //                     return true;
-    //                 }
-    //             }
-    //             return false;
-    //         }).collect(Collectors.toList());
-    //     }
-
-    //     page = MoreObjects.firstNonNull(page, 0);
-    //     size = MoreObjects.firstNonNull(size, DEFAULT_PAGE_SIZE);
-    //     return generatePageBlogResult(result, page, size);
-    // }
+        Sort finalSort = Sort.by(sortDirections.get(0), sortProperties.get(0));
+        for (int i = 0; i < sortProperties.size(); i++) {
+            String property = sortProperties.get(i);
+            Direction direction = sortDirections.get(i);
+            if (!ALLOWED_SORT_PROPERTIES.contains(property)) {
+                throw new InvalidParameterException("Invalid Parameter: We do not support sorting on property " + property);
+            }
+            Sort sort = Sort.by(direction, property);
+            finalSort = finalSort.and(sort);
+        }
+        return finalSort;
+    }
 
     private Page<Blog> generatePageBlogResult(List<Blog> blogs, int page, int size) {
         List<Blog> pageResult;

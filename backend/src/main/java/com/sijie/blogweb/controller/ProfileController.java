@@ -153,7 +153,7 @@ public class ProfileController {
     }
 
     private Profile populateBlogsAggregateInfo(Profile profile, User user) {
-        List<Blog> blogs = blogRepository.findAllByAuthorId(user.getId());
+        List<Blog> blogs = blogRepository.findBlogsByAuthorId(user.getId());
         long totalViews = 0;
         long totalLikes = 0;
         for (Blog blog : blogs) {

@@ -1,4 +1,5 @@
 import {Badge, Col, Row} from "react-bootstrap";
+import { Link } from "react-router-dom";
 import {getBadgeColorFromString} from "../../../constants/colors";
 /**
  *
@@ -21,9 +22,11 @@ const TagList = (props) => {
       {tags.map((tag, idx) => {
         return (
           <Col key={idx} xs={"auto"}>
-            <Badge pill bg={getBadgeColorFromString(tag.name)} style={{fontSize: fontSize || "13px", margin: "5px 0px", backgroundColor: "aqua"}}>
-              {tag.name}
-            </Badge>
+            <Link to={"/blogs?tagNames=" + tag.name} key={"tag-" + idx} reloadDocument>
+              <Badge pill bg={getBadgeColorFromString(tag.name)} style={{fontSize: fontSize || "13px", margin: "5px 0px", backgroundColor: "aqua"}}>
+                {tag.name}
+              </Badge>
+            </Link>
           </Col>
         )
       })}

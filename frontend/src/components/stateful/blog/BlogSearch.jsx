@@ -11,6 +11,7 @@ import {Navigate} from "react-router-dom";
  *   pageSize : int,
  *   authorId : "" (optional),
  *   title: "" (optional),
+ *   tagNames: "" (optional),
  *   searchButtonText : "" (optional),
  *   searchPanelTitle : "" (optional)
  * }
@@ -20,13 +21,14 @@ class BlogSearch extends Component {
     super(props);
     this.state = {
       currentPage: 0,
-      tagNames: null,
+      tagNames: props.tagNames || null,
       blogTitle: null,
       loading: true
     }
 
     getBlogsWithParams({
       authorId: props.authorId,
+      tagNames: this.state.tagNames,
       page: this.state.currentPage,
       size: props.pageSize
     }, (data) => {
@@ -76,7 +78,7 @@ class BlogSearch extends Component {
 
   header = () => {
     return this.props.title ? (
-      <Row style={{justifyContent: "center", padding: "20px"}}>
+      <Row style={{justifyContent: "center", padding: "10px"}}>
         <Col xs={"12"} className={"text-center"}>
           <h3>{this.props.title}</h3>
         </Col>
@@ -98,6 +100,7 @@ class BlogSearch extends Component {
           <SearchPanel getBlogsWithSearchParams={this.getBlogsWithSearchParams}
                        updateSearchParams={this.updateSearchParams}
                        pageSize={this.props.pageSize}
+                       tagNames={this.state.tagNames}
                        searchButtonText={this.props.searchButtonText || "Search Blogs"}
                        searchPanelTitle={this.props.searchPanelTitle || "Search Panel"} />
 

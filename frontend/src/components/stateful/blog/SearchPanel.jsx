@@ -8,6 +8,7 @@ import TagListToasts from "../../stateless/util/TagListToasts";
  *   searchButtonText : ""
  *   searchPanelTitle : ""
  *   pageSize : int,
+ *   tagNames : []
  * }
  */
 class SearchPanel extends Component {
@@ -17,6 +18,17 @@ class SearchPanel extends Component {
       blogTitle: "",
       tags: [],
       newTag: ""
+    }
+
+    if (props.tagNames != null) {
+      let initTags = props.tagNames.map((tagName) => {
+        return {"name": tagName}
+      })
+      console.log("init tags:", initTags)
+      this.state = {
+        ...this.state,
+        tags: initTags
+      }
     }
   }
 
@@ -70,8 +82,8 @@ class SearchPanel extends Component {
 
   render() {
     return (
-      <Container fluid className={"shadow p-3 mb-5 bg-white rounded"}>
-        <Accordion>
+      <Container fluid className={"shadow p-0 mb-3 bg-white rounded"}>
+        <Accordion defaultActiveKey="0">
           <Accordion.Item eventKey="0">
             <Accordion.Header><h4>Search Panel</h4></Accordion.Header>
             <Accordion.Body>
@@ -106,7 +118,7 @@ class SearchPanel extends Component {
                   <TagListToasts tags={this.state.tags} onCloseAction={this.removeTagFromTags}/>
                 </Row>
 
-                <Row className={"pe-3 ps-3"}>
+                <Row style={{padding: "0 2%"}}>
                   <Button style={{width: "100%"}}
                           variant={"primary"}
                           onClick={this.performSearch} >

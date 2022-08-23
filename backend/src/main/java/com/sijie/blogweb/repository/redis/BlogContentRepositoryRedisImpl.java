@@ -26,4 +26,10 @@ public class BlogContentRepositoryRedisImpl implements BlogContentRepository {
         String blogKey = BLOG_KEY_PREFIX + bid;
         return (String) stringRedisTemplate.opsForHash().get(blogKey, CONTENT_KEY);
     }
+
+    @Override
+    public void deleteBlogContent(String bid) {
+        String blogKey = BLOG_KEY_PREFIX + bid;
+        stringRedisTemplate.opsForHash().delete(blogKey, CONTENT_KEY);
+    }
 }

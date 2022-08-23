@@ -2,7 +2,6 @@ package com.sijie.blogweb.controller;
 
 import com.google.common.base.MoreObjects;
 import com.google.common.base.Strings;
-import com.google.common.base.Supplier;
 import com.sijie.blogweb.exception.handler.InternalFaultException;
 import com.sijie.blogweb.helper.AuthPrincipalHelper;
 import com.sijie.blogweb.repository.redis.transaction.RedisTransaction;
@@ -14,10 +13,9 @@ import com.sijie.blogweb.exception.UserUnauthorziedException;
 import com.sijie.blogweb.helper.BlogHelper;
 import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.model.User;
-import com.sijie.blogweb.model.request.SortField;
+import com.sijie.blogweb.model.response.BasicHttpResponse;
 import com.sijie.blogweb.repository.redis.BlogContentRepository;
 import com.sijie.blogweb.repository.BlogRepository;
-import com.sijie.blogweb.repository.UserRepository;
 import com.sijie.blogweb.security.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -33,13 +31,11 @@ import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Function;
-import java.util.stream.Collector;
 import java.util.stream.Collectors;
 
 @RestController
@@ -99,7 +95,7 @@ public class BlogController {
         if (userDetails == null) {
             throw new UserCredentialsAbsenceException("User credentials are required to create new blog");
         } else if (userDetails.getId() != internalBlog.getAuthorId()){
-            throw new UserUnauthorziedException("User " + userDetails.getUsername() + " is Unauthorized to perform update operation on blog " + internalBlog.getBid());
+            throw new UserUnauthorziedException("User " + userDetails.getUsername() + " is Unauthorized to perform update operation on blog " + internalBlog.getId());
         }
 
         internalBlog = blogHelper.validateAndUpdateBlog(inputBlog, internalBlog);
@@ -111,6 +107,36 @@ public class BlogController {
         logger.info("Update Blog " + internalBlog);
         return internalBlog;
     }
+
+    @DeleteMapping(value = "/{id}")
+    @PreAuthorize("hasAnyAuthority('BLOG_ALL', 'BLOG_DELETE')")
+    @Transactional(isolation = Isolation.SERIALIZABLE)
+    @RedisTransaction(type = RedisTransactionType.WriteOnly)
+    public BasicHttpResponse deleteBlogById(@PathVariable("id") long id) {
+        Optional<Blog> result = blogRepository.findById(id);
+        if (!result.isPresent()) {
+            throw new ResourceNotFoundException("Blog with id: " + id + " not found");
+        }
+        Blog internalBlog = result.get();
+
+        CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
+        if (userDetails == null) {
+            throw new UserCredentialsAbsenceException("User credentials are required to delete a blog");
+        } else if (userDetails.getId() != internalBlog.getAuthorId()){
+            throw new UserUnauthorziedException("User " + userDetails.getUsername() + " is Unauthorized to perform delete operation on blog " + internalBlog.getId());
+        }
+
+        blogContentRepository.deleteBlogContent(internalBlog.getBid());
+        blogRepository.delete(internalBlog);
+
+        logger.info("Delete Blog " + internalBlog);
+        BasicHttpResponse response = new BasicHttpResponse();
+        response.setStatus(200);
+        response.setMessage("Successfully deleted blog " + internalBlog.getId());
+
+        return response;
+    }
+
 
     @GetMapping(value = "/{id}/isLiked")
     @Transactional(isolation = Isolation.READ_COMMITTED)
@@ -140,7 +166,7 @@ public class BlogController {
 
     @PutMapping(value = "/{id}/like")
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public String likeABlogById(@PathVariable("id") long id) {
+    public BasicHttpResponse likeABlogById(@PathVariable("id") long id) {
         Optional<Blog> result = blogRepository.findById(id);
         if (!result.isPresent()) {
             throw new ResourceNotFoundException("Blog with id: " + id + " not found");
@@ -154,16 +180,19 @@ public class BlogController {
 
         Blog blog = blogHelper.likeABlog(internalBlog, userDetails.getUsername());
         if (blog == null) {
-            throw new InternalFaultException("Failed to like the blog " + blog.getBid());
+            throw new InternalFaultException("Failed to like the blog " + id);
         }
 
         blogRepository.save(blog);
-        return "User " + userDetails.getUsername() + " successfully liked the blog " + blog.getBid();
+        BasicHttpResponse response = new BasicHttpResponse();
+        response.setStatus(200);
+        response.setMessage("User " + userDetails.getUsername() + " successfully liked the blog " + id);
+        return response;
     }
 
     @PutMapping(value = "/{id}/unlike")
     @Transactional(isolation = Isolation.SERIALIZABLE)
-    public String unlikeABlogById(@PathVariable("id") long id) {
+    public BasicHttpResponse unlikeABlogById(@PathVariable("id") long id) {
         Optional<Blog> result = blogRepository.findById(id);
         if (!result.isPresent()) {
             throw new ResourceNotFoundException("Blog with id: " + id + " not found");
@@ -177,11 +206,14 @@ public class BlogController {
 
         Blog blog = blogHelper.unlikeABlog(internalBlog, userDetails.getUsername());
         if (blog == null) {
-            throw new InternalFaultException("Failed to unlike the blog " + blog.getBid());
+            throw new InternalFaultException("Failed to unlike the blog " + id);
         }
 
         blogRepository.save(blog);
-        return "User " + userDetails.getUsername() + " successfully unliked the blog " + blog.getBid();
+        BasicHttpResponse response = new BasicHttpResponse();
+        response.setStatus(200);
+        response.setMessage("User " + userDetails.getUsername() + " successfully unliked the blog " + id);
+        return response;
     }
 
     @GetMapping(value = "/{id}")

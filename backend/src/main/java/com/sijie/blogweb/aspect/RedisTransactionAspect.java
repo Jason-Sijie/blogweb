@@ -1,5 +1,6 @@
 package com.sijie.blogweb.aspect;
 
+import com.google.common.collect.Sets;
 import com.sijie.blogweb.repository.redis.transaction.RedisTransaction;
 import com.sijie.blogweb.repository.redis.transaction.RedisTransactionContext;
 import com.sijie.blogweb.repository.redis.transaction.RedisTransactionHelper;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.lang.reflect.Method;
+import java.util.Set;
 
 import static com.sijie.blogweb.repository.redis.transaction.RedisTransactionHelper.REDIS_TRANSACTION_CONTEXT_KEY;
 
@@ -37,7 +39,7 @@ import static com.sijie.blogweb.repository.redis.transaction.RedisTransactionHel
 @Aspect
 @Component
 public class RedisTransactionAspect {
-    private static final String WRITE_OPERATION_PREFIX = "set";
+    private static final Set<String> WRITE_OPERATION_PREFIX_SET = Sets.newHashSet("set", "delete");
 
     private final RedisTransactionHelper redisTransactionHelper;
 
@@ -69,12 +71,22 @@ public class RedisTransactionAspect {
         MethodSignature signature = (MethodSignature) joinPoint.getSignature();
         Method method = signature.getMethod();
 
-        if (method.getName().startsWith(WRITE_OPERATION_PREFIX)) {
+        if (isWriteMethod(method)) {
             String context = ThreadContext.get(REDIS_TRANSACTION_CONTEXT_KEY);
             if (RedisTransactionContext.NEW_TRANSACTION.getContext().equals(context)) {
                 redisTransactionHelper.startRedisTransaction();
                 ThreadContext.put(REDIS_TRANSACTION_CONTEXT_KEY, RedisTransactionContext.HAS_TRANSACTION.getContext());
             }
         }
+    }
+
+    private boolean isWriteMethod(Method method) {
+        String methodName = method.getName().toLowerCase();
+        for (String prefix : WRITE_OPERATION_PREFIX_SET) {
+            if (methodName.startsWith(prefix.toLowerCase())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

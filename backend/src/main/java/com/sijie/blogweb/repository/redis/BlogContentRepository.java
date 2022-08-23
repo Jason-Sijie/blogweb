@@ -1,8 +1,7 @@
 package com.sijie.blogweb.repository.redis;
 
-import org.springframework.dao.DataAccessException;
-
 public interface BlogContentRepository {
     String setBlogContent(String bid, String content);
-    String getBlogContent(String bid) throws DataAccessException;
+    String getBlogContent(String bid);
+    void deleteBlogContent(String bid);
 }

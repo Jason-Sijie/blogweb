@@ -1,5 +1,5 @@
 import axios from "axios";
-import {api} from "../config";
+import {api, appConfig} from "../config";
 import {ACTIONS} from "../constants/actions";
 
 export const acquireJwtCredentials = (username, password) => dispatch => {
@@ -76,7 +76,7 @@ export const acquireCurrentUserDetails = (token) => dispatch => {
 
 export const logout = () => dispatch => {
   console.log("Start logging out")
-  let token = localStorage.getItem("token")
+  let token = localStorage.getItem(appConfig.tokenKey)
   console.log("current token: " + token)
 
   if (token == null || token === "") {

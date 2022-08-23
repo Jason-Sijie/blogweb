@@ -198,7 +198,7 @@ class BlogDetail extends Component {
   }
 
   displayEditPanel = () => {
-    let shouldDisplay = this.props.currentUser != null && this.props.currentUser.uid === this.state.blog.authorId
+    let shouldDisplay = this.props.currentUser != null && this.props.currentUser.id === this.state.blog.authorId
 
     return shouldDisplay ? (
       this.editPanel()

@@ -39,4 +39,32 @@ public class TagController {
 
         return topTags;
     }
+
+    @GetMapping(value = "", produces = {"application/json"}, params = {"topKView"})
+    @Transactional(readOnly = true)
+    public List<Tag> getTagsWithTopKView(@RequestParam(name = "topKView", required = true) Integer topKView) {
+        List<Tag> topTags = new ArrayList<>();
+        List<Tuple> tuples = tagRepository.findTopTagsByBlogView(topKView);
+        for (Tuple tuple : tuples) {
+            TupleWrapper tupleWrapper = new TupleWrapper(tuple);
+            Tag tag = tupleWrapper.toObject(Tag.class); 
+            topTags.add(tag);
+        }
+
+        return topTags;
+    }
+
+    @GetMapping(value = "", produces = {"application/json"}, params = {"topKLike"})
+    @Transactional(readOnly = true)
+    public List<Tag> getTagsWithTopKLike(@RequestParam(name = "topKLike", required = true) Integer topKLike) {
+        List<Tag> topTags = new ArrayList<>();
+        List<Tuple> tuples = tagRepository.findTopTagsByBlogLike(topKLike);
+        for (Tuple tuple : tuples) {
+            TupleWrapper tupleWrapper = new TupleWrapper(tuple);
+            Tag tag = tupleWrapper.toObject(Tag.class); 
+            topTags.add(tag);
+        }
+
+        return topTags;
+    }
 }

@@ -121,7 +121,7 @@ class SearchPanel extends Component {
 
   sortingPanel = () => {
     return (
-      <Row>
+      <Row style={{justifyContent: "right"}}>
         <Col xs={"auto"} style={{marginRight: "1%", marginLeft: "1%"}}>
           <Row>
             <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0"}}>

@@ -1,10 +1,12 @@
+import { appConfig } from "../config";
+
 export const getBackendRequestBasicHeader = () => {
   let headers = {
     "Content-Type": "application/json"
   };
     
-  if (localStorage.getItem("token") != null) {
-    const token = JSON.parse(localStorage.getItem("token"));
+  if (localStorage.getItem(appConfig.tokenKey) != null) {
+    const token = JSON.parse(localStorage.getItem(appConfig.tokenKey));
     headers = {
       ...headers,
       "Authorization": token.type + " " + token.content

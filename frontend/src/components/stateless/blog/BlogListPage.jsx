@@ -1,6 +1,8 @@
 import React from "react";
+import { Row, Col } from "react-bootstrap";
 import { useLocation } from "react-router-dom";
 import BlogSearch from "../../stateful/blog/BlogSearch";
+import TopTags from "../../stateful/tag/TopTags";
 
 /**
  * @param props : {
@@ -20,13 +22,32 @@ const BlogListPage = (props) => {
   }
 
   return (
-    <div style={{padding: "0 10%"}}>
-      <BlogSearch pageSize={props.pageSize}
-                tagNames={tagNames}
-                viewsSort="DESC"
-                searchButtonText={props.searchButtonText}
-                title={props.title} />
-    </div>
+    <Row style={{padding: "0", justifyContent: "center"}}>
+      <Col xs="9" style={{marginRight: "2%"}}>
+        <BlogSearch pageSize={props.pageSize}
+                  tagNames={tagNames}
+                  viewsSort="DESC"
+                  searchButtonText={props.searchButtonText}
+                  title={props.title} />
+      </Col>
+      <Col xs="2" style={{padding: "5% 1%"}}>
+        <Row className="shadow bg-white rounded" style={{margin: "10% 0"}}>
+          <TopTags topK={10} border="secondary"
+                  type="size" color="secondary"
+                  header={"Top 10 Sized Tags"}/>
+        </Row>
+        <Row className="shadow bg-white rounded" style={{margin: "10% 0"}}>
+          <TopTags topK={10} border="success"
+                  type="view" color="success"
+                  header={"Top 10 Viewed Tags"}/>
+        </Row>
+        <Row className="shadow bg-white rounded" style={{margin: "10% 0"}}>
+          <TopTags topK={10} border="info"
+                  type="like" color="info"
+                  header={"Top 10 Liked Tags"}/>
+        </Row>
+      </Col>
+    </Row>
   )
 }
 

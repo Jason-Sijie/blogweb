@@ -26,6 +26,12 @@ export const loadState = () => {
 
 // localStorage.js
 export const saveState = (state) => {
+  const token = state.userReducer.token 
+  if (token == null || token.content == null) {
+    console.log("clean up token in local storage")
+    localStorage.removeItem(appConfig.tokenKey)
+  }
+
   try {
     const item = {
       state: state,
@@ -34,7 +40,7 @@ export const saveState = (state) => {
     console.log("save state: ", item)
     localStorage.setItem(KEY, JSON.stringify(item));
 
-    localStorage.setItem('token', JSON.stringify(state.userReducer.token));
+    localStorage.setItem(appConfig.tokenKey, JSON.stringify(state.userReducer.token));
   } catch {
     // ignore write errors
   }

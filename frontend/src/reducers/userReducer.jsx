@@ -1,3 +1,4 @@
+import { appConfig } from "../config";
 import {ACTIONS} from "../constants/actions";
 
 const initialState = {
@@ -21,7 +22,7 @@ const userReducer = (state = initialState, action) => {
         expireTime: currentTime + action.payload.expire,
         startTime: currentTime
       }
-      localStorage.setItem('token', JSON.stringify(newToken));
+      localStorage.setItem(appConfig, JSON.stringify(newToken));
 
       state = {
         ...state,
@@ -44,7 +45,7 @@ const userReducer = (state = initialState, action) => {
       break;
 
     case ACTIONS.USER.LOGOUT:
-      localStorage.removeItem('token');
+      localStorage.removeItem(appConfig.tokenKey);
 
       state = {
         ...state,

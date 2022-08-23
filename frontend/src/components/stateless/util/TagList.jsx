@@ -9,7 +9,8 @@ import {getBadgeColorFromString} from "../../../constants/colors";
  *       "name": ""
  *     }, ...
  *   ],
- *   fontSize : ""
+ *   fontSize : "",
+ *   color : "",
  * }
  * @returns {JSX.Element}
  * @constructor
@@ -23,7 +24,7 @@ const TagList = (props) => {
         return (
           <Col key={idx} xs={"auto"}>
             <Link to={"/blogs?tagNames=" + tag.name} key={"tag-" + idx} reloadDocument>
-              <Badge pill bg={getBadgeColorFromString(tag.name)} style={{fontSize: fontSize || "13px", margin: "5px 0px", backgroundColor: "aqua"}}>
+              <Badge pill bg={props.color || getBadgeColorFromString(tag.name)} style={{fontSize: fontSize || "13px", margin: "5px 0px"}}>
                 {tag.name}
               </Badge>
             </Link>

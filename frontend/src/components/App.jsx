@@ -14,6 +14,7 @@ import "../styles/blog_style.css";
 import "../styles/home_style.css";
 import "../styles/tab_style.css";
 import "../styles/util.css";
+import AppFooter from "./stateless/util/AppFooter";
 
 class App extends Component {
 
@@ -21,10 +22,11 @@ class App extends Component {
     return (
       <div className={"app"}>
         <AppHeader {...this.props.user}/>
-        <div style={{marginTop: "70px"}}>
+        <div style={{marginTop: "70px", minHeight: "1000px"}}>
           <AppRoutes {...this.props} />
           <GlobalModal {...this.props.modal.globalModal} {...this.props.action.modal}/>
         </div>
+        <AppFooter />
       </div>
     );
   }

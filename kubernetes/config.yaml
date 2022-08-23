@@ -16,3 +16,8 @@ metadata:
 data:
   application-properties: |
     cors.allowedOrigins=*
+    datasource.mysql.druid.username=admin
+    datasource.mysql.druid.url=jdbc:mysql://mysql:3306/blog_web?useSSL=true&allowPublicKeyRetrieval=true&serverTimezone=GMT&useUnicode=true&characterEncoding=utf-8
+    redis.host=redis-master
+    redis.port=6379
+    jwt.validityInMs=3600000

@@ -23,6 +23,7 @@ const BlogListPage = (props) => {
     <div style={{padding: "0 10%"}}>
       <BlogSearch pageSize={props.pageSize}
                 tagNames={tagNames}
+                viewsSort="DESC"
                 searchButtonText={props.searchButtonText}
                 title={props.title} />
     </div>

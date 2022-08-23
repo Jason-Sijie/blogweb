@@ -103,7 +103,7 @@ class UserHome extends Component {
         <Container fluid style={{margin: 0, padding: 0}}>
           <UserHomeHeader {...this.state.profile}/>
           <Row>
-            <Col xs={3} style={{margin: "0% 2% 4% 2%", position: "relative", top: "-200px"}}>
+            <Col xs={3} style={{margin: "0% 2% 4% 2%", position: "relative", top: "-150px"}}>
               <UserProfile {...this.state.profile}
                             avatar={this.state.hasAvatar ? api.blogWeb.user + "/" + this.props.userId + "/profiles/avatar" : "/images/profile_avatar_1.png"} />
             </Col>

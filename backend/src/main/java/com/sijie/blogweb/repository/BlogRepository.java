@@ -19,6 +19,8 @@ public interface BlogRepository extends PagingAndSortingRepository<Blog, Long> {
     Page<Blog> findBlogsByAuthorId(@Param("author_id") Long authorId, Pageable pageable);
     List<Blog> findBlogsByAuthorId(@Param("author_id") Long authorId);
 
+    Blog findByBid(@Param("bid") String bid);
+
     Page<Blog> findBlogsByTagsName(@Param("tag_name") String tagName, Pageable pageable);
     List<Blog> findBlogsByTagsName(@Param("tag_name") String tagName);
     List<Blog> findBlogsByTagsName(@Param("tag_name") String tagName, Sort sort);

@@ -8,16 +8,24 @@ import TagListToasts from "../../stateless/util/TagListToasts";
  *   searchButtonText : ""
  *   searchPanelTitle : ""
  *   pageSize : int,
- *   tagNames : []
+ *   tagNames : [], (optional)
+ *   viewsSort : "", (optional)
+ *   likesSort : "", (optional)
+ *   gmtCreateSort : "", (optional)
+ *   gmtUpdateSort : "", (optional)
  * }
  */
 class SearchPanel extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      blogTitle: "",
+      title: "",
       tags: [],
-      newTag: ""
+      newTag: "",
+      viewsSort: props.viewsSort || "null",
+      likesSort: props.likesSort || "null",
+      gmtCreateSort: props.gmtCreateSort || "null",
+      gmtUpdateSort: props.gmtUpdateSort || "null"
     }
 
     if (props.tagNames != null) {
@@ -67,17 +75,111 @@ class SearchPanel extends Component {
       tagNames: this.state.tags.map((tag) => {
         return tag.name
       }),
-      blogTitle: this.state.blogTitle || null
+      title: this.state.title || null,
+      viewsSort: this.state.viewsSort,
+      likesSort: this.state.likesSort,
+      gmtCreateSort: this.state.gmtCreateSort,
+      gmtUpdateSort: this.state.gmtUpdateSort
     })
 
     this.props.getBlogsWithSearchParams({
       tagNames: this.state.tags.map((tag) => {
         return tag.name
       }),
-      title: this.state.blogTitle || null,
+      title: this.state.title || null,
       page: 0,
       size: this.props.pageSize,
+      ...this.buildSortingParams()
     });
+  }
+
+  buildSortingParams = () => {
+    let sorts = []
+    let directions = []
+    if (this.state.viewsSort === "ASC" || this.state.viewsSort === "DESC") {
+      sorts.push("views")
+      directions.push(this.state.viewsSort)
+    } 
+    if (this.state.likesSort === "ASC" || this.state.likesSort === "DESC") {
+      sorts.push("likes")
+      directions.push(this.state.likesSort)
+    } 
+    if (this.state.gmtCreateSort === "ASC" || this.state.gmtCreateSort === "DESC") {
+      sorts.push("gmtCreate")
+      directions.push(this.state.gmtCreateSort)
+    } 
+    if (this.state.gmtUpdateSort === "ASC" || this.state.gmtUpdateSort === "DESC") {
+      sorts.push("gmtUpdate")
+      directions.push(this.state.gmtUpdateSort)
+    } 
+
+    return {
+      sorts: sorts,
+      directions: directions
+    }
+  }
+
+  sortingPanel = () => {
+    return (
+      <Row>
+        <Col xs={"auto"} style={{marginRight: "1%", marginLeft: "1%"}}>
+          <Row>
+            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0"}}>
+              Views
+            </Col>
+            <Col xs="auto">
+              <Form.Select defaultValue={this.state.viewsSort} onChange={this.changeStateOnEvent("viewsSort")}>
+                <option value="DESC">Most to Fewest</option>
+                <option value="ASC">Fewest to Most</option>
+                <option value="null">No Sort</option>
+              </Form.Select>
+            </Col>
+          </Row>
+        </Col>
+        <Col xs={"auto"} style={{marginRight: "1%", marginLeft: "1%"}}>
+          <Row>
+            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0"}}>
+              Likes
+            </Col>
+            <Col xs="auto">
+              <Form.Select defaultValue={this.state.likesSort} onChange={this.changeStateOnEvent("likesSort")}>
+                <option value="DESC">Most to Fewest</option>
+                <option value="ASC">Fewest to Most</option>
+                <option value="null">No Sort</option>
+              </Form.Select>
+            </Col>
+          </Row>
+        </Col>
+        <Col xs={"auto"} style={{marginRight: "1%", marginLeft: "1%"}}>
+          <Row>
+            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0"}}>
+              Creation Time
+            </Col>
+            <Col xs="auto">
+              <Form.Select defaultValue={this.state.gmtCreateSort} onChange={this.changeStateOnEvent("gmtCreateSort")}>
+                <option value="DESC">Latest to Oldest</option>
+                <option value="ASC">Oldest to Latest</option>
+                <option value="null">No Sort</option>
+              </Form.Select>
+            </Col>
+          </Row>
+        </Col>
+        <Col xs={"auto"} style={{marginRight: "1%", marginLeft: "1%"}}>
+          <Row>
+            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0"}}>
+              Update Time
+            </Col>
+            <Col xs="auto">
+              <Form.Select defaultValue={this.state.gmtUpdateSort} onChange={this.changeStateOnEvent("gmtUpdateSort")}>
+                <option value="DESC">Latest to Oldest</option>
+                <option value="ASC">Oldest to Latest</option>
+                <option value="null">No Sort</option>
+              </Form.Select>
+            </Col>
+          </Row>
+        </Col>
+      </Row>
+    )
   }
 
   render() {
@@ -90,8 +192,19 @@ class SearchPanel extends Component {
               <Form>
                 <Form.Group className="mb-3" controlId="blogTitle">
                   <Form.Label>Blog Name</Form.Label>
-                  <Form.Control type="text"
-                                onChange={this.changeStateOnEvent("blogTitle")}/>
+                  <Row>
+                    <Col xs="9">
+                      <Form.Control type="text"
+                                    onChange={this.changeStateOnEvent("title")}/>
+                    </Col>
+                    <Col xs="3" style={{alignSelf: "center"}}>
+                      <Button style={{width: "100%"}}
+                              variant={"primary"}
+                              onClick={this.performSearch} >
+                        {this.props.searchButtonText}
+                      </Button>
+                    </Col>
+                  </Row>
                 </Form.Group>
 
                 <Form.Group className="mb-3" controlId="tags">
@@ -116,13 +229,7 @@ class SearchPanel extends Component {
                   <TagListToasts tags={this.state.tags} onCloseAction={this.removeTagFromTags}/>
                 </Row>
 
-                <Row style={{padding: "0 2%"}}>
-                  <Button style={{width: "100%"}}
-                          variant={"primary"}
-                          onClick={this.performSearch} >
-                    {this.props.searchButtonText}
-                  </Button>
-                </Row>
+                {this.sortingPanel()}
               </Form>
             </Accordion.Body>
           </Accordion.Item>

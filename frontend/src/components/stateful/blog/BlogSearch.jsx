@@ -13,7 +13,11 @@ import {Navigate} from "react-router-dom";
  *   title: "" (optional),
  *   tagNames: "" (optional),
  *   searchButtonText : "" (optional),
- *   searchPanelTitle : "" (optional)
+ *   searchPanelTitle : "" (optional),
+ *   likesSort: "" (optional),
+ *   viewsSort: "" (optional),
+ *   gmtCreateSort: "" (optional),
+ *   gmtUpdateSort: "" (optional),
  * }
  */
 class BlogSearch extends Component {
@@ -22,7 +26,11 @@ class BlogSearch extends Component {
     this.state = {
       currentPage: 0,
       tagNames: props.tagNames || null,
-      blogTitle: null,
+      title: null,
+      likesSort: props.likesSort || null,
+      viewsSort: props.viewsSort || null,
+      gmtCreateSort: props.gmtCreateSort || null,
+      gmtUpdateSort: props.gmtUpdateSort || null,
       loading: true
     }
 
@@ -30,7 +38,8 @@ class BlogSearch extends Component {
       authorId: props.authorId,
       tagNames: this.state.tagNames,
       page: this.state.currentPage,
-      size: props.pageSize
+      size: props.pageSize,
+      ...this.buildSortingParams()
     }, (data) => {
       this.setState({
         content : data.content,
@@ -46,11 +55,38 @@ class BlogSearch extends Component {
     })
   }
 
+  buildSortingParams = () => {
+    let sorts = []
+    let directions = []
+    if (this.state.viewsSort === "ASC" || this.state.viewsSort === "DESC") {
+      sorts.push("views")
+      directions.push(this.state.viewsSort)
+    } 
+    if (this.state.likesSort === "ASC" || this.state.likesSort === "DESC") {
+      sorts.push("likes")
+      directions.push(this.state.likesSort)
+    } 
+    if (this.state.gmtCreateSort === "ASC" || this.state.gmtCreateSort === "DESC") {
+      sorts.push("gmtCreate")
+      directions.push(this.state.gmtCreateSort)
+    } 
+    if (this.state.gmtUpdateSort === "ASC" || this.state.gmtUpdateSort === "DESC") {
+      sorts.push("gmtUpdate")
+      directions.push(this.state.gmtUpdateSort)
+    } 
+
+    return {
+      sorts: sorts,
+      directions: directions
+    }
+  }
+
   getBlogsWithSearchParams = (params) => {
     params = {
       authorId: this.props.authorId,
       tagNames: this.state.tagNames,
-      title: this.state.blogTitle,
+      title: this.state.title,
+      ...this.buildSortingParams(),
       ...params
     }
 
@@ -69,10 +105,14 @@ class BlogSearch extends Component {
   }
 
   updateSearchParams = (params) => {
-    const {tagNames, blogTitle} = params;
+    const {tagNames, title, viewsSort, likesSort, gmtCreateSort, gmtUpdateSort} = params;
     this.setState({
       tagNames: tagNames,
-      blogTitle: blogTitle
+      title: title,
+      viewsSort: viewsSort,
+      likesSort: likesSort,
+      gmtCreateSort: gmtCreateSort,
+      gmtUpdateSort: gmtUpdateSort
     })
   }
 
@@ -101,6 +141,10 @@ class BlogSearch extends Component {
                        updateSearchParams={this.updateSearchParams}
                        pageSize={this.props.pageSize}
                        tagNames={this.state.tagNames}
+                       viewsSort={this.state.viewsSort}
+                       likesSort={this.state.likesSort}
+                       gmtCreateSort={this.state.gmtCreateSort}
+                       gmtUpdateSort={this.state.gmtUpdateSort}
                        searchButtonText={this.props.searchButtonText || "Search Blogs"}
                        searchPanelTitle={this.props.searchPanelTitle || "Search Panel"} />
 

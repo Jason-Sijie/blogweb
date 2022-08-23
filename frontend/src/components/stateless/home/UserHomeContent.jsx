@@ -37,7 +37,8 @@ const UserHomeContent = (props) => {
         <Container className={"shadow-lg bg-white rounded p-3 m-3"} style={{minHeight: "800px"}} fluid>
           <BlogSearch pageSize={appConfig.blogListPageSize}
                       authorId={props.authorId}
-                      searchButtonText={"Search blogs under " + props.name}
+                      viewsSort="DESC"
+                      searchButtonText={"Search blogs"}
                       title={"All Blogs written by " + props.name}/>
         </Container>
       </Tab>

@@ -26,6 +26,16 @@ class BlogItem extends Component {
     })
   }
 
+  componentDidUpdate(prevProps) {
+    if (prevProps.blog.authorId !== this.props.blog.authorId) {
+      getProfileById(this.props.blog.authorId, (data) => {
+        this.setState({
+          author: data
+        })
+      })
+    }
+  }
+
   getAuthorInfo = () => {
     if (this.state.author == null) {
       return "Author Info"

@@ -95,11 +95,11 @@ class UserHome extends Component {
         <Container fluid style={{margin: 0, padding: 0}}>
           <UserHomeHeader {...this.state.profile}/>
           <Row>
-            <Col xs={3} style={{margin: "0% 2% 4% 2%", position: "relative", top: "-150px"}}>
+            <Col xs={4} xl={3} style={{margin: "0% 2% 4% 2%", position: "relative", top: "-150px"}}>
               <UserProfile {...this.state.profile}
                             avatar={api.blogWeb.user + "/" + this.props.userId + "/profiles/avatar"} />
             </Col>
-            <Col xs={8}>
+            <Col xs={7} xl={8}>
               <UserHomeContent authorId={this.props.userId}
                                currentUser={this.props.currentUser}
                                name={this.state.profile.name}

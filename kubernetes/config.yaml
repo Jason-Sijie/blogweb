@@ -6,7 +6,7 @@ data:
   env: |
     REACT_APP_BACKEND_URL=http://k8s-default-blogwebb-53dfd852b8-685377d2a0a8d394.elb.us-west-1.amazonaws.com
     REACT_APP_BACKEND_PORT=9000
-    REACT_APP_BLOG_LIST_PAGE_SIZE=7
+    REACT_APP_BLOG_LIST_PAGE_SIZE=8
     REACT_APP_TOKEN_TTL_IN_MS=7200000
 --- 
 apiVersion: v1

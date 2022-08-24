@@ -1,6 +1,7 @@
 package com.sijie.blogweb.controller;
 
 import com.google.common.base.Strings;
+import com.google.common.io.Files;
 import com.sijie.blogweb.exception.InvalidParameterException;
 import com.sijie.blogweb.exception.ResourceAlreadyExistsException;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
@@ -19,10 +20,15 @@ import com.sijie.blogweb.security.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -38,7 +44,7 @@ public class ProfileController {
     @Autowired
     private UserRepository userRepository;
 
-    @PostMapping(value = "/users/profiles", consumes = {"application/json"})
+    @PostMapping(value = "/users/profiles", consumes = { "application/json" })
     @Transactional(isolation = Isolation.SERIALIZABLE)
     @RedisTransaction(type = RedisTransactionType.ReadThenWrite)
     public Profile createNewProfile(@RequestBody Profile profile) {
@@ -61,7 +67,7 @@ public class ProfileController {
         return profile;
     }
 
-    @PostMapping(value = "/users/profiles/avatar", consumes = {"image/jpeg", "image/png"})
+    @PostMapping(value = "/users/profiles/avatar", consumes = { "image/jpeg", "image/png" })
     @Transactional(isolation = Isolation.SERIALIZABLE)
     @RedisTransaction(type = RedisTransactionType.ReadThenWrite)
     public BasicHttpResponse uploadProfileAvatar(@RequestBody byte[] avatar) {
@@ -77,7 +83,7 @@ public class ProfileController {
         return response;
     }
 
-    @PutMapping(value = "/users/{id}/profiles", consumes = {"application/json"})
+    @PutMapping(value = "/users/{id}/profiles", consumes = { "application/json" })
     @Transactional(isolation = Isolation.SERIALIZABLE)
     @RedisTransaction(type = RedisTransactionType.ReadThenWrite)
     public Profile updateProfile(@PathVariable("id") Long userId, @RequestBody Profile inputProfile) {
@@ -100,12 +106,23 @@ public class ProfileController {
         return internalProfile;
     }
 
-    @GetMapping(value = "/users/{id}/profiles/avatar", produces = {"image/jpeg", "image/png"})
+    @GetMapping(value = "/users/{id}/profiles/avatar", produces = { "image/jpeg", "image/png" })
     @Transactional(readOnly = true)
     public byte[] getProfileAvatarById(@PathVariable("id") Long userId) {
+        Optional<User> userOptional = userRepository.findById(userId);
+        if (!userOptional.isPresent()) {
+            throw new ResourceNotFoundException("User id: " + userId + " not found");
+        }
+
         byte[] avatar = profileRepository.getProfileAvatar(userId);
         if (avatar == null) {
-            throw new ResourceNotFoundException("Profile avatar with user id: " + userId + " not found");
+            Resource resource = new ClassPathResource("images/profile_avatar.png");
+            try {
+                File file = resource.getFile();
+                avatar = Files.toByteArray(file);
+            } catch (IOException ex) {
+                logger.info("Failed to open images/profile_avatar.png. " + ex.getMessage());
+            }
         }
         return avatar;
     }
@@ -116,13 +133,13 @@ public class ProfileController {
         return getExternalProfileFromUserId(userId);
     }
 
-    @GetMapping(value = "/users/profiles", params = {"userId"})
+    @GetMapping(value = "/users/profiles", params = { "userId" })
     @Transactional(readOnly = true)
     public Profile getProfileByUserId(@RequestParam Long userId) {
         return getExternalProfileFromUserId(userId);
     }
 
-    @GetMapping(value = "/users/profiles", params = {"uid"})
+    @GetMapping(value = "/users/profiles", params = { "uid" })
     @Transactional(readOnly = true)
     public Profile getProfileByUserId(@RequestParam(name = "uid") String uid) {
         User user = userRepository.findByUid(uid);

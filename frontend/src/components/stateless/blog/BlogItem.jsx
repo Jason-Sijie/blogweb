@@ -30,7 +30,7 @@ class BlogItem extends Component {
     if (this.state.author == null) {
       return "Author Info"
     } else {
-      return this.state.author.name + ", " + this.state.author.email
+      return this.state.author.name
     }
   }
 
@@ -52,27 +52,27 @@ class BlogItem extends Component {
                 </Link>
               </Col>
               <Col xs="auto">
-                <img src={api.blogWeb.user + "/" + this.props.blog.authorId + "/profiles/avatar"} 
-                    alt={"avatar_image"}
-                    style={{width: "45px", borderRadius: "50%"}}/>
-                <a style={{marginLeft: "10px"}}>
-                  <Link to={"/users/" + this.props.blog.authorId + "/home"} key={this.props.blog.authorId + "home"}>
+                <Link to={"/users/" + this.props.blog.authorId + "/home"} key={this.props.blog.authorId + "home"}>
+                  <img src={api.blogWeb.user + "/" + this.props.blog.authorId + "/profiles/avatar"} 
+                      alt={"avatar_image"}
+                      style={{width: "40px", borderRadius: "50%"}}/>
+                  <a style={{marginLeft: "10px"}}>                    
                     <Button style={{fontSize: "15px"}} variant="light" >
                       {this.getAuthorInfo()}
                     </Button>
-                  </Link>
-                </a>
+                  </a>
+                </Link>
               </Col>
             </Row>
           </Card.Title>
-          <Card.Subtitle style={{margin: "10px"}}>
+          <Link style={{color: "grey", textDecoration: "none"}} to={"/blogs/" + this.props.blog.id} key={this.props.blog.id + "blog"}>
+            <Card.Text style={{fontSize: "15px"}}>
+                {this.props.blog.description}
+            </Card.Text>
+          </Link>
+          <Card.Subtitle style={{margin: "10px 0 0"}}>
             <TagList tags={this.props.blog.tags || []} fontSize="15px"/>
           </Card.Subtitle>
-          <Card.Text style={{fontSize: "15px"}}>
-            <Link style={{color: "grey", textDecoration: "none"}} to={"/blogs/" + this.props.blog.id} key={this.props.blog.id + "blog"}>
-              {this.props.blog.description}
-            </Link>
-          </Card.Text>
         </Card.Body>
         <Card.Footer>
           <Row style={{justifyContent: "space-between"}}>

@@ -28,7 +28,6 @@ class UserHome extends Component {
     this.state = {
       loading: true,
       error: null,
-      hasAvatar: false,
       likedBlogs: {
         content: [],
         totalPages: 0,
@@ -57,13 +56,6 @@ class UserHome extends Component {
           error: error.data,
         })
       }
-    })
-    
-    getProfileAvatarById(this.props.userId, (data) => {
-      console.log("succeeded to get profile avatar")
-      this.setState({
-        hasAvatar: true
-      })
     })
 
     getLikedBlogsByUserId({
@@ -105,7 +97,7 @@ class UserHome extends Component {
           <Row>
             <Col xs={3} style={{margin: "0% 2% 4% 2%", position: "relative", top: "-150px"}}>
               <UserProfile {...this.state.profile}
-                            avatar={this.state.hasAvatar ? api.blogWeb.user + "/" + this.props.userId + "/profiles/avatar" : "/images/profile_avatar_1.png"} />
+                            avatar={api.blogWeb.user + "/" + this.props.userId + "/profiles/avatar"} />
             </Col>
             <Col xs={8}>
               <UserHomeContent authorId={this.props.userId}

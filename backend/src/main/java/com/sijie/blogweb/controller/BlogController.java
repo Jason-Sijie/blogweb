@@ -217,7 +217,7 @@ public class BlogController {
     }
 
     @GetMapping(value = "/{id}")
-    @Transactional(isolation = Isolation.READ_COMMITTED)
+    @Transactional(isolation = Isolation.READ_UNCOMMITTED)
     @RedisTransaction(type = RedisTransactionType.ReadOnly)
     public Blog getBlogDetailById(@PathVariable("id") long id) {
         Optional<Blog> result = blogRepository.findById(id);
@@ -227,10 +227,12 @@ public class BlogController {
         Blog resultBlog = result.get();
         resultBlog.setContent(blogContentRepository.getBlogContent(resultBlog.getBid()));
 
-        // increment views
-        resultBlog.setViews(resultBlog.getViews() + 1);
-        blogRepository.save(resultBlog);
-
+        // increment views if not reader is not writer
+        CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
+        if (!(userDetails != null && userDetails.getId() == resultBlog.getAuthorId())) {
+            resultBlog.setViews(resultBlog.getViews() + 1);
+            blogRepository.save(resultBlog);
+        }
         return resultBlog;
     }
 

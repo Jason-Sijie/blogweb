@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react";
 import Cropper from "react-easy-crop";
-import {Modal} from "react-bootstrap";
+import { Modal, Button } from "react-bootstrap";
 
 // Reference: https://blog.logrocket.com/top-react-image-cropping-libraries/
 
@@ -58,8 +58,7 @@ const ImageCrop = ({ showModal, onModalHide, imgURL, onSaveHandler }) => {
   }, [croppedArea, imgURL]);
 
   return (
-    <Modal show={showModal} size="lg" onHide={async () => {
-      onSaveHandler(await showCroppedImage())
+    <Modal show={showModal} size="lg" onHide={() => {
       onModalHide()
     }} >
       <Modal.Header closeButton>
@@ -76,6 +75,14 @@ const ImageCrop = ({ showModal, onModalHide, imgURL, onSaveHandler }) => {
               onZoomChange={setZoom}
         />
       </Modal.Body>
+      <Modal.Footer>
+        <Button onClick={async () => {
+                onSaveHandler(await showCroppedImage())
+                onModalHide()
+              }}>
+          Complete
+        </Button>
+      </Modal.Footer>
     </Modal>
   );
 };

@@ -24,7 +24,7 @@ const Pages = (props) => {
     <Pagination style={{justifyContent: "center"}}>
       <Pagination.First onClick={() => {clickAction(0)}}/>
       <Pagination.Prev onClick={() => {clickAction(Math.max(0, props.currentPage-1))}}/>
-      <Pagination.Ellipsis disabled />
+      {(pageArray[0] > 0) ? <Pagination.Ellipsis disabled /> : <></>}
 
       {pageArray.map((num) => {
         if (num === props.currentPage) {
@@ -38,7 +38,7 @@ const Pages = (props) => {
         }
       })}
 
-      <Pagination.Ellipsis disabled />
+      {(pageArray[pageArray.length - 1] < props.totalPages-1) ? <Pagination.Ellipsis disabled /> : <></>}
       <Pagination.Next onClick={() => clickAction(Math.min(props.currentPage+1, Math.max(props.totalPages-1, 0)))}/>
       <Pagination.Last onClick={() => clickAction(Math.max(props.totalPages-1, 0))}/>
     </Pagination>

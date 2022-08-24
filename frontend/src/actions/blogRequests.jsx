@@ -9,8 +9,11 @@ export const getBlogsWithParams = (params, successCallback = (data) => {}, failu
   const url = api.blogWeb.blog + "?" + params;
   console.log("Request URL: ", url)
 
-  axios.get(url)
-    .then(promise => {
+  let headers = getBackendRequestBasicHeader();
+
+  axios.get(url, {
+    headers : headers
+  }).then(promise => {
       console.log(promise.data)
       successCallback(promise.data)
     }).catch(error => {
@@ -21,9 +24,10 @@ export const getBlogsWithParams = (params, successCallback = (data) => {}, failu
 
 export const getBlogDetailById = (id, successCallback = (data) => {}, failureCallback = (error) => {}) => {
   const url = api.blogWeb.blog + "/" + id;
+  let headers = getBackendRequestBasicHeader();
 
   axios.get(url, {
-    headers: {}
+    headers: headers
   }).then(promise => {
     successCallback(promise.data)
   }).catch(error => {
@@ -36,7 +40,7 @@ export const updateBlogContent = (blog, successCallback = (data) => {}, failureC
   const url = api.blogWeb.blog + "/" + blog.id;
   let headers = getBackendRequestBasicHeader();
 
-  axios.put(url, blog,{
+  axios.put(url, blog, {
     headers: headers
   }).then(promise => {
     successCallback(promise.data)

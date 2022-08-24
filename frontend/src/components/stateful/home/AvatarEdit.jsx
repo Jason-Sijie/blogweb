@@ -105,6 +105,7 @@ class AvatarEdit extends Component{
           <Card>
             <Card.Img variant="top" 
                       style={{borderRadius: "50%", padding: "5%"}}
+                      onClick={() => this.setState({showCropModal: true})}
                       src={this.state.croppedImageURL} />
             <Card.Body>
             <Form.Check key={"box_" + -1} 
@@ -153,11 +154,12 @@ class AvatarEdit extends Component{
   }
 
   render() {
+    const avatarUrl = api.blogWeb.user + "/" + this.props.userId + "/profiles/avatar";
     return (
       <div>
         <Row style={{justifyContent: "space-between", height: "100px", margin: "10px 0"}}>
           <Col xs={4} style={{height: "100%", marginLeft: "3%"}}> 
-            <img src={this.state.hasAvatar ? api.blogWeb.user + "/" + this.props.userId + "/profiles/avatar" : "/images/profile_avatar_1.png"} 
+            <img src={this.state.hasAvatar ? avatarUrl : "/images/profile_avatar_1.png"} 
                  alt={"avatar_image"}
                  style={{height: "100%", borderRadius: "50%"}}/>
           </Col>
@@ -179,7 +181,7 @@ class AvatarEdit extends Component{
               <Row style={{padding: "3% 10%"}}>
                 <Button style={{width: "100%"}} onClick={this.handleUploadAvatar}>
                   Update Avatar
-                  </Button>
+                </Button>
               </Row>
             </Modal.Body>
           </Modal>

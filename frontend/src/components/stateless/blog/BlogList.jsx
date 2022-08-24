@@ -41,8 +41,8 @@ const BlogList = (props) => {
         <Pages currentPage={props.currentPage}
                totalPages={props.totalPages || 0}
                pageSize={props.pageSize}
-               leftNum={3}
-               rightNum={3}
+               leftNum={5}
+               rightNum={5}
                getPageContentAndUpdatePagination={getPageContentAndUpdatePagination} />
       </Row>
     </Container>

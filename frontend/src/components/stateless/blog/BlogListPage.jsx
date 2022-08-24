@@ -23,14 +23,14 @@ const BlogListPage = (props) => {
 
   return (
     <Row style={{padding: "0", justifyContent: "center"}}>
-      <Col xs="9" style={{marginRight: "2%"}}>
+      <Col xs="7" style={{padding: "0 2%"}}>
         <BlogSearch pageSize={props.pageSize}
                   tagNames={tagNames}
                   viewsSort="DESC"
                   searchButtonText={props.searchButtonText}
                   title={props.title} />
       </Col>
-      <Col xs="2" style={{padding: "2% 1% 0 0"}}>
+      <Col xs="3" style={{padding: "2% 0 2% 2%"}}>
         <Row className="shadow bg-white rounded" style={{margin: "10% 0"}}>
           <TopTags topK={10} border="secondary"
                   type="size" color="secondary"

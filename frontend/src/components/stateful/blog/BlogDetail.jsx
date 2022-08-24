@@ -40,7 +40,6 @@ class BlogDetail extends Component {
       newTag: "",
       isEdit: false,
       loading: true,
-      hasAvatar: false,
       deleteModalShow: false
     }
     this.refreshBlogDetail()
@@ -95,13 +94,6 @@ class BlogDetail extends Component {
         console.log(error.message)
       })
 
-      getProfileAvatarById(this.state.blog.authorId, (data) => {
-        console.log("succeeded to get profile avatar")
-        this.setState({
-          hasAvatar: true
-        })
-      })
-
     }, (error) => {
       this.setState({
         loading: false,
@@ -120,6 +112,10 @@ class BlogDetail extends Component {
       tags: this.state.updatedTags
     }, (data) => {
       this.props.handleModalShow("Updated Blog Successfully", "Blog Title: " + data.title, "/blogs/" + data.id);
+      this.setState({
+        isEdit : false,
+        loading : true
+      })
       this.refreshBlogDetail();
     }, (error) => {
       console.log(error)
@@ -269,7 +265,7 @@ class BlogDetail extends Component {
       <Card>
         <Card.Header>
           <Row style={{justifyContent: "space-between"}}>
-            <Col xs={"6"} style={{fontSize: "15px"}}>
+            <Col xs={"6"} style={{fontSize: "15px", paddingLeft: "2%"}}>
               <Row xs="auto">
                 Create Time: <a style={{color:"grey"}}>{new Date(this.state.blog.gmtCreate).toLocaleString()}</a>
               </Row>
@@ -278,7 +274,7 @@ class BlogDetail extends Component {
               </Row>
             </Col>
             <Col xs="auto">
-              <img src={this.state.hasAvatar ? api.blogWeb.user + "/" + this.state.blog.authorId + "/profiles/avatar" : "/images/profile_avatar_1.png"} 
+              <img src={api.blogWeb.user + "/" + this.state.blog.authorId + "/profiles/avatar"} 
                   alt={"avatar_image"}
                   style={{width: "50px", borderRadius: "50%"}}/>
               <a>
@@ -293,7 +289,7 @@ class BlogDetail extends Component {
                   </Offcanvas.Header>
                   <Offcanvas.Body>
                     <UserProfile {...this.state.profile} 
-                                avatar={this.state.hasAvatar ? api.blogWeb.user + "/" + this.state.blog.authorId + "/profiles/avatar" : "/images/profile_avatar_1.png"} />
+                                avatar={api.blogWeb.user + "/" + this.state.blog.authorId + "/profiles/avatar"} />
                   </Offcanvas.Body>
                 </Offcanvas>
               </a>

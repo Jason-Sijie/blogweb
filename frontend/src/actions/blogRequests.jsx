@@ -46,6 +46,20 @@ export const updateBlogContent = (blog, successCallback = (data) => {}, failureC
   })
 }
 
+export const deleteBlog = (id, successCallback = (data) => {}, failureCallback = (error) => {}) => {
+  const url = api.blogWeb.blog + "/" + id;
+  let headers = getBackendRequestBasicHeader();
+
+  axios.delete(url,{
+    headers: headers
+  }).then(promise => {
+    successCallback(promise.data)
+  }).catch(error => {
+    console.log(error)
+    failureCallback(error.response || defaultErrorResponse)
+  })
+}
+
 export const createBlog = (blog, successCallback = (data) => {}, failureCallback = (error) => {}) => {
   const url = api.blogWeb.blog;
   let headers = getBackendRequestBasicHeader();

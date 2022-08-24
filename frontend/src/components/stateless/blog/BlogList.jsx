@@ -37,7 +37,7 @@ const BlogList = (props) => {
         </Row>
       </>) : (<></>)}
 
-      <Row>
+      <Row style={{marginTop: "3%"}}>
         <Pages currentPage={props.currentPage}
                totalPages={props.totalPages || 0}
                pageSize={props.pageSize}

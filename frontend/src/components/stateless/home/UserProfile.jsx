@@ -49,7 +49,7 @@ const UserProfile = (props) => {
             style={{padding: "5%", borderRadius: "50%", objectFit: "cover", width:"100%", height:"100%"}}/>
       </div>
       <Card.Body>
-        <Link to={"/users/" + props.userId + "/home"}>
+        <Link style={{color: "black"}} to={"/users/" + props.userId + "/home"}>
           <Card.Title as={"h1"}>
             {props.name}
           </Card.Title>

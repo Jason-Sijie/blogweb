@@ -1,11 +1,11 @@
 import {Component} from "react";
-import {Button, Card, Col, Form, Offcanvas, Row} from "react-bootstrap";
+import {Button, Card, Col, Form, Modal, Offcanvas, Row} from "react-bootstrap";
 import MDEditor from '@uiw/react-md-editor';
 
 import BlogHeader from "./BlogHeader";
 import TagList from "../../stateless/util/TagList";
 import TagListToasts from "../../stateless/util/TagListToasts";
-import {getBlogDetailById, updateBlogContent} from "../../../actions/blogRequests";
+import {deleteBlog, getBlogDetailById, updateBlogContent} from "../../../actions/blogRequests";
 import LoadingSpinner from "../../stateless/util/LoadingSpinner";
 import {Navigate} from "react-router-dom";
 import { getProfileById, getProfileAvatarById } from "../../../actions/profileRequest";
@@ -40,7 +40,8 @@ class BlogDetail extends Component {
       newTag: "",
       isEdit: false,
       loading: true,
-      hasAvatar: false
+      hasAvatar: false,
+      deleteModalShow: false
     }
     this.refreshBlogDetail()
   }
@@ -124,6 +125,15 @@ class BlogDetail extends Component {
       console.log(error)
       let message = error.data != null ? error.data.message : ""
       this.props.handleModalShow("Failed to update the blog", message, "");
+    })
+  }
+
+  handleBlogDelete = () => {
+    deleteBlog(this.props.blogId, (data) => {
+      this.props.handleModalShow("Delete Blog Successfully", "", "/");
+    }, (error) => {
+      console.log(error)
+      this.props.handleModalShow("Failed to delete blog", error.data.message, "");
     })
   }
 
@@ -213,29 +223,44 @@ class BlogDetail extends Component {
 
   editPanel = () => {
     return this.state.isEdit ? (
-      <Card.Body>
-        <Row style={{justifyContent: "right"}}>
-          <Col xs={"2"} xxl={"1"}>
-            <Button style={{width: "100%"}} variant={"secondary"} onClick={() => {this.setState({isEdit: false})}}>Back</Button>
-          </Col>
-          <Col xs={"2"} xxl={"1"}>
-            <Button style={{width: "100%"}} variant={"primary"} onClick={this.updateBlogContentWithMessage}>
-              Submit
-            </Button>
-          </Col>
-        </Row>
-      </Card.Body>
+      <Row style={{justifyContent: "right"}}>
+        <Col xs={"2"}>
+          <Button style={{width: "100%"}} variant={"secondary"} onClick={() => {this.setState({isEdit: false})}}>Back</Button>
+        </Col>
+        <Col xs={"2"}>
+          <Button style={{width: "100%"}} variant={"primary"} onClick={this.updateBlogContentWithMessage}>
+            Submit
+          </Button>
+        </Col>
+      </Row>
     ) : (
-      <Card.Body>
-        <Row style={{justifyContent: "space-between"}}>
-          <Col xs={"10"} >
-            <TagList tags={this.state.updatedTags || []} fontSize={"18px"}/>
-          </Col>
-          <Col xs={"2"} xxl={"1"} >
-            <Button style={{width: "100%"}} variant={"primary"} onClick={() => {this.setState({isEdit: true})}}>Edit</Button>
-          </Col>
-        </Row>
-      </Card.Body>
+      <Row style={{justifyContent: "space-between"}}>
+        <Col xs={"8"}>
+          <TagList tags={this.state.updatedTags || []} fontSize={"18px"}/>
+        </Col>
+        <Col xs={"2"}>
+          <Button style={{width: "100%"}} variant={"dark"} onClick={() => this.setState({deleteModalShow: true})}>Delete</Button>
+        </Col>
+        <Col xs={"2"}>
+          <Button style={{width: "100%"}} variant={"primary"} onClick={() => {this.setState({isEdit: true})}}>Edit</Button>
+        </Col>
+        <Modal show={this.state.deleteModalShow} onHide={() => this.setState({deleteModalShow: false})} size="md">
+          <Modal.Header closeButton>
+            <Modal.Title>Delete Blog</Modal.Title>
+          </Modal.Header>
+          <Modal.Body>
+            <p>Are you sure you want to delete this blog? You can not rollback this operation</p>
+          </Modal.Body>
+          <Modal.Footer>
+            <Button variant="secondary" className="mr-2" onClick={() => this.setState({deleteModalShow: false})}>
+              Cancel
+            </Button>
+            <Button variant="primary" onClick={this.handleBlogDelete}>
+              Delete
+            </Button>
+          </Modal.Footer>
+        </Modal>
+      </Row>
     )
   }
 
@@ -244,37 +269,38 @@ class BlogDetail extends Component {
       <Card>
         <Card.Header>
           <Row style={{justifyContent: "space-between"}}>
-            <Col xs={"auto"}>
-              Create Time: <div style={{color:"grey"}}>{new Date(this.state.blog.gmtCreate).toLocaleString()}</div>
+            <Col xs={"6"} style={{fontSize: "15px"}}>
+              <Row xs="auto">
+                Create Time: <a style={{color:"grey"}}>{new Date(this.state.blog.gmtCreate).toLocaleString()}</a>
+              </Row>
+              <Row xs="auto">
+                Last Modified: <a style={{color:"grey"}}>{new Date(this.state.blog.gmtUpdate).toLocaleString()}</a>
+              </Row>
             </Col>
-            <Col xs={"auto"}>
-              Last Modified: <div style={{color:"grey"}}>{new Date(this.state.blog.gmtUpdate).toLocaleString()}</div>
+            <Col xs="auto">
+              <img src={this.state.hasAvatar ? api.blogWeb.user + "/" + this.state.blog.authorId + "/profiles/avatar" : "/images/profile_avatar_1.png"} 
+                  alt={"avatar_image"}
+                  style={{width: "50px", borderRadius: "50%"}}/>
+              <a>
+                <Button variant="light" style={{textAlign: "center", fontSize: "15px"}}
+                       onClick={() => this.setState({profileShow: true})}>
+                  {this.state.profile.name + ", " + this.state.profile.email}
+                </Button>
+                <Offcanvas show={this.state.profileShow} style={{width: "25%"}}
+                          onHide={() => this.setState({profileShow: false})}>
+                  <Offcanvas.Header closeButton>
+                    <Offcanvas.Title>Author Profile</Offcanvas.Title>
+                  </Offcanvas.Header>
+                  <Offcanvas.Body>
+                    <UserProfile {...this.state.profile} 
+                                avatar={this.state.hasAvatar ? api.blogWeb.user + "/" + this.state.blog.authorId + "/profiles/avatar" : "/images/profile_avatar_1.png"} />
+                  </Offcanvas.Body>
+                </Offcanvas>
+              </a>
             </Col>
           </Row>
         </Card.Header>
         <Card.Body>
-          <Row style={{justifyContent: "space-between"}}>
-            <Col style={{marginLeft: "1%", alignSelf: "center"}}>
-              <h5>Author Info: </h5>
-            </Col>
-            <Col xs="auto" style={{marginRight: "1%"}}>
-              <Button variant="light" style={{textAlign: "center"}}
-                      onClick={() => this.setState({profileShow: true})}>
-                {this.state.profile.name + ", " + this.state.profile.email}
-              </Button>
-              <Offcanvas show={this.state.profileShow} style={{width: "25%"}}
-                          onHide={() => this.setState({profileShow: false})}>
-                <Offcanvas.Header closeButton>
-                  <Offcanvas.Title>Author Profile</Offcanvas.Title>
-                </Offcanvas.Header>
-                <Offcanvas.Body>
-                  <UserProfile {...this.state.profile} 
-                              avatar={this.state.hasAvatar ? api.blogWeb.user + "/" + this.state.blog.authorId + "/profiles/avatar" : "/images/profile_avatar_1.png"} />
-                </Offcanvas.Body>
-              </Offcanvas>
-            </Col>
-          </Row>
-          <hr></hr>
           {this.displayEditPanel()}
         </Card.Body>
       </Card>

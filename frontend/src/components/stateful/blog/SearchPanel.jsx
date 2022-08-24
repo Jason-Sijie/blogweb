@@ -122,13 +122,13 @@ class SearchPanel extends Component {
   sortingPanel = () => {
     return (
       <Row style={{justifyContent: "right"}}>
-        <Col xs={"auto"} style={{marginRight: "1%", marginLeft: "1%"}}>
+        <Col xs={"auto"}>
           <Row>
-            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0"}}>
+            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0", fontSize: "15px"}}>
               Views
             </Col>
             <Col xs="auto">
-              <Form.Select defaultValue={this.state.viewsSort} onChange={this.changeStateOnEvent("viewsSort")}>
+              <Form.Select size="sm" defaultValue={this.state.viewsSort} onChange={this.changeStateOnEvent("viewsSort")}>
                 <option value="DESC">Most to Fewest</option>
                 <option value="ASC">Fewest to Most</option>
                 <option value="null">No Sort</option>
@@ -136,13 +136,13 @@ class SearchPanel extends Component {
             </Col>
           </Row>
         </Col>
-        <Col xs={"auto"} style={{marginRight: "1%", marginLeft: "1%"}}>
+        <Col xs={"auto"}>
           <Row>
-            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0"}}>
+            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0", fontSize: "15px"}}>
               Likes
             </Col>
             <Col xs="auto">
-              <Form.Select defaultValue={this.state.likesSort} onChange={this.changeStateOnEvent("likesSort")}>
+              <Form.Select size="sm" defaultValue={this.state.likesSort} onChange={this.changeStateOnEvent("likesSort")}>
                 <option value="DESC">Most to Fewest</option>
                 <option value="ASC">Fewest to Most</option>
                 <option value="null">No Sort</option>
@@ -150,13 +150,13 @@ class SearchPanel extends Component {
             </Col>
           </Row>
         </Col>
-        <Col xs={"auto"} style={{marginRight: "1%", marginLeft: "1%"}}>
+        <Col xs={"auto"}>
           <Row>
-            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0"}}>
+            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0", fontSize: "15px"}}>
               Creation Time
             </Col>
             <Col xs="auto">
-              <Form.Select defaultValue={this.state.gmtCreateSort} onChange={this.changeStateOnEvent("gmtCreateSort")}>
+              <Form.Select size="sm" defaultValue={this.state.gmtCreateSort} onChange={this.changeStateOnEvent("gmtCreateSort")}>
                 <option value="DESC">Latest to Oldest</option>
                 <option value="ASC">Oldest to Latest</option>
                 <option value="null">No Sort</option>
@@ -164,13 +164,13 @@ class SearchPanel extends Component {
             </Col>
           </Row>
         </Col>
-        <Col xs={"auto"} style={{marginRight: "1%", marginLeft: "1%"}}>
+        <Col xs={"auto"}>
           <Row>
-            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0"}}>
+            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0", fontSize: "15px"}}>
               Update Time
             </Col>
             <Col xs="auto">
-              <Form.Select defaultValue={this.state.gmtUpdateSort} onChange={this.changeStateOnEvent("gmtUpdateSort")}>
+              <Form.Select size="sm" defaultValue={this.state.gmtUpdateSort} onChange={this.changeStateOnEvent("gmtUpdateSort")}>
                 <option value="DESC">Latest to Oldest</option>
                 <option value="ASC">Oldest to Latest</option>
                 <option value="null">No Sort</option>
@@ -185,12 +185,12 @@ class SearchPanel extends Component {
   render() {
     return (
       <Container fluid className={"shadow p-0 mb-3 bg-white rounded"}>
-        <Accordion defaultActiveKey="0">
+        <Accordion>
           <Accordion.Item eventKey="0">
-            <Accordion.Header><h4>Search Panel</h4></Accordion.Header>
+            <Accordion.Header>Search Panel</Accordion.Header>
             <Accordion.Body>
               <Form>
-                <Form.Group className="mb-3" controlId="blogTitle">
+                <Form.Group className="mb-2" controlId="blogTitle">
                   <Form.Label>Blog Name</Form.Label>
                   <Row>
                     <Col xs="9">
@@ -207,7 +207,7 @@ class SearchPanel extends Component {
                   </Row>
                 </Form.Group>
 
-                <Form.Group className="mb-3" controlId="tags">
+                <Form.Group className="mb-2" controlId="tags">
                   <Form.Label>Tag Name</Form.Label>
                   <Row>
                     <Col xs={"8"}>

@@ -30,7 +30,7 @@ const BlogListPage = (props) => {
                   searchButtonText={props.searchButtonText}
                   title={props.title} />
       </Col>
-      <Col xs="2" style={{padding: "5% 1%"}}>
+      <Col xs="2" style={{padding: "2% 1% 0 0"}}>
         <Row className="shadow bg-white rounded" style={{margin: "10% 0"}}>
           <TopTags topK={10} border="secondary"
                   type="size" color="secondary"

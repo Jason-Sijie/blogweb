@@ -31,6 +31,7 @@ const AppHeader = (props) => {
           <Nav className="me-auto">
             <MyNavLink path={"/home"} text={"Home"}/>
             <MyNavLink path={"/blogs"} text={"All Blogs"}/>
+            <MyNavLink path={"/blogs/create"} text={"New Blog"}/>
           </Nav>
           <Nav>
             {isLogin ? (

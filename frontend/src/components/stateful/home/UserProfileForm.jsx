@@ -142,9 +142,9 @@ class UserProfileForm extends Component {
         aboutMe: this.state.aboutMe,
         links: this.state.links
       }, (data) => {
-        this.props.handleModalShow("Profile Update Succeeded", "Successfully updated profile under User: " + data.userId, "/users/" + data.userId + "/home")
+        this.props.handleModalShow("Update Succeeded", "Successfully updated your profile", "/users/" + data.userId + "/home")
       }, (error) => {
-        this.props.handleModalShow("Failed to update profile", "Failed to update profile under User: " + this.props.userId, "")
+        this.props.handleModalShow("Update Failed", "Failed to update your profile", "")
       })
     } else {
       // create new profile
@@ -156,9 +156,9 @@ class UserProfileForm extends Component {
         aboutMe: this.state.aboutMe,
         links: this.state.links
       }, (data) => {
-        this.props.handleModalShow("Profile Creation Succeeded", "Successfully created profile under User: " + data.userId, "/users/" + data.userId + "/home")
+        this.props.handleModalShow("Creation Succeeded", "Successfully created your profile", "/users/" + data.userId + "/home")
       }, (error) => {
-        this.props.handleModalShow("Failed to create profile", "Failed to create profile under User: " + this.props.userId, "")
+        this.props.handleModalShow("Creation Failed", "Failed to create your profile", "")
       })
     }
   }

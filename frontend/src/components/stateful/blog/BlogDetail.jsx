@@ -157,6 +157,7 @@ class BlogDetail extends Component {
                 <Col xs={"8"}>
                   <Form.Control type="text"
                                 value={this.state.newTag}
+                                placeholder={"Tag name is case-insensitive"}
                                 onChange={this.changeStateOnEvent("newTag")}/>
                 </Col>
                 <Col xs={"4"}>

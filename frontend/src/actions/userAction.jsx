@@ -30,7 +30,7 @@ export const acquireJwtCredentials = (username, password) => dispatch => {
       type: ACTIONS.MODAL.SHOW_MODAL,
       payload: {
         title: "Login Succeeded",
-        content: "",
+        content: "Successfully Signed In as User: " + username,
         path: "/home"
       }
     })
@@ -97,6 +97,7 @@ export const logout = () => dispatch => {
       type: ACTIONS.MODAL.SHOW_MODAL,
       payload: {
         title: "Logout Succeeded",
+        content: "Successfully Signed Out",
         path: "/"
       }
     })

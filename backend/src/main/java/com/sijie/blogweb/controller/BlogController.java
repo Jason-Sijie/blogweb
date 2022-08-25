@@ -186,7 +186,7 @@ public class BlogController {
         blogRepository.save(blog);
         BasicHttpResponse response = new BasicHttpResponse();
         response.setStatus(200);
-        response.setMessage("User " + userDetails.getUsername() + " successfully liked the blog " + id);
+        response.setMessage("User " + userDetails.getUsername() + " successfully liked the blog: " + id);
         return response;
     }
 

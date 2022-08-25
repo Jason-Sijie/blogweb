@@ -17,7 +17,7 @@ const GlobalModal = (props) => {
 
   return (
     <>
-      <Modal show={show} onHide={() => handleModalClose(path)}>
+      <Modal show={show} onHide={() => handleModalClose(path)} size="md">
         <Modal.Header closeButton>
           <Modal.Title>{title}</Modal.Title>
         </Modal.Header>

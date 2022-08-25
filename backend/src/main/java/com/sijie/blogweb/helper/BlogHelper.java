@@ -24,7 +24,7 @@ import java.util.*;
 @Scope(scopeName = ConfigurableBeanFactory.SCOPE_SINGLETON)
 public class BlogHelper {
     private static final Logger logger = LoggerFactory.getLogger(BlogHelper.class);
-    private static final int MAX_TAGS = 10;
+    private static final int MAX_TAGS = 5;
 
     private final CategoryRepository categoryRepository;
     private final TagRepository tagRepository;
@@ -171,6 +171,9 @@ public class BlogHelper {
     private Set<Tag> translateExternalTagsToInternalTags(Set<Tag> externalTags) {
         Set<Tag> internalTags = new HashSet<>();
         for (Tag tagExternal: externalTags) {
+            String processedString = tagExternal.getName().trim().toLowerCase();
+            tagExternal.setName(processedString);
+
             if (Strings.isNotEmpty(tagExternal.getName())) {
                 ResourceFormatValidator.validateTagName(tagExternal.getName());
 

@@ -51,7 +51,7 @@ class AvatarEdit extends Component{
 
       uploadProfileAvatar(bytes, data => {
         console.log("succeeded: ", data)
-        this.props.handleModalShow("Avatar upload succeeded", "Successfully upload user: " + this.props.userId + " avatar", "")
+        this.props.handleModalShow("Upload succeeded", "Successfully upload your avatar", "")
         this.setState({
           showModal: false,
           hasAvatar: false
@@ -61,7 +61,7 @@ class AvatarEdit extends Component{
         })
       }, error => {
         console.log("error: ", error.data)
-        this.props.handleModalShow("Avatar upload failed", error.data.message, "")
+        this.props.handleModalShow("Upload failed", error.data.message, "")
       })
     };
     reader.onerror = (err) => {

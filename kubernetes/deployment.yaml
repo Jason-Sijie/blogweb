@@ -19,7 +19,7 @@ spec:
     spec:
       containers:
       - name: blogweb-frontend
-        image: ysjason/blogweb-frontend:prod
+        image: ysjason/blogweb-frontend:1.0.0
         imagePullPolicy: Always
         ports: 
         - containerPort: 3000
@@ -60,7 +60,7 @@ spec:
     spec:
       containers:
       - name: blogweb-backend
-        image: ysjason/blogweb-backend:prod
+        image: ysjason/blogweb-backend:1.0.0
         imagePullPolicy: Always
         ports: 
         - containerPort: 9000

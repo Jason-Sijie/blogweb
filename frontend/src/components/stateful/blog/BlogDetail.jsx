@@ -1,5 +1,5 @@
 import {Component} from "react";
-import {Button, Card, Col, Form, Modal, Offcanvas, Row} from "react-bootstrap";
+import {Button, Card, Col, Form, FormCheck, Modal, Offcanvas, Row} from "react-bootstrap";
 import MDEditor from '@uiw/react-md-editor';
 
 import BlogHeader from "./BlogHeader";
@@ -37,6 +37,7 @@ class BlogDetail extends Component {
         email: ""
       },
       profileShow: false,
+      isDarkMode: false,
       newTag: "",
       isEdit: false,
       loading: true,
@@ -188,12 +189,13 @@ class BlogDetail extends Component {
 
         <Row style={{padding: "30px 30px"}}>
           {isEdit ? (
-            <MDEditor
-              value={this.state.updatedContent}
-              onChange={(value) => {this.setState({updatedContent: value})}}
-              height={"1000px"}
-              toolbarHeight={"30px"}
-            />
+            <div data-color-mode={this.state.isDarkMode === true ? "dark" : "light"}>
+              <MDEditor
+                value={this.state.updatedContent}
+                onChange={(value) => {this.setState({updatedContent: value})}}
+                height={"1200px"}
+                visibleDragbar={false} />
+            </div>
           ) : (
             <MDEditor.Markdown source={this.state.updatedContent}
                                height={"800px"} 
@@ -221,8 +223,17 @@ class BlogDetail extends Component {
   editPanel = () => {
     return this.state.isEdit ? (
       <Row style={{justifyContent: "right"}}>
+        <Col xs={"8"} style={{alignSelf: "center"}}>
+          <FormCheck 
+            onChange={() => this.setState({isDarkMode: !this.state.isDarkMode})}
+            type="switch"
+            id="custom-switch"
+            label="Switch to dark mode"/>
+        </Col>
         <Col xs={"2"}>
-          <Button style={{width: "100%"}} variant={"secondary"} onClick={() => {this.setState({isEdit: false})}}>Back</Button>
+          <Button style={{width: "100%"}} variant={"secondary"} onClick={() => {this.setState({isEdit: false})}}>
+            Back
+          </Button>
         </Col>
         <Col xs={"2"}>
           <Button style={{width: "100%"}} variant={"primary"} onClick={this.updateBlogContentWithMessage}>

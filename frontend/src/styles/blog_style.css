@@ -23,3 +23,9 @@
     color: cornsilk;
     padding: 0 50px 5%;
 }
+
+.w-md-editor-text-pre > code,
+.w-md-editor-text-input {
+  font-size: 20px !important;
+  line-height: 23px !important;
+}

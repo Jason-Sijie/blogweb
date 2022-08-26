@@ -187,20 +187,29 @@ class BlogDetail extends Component {
       <div className="p-2" style={{minHeight: "500px"}}>
         {this.blogMetadataForm(isEdit)}
 
-        <Row style={{padding: "30px 30px"}}>
-          {isEdit ? (
-            <div data-color-mode={this.state.isDarkMode === true ? "dark" : "light"}>
+        <Row style={{padding: "10px 1% 20px"}}>
+          <FormCheck 
+            onChange={() => this.setState({isDarkMode: !this.state.isDarkMode})}
+            type="switch"
+            id="custom-switch"
+            label="Switch to dark mode"/>
+        </Row>
+        <Row>
+          <div data-color-mode={this.state.isDarkMode === true ? "dark" : "light"}>
+            {isEdit ? (
               <MDEditor
+                style={{padding: "1%"}}
                 value={this.state.updatedContent}
                 onChange={(value) => {this.setState({updatedContent: value})}}
                 height={"1200px"}
                 visibleDragbar={false} />
-            </div>
-          ) : (
-            <MDEditor.Markdown source={this.state.updatedContent}
-                               height={"800px"} 
-                               warpperElement={'light'}/>
-          )}
+            ) : (
+              <MDEditor.Markdown source={this.state.updatedContent}
+                                style={{padding: "1%"}}
+                                height={"800px"} 
+                                warpperElement={'light'}/>
+            )}
+          </div>
         </Row>
       </div>
     )
@@ -223,13 +232,6 @@ class BlogDetail extends Component {
   editPanel = () => {
     return this.state.isEdit ? (
       <Row style={{justifyContent: "right"}}>
-        <Col xs={"8"} style={{alignSelf: "center"}}>
-          <FormCheck 
-            onChange={() => this.setState({isDarkMode: !this.state.isDarkMode})}
-            type="switch"
-            id="custom-switch"
-            label="Switch to dark mode"/>
-        </Col>
         <Col xs={"2"}>
           <Button style={{width: "100%"}} variant={"secondary"} onClick={() => {this.setState({isEdit: false})}}>
             Back

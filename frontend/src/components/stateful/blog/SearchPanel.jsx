@@ -124,11 +124,14 @@ class SearchPanel extends Component {
       <Row style={{justifyContent: "right"}}>
         <Col xs={"auto"}>
           <Row>
-            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0", fontSize: "15px"}}>
+            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0", fontSize: "12px"}}>
               Views
             </Col>
             <Col xs="auto">
-              <Form.Select size="sm" defaultValue={this.state.viewsSort} onChange={this.changeStateOnEvent("viewsSort")}>
+              <Form.Select style={{fontSize: "12px"}} 
+                          size="sm"
+                          defaultValue={this.state.viewsSort} 
+                          onChange={this.changeStateOnEvent("viewsSort")}>
                 <option value="DESC">Most to Fewest</option>
                 <option value="ASC">Fewest to Most</option>
                 <option value="null">No Sort</option>
@@ -138,11 +141,14 @@ class SearchPanel extends Component {
         </Col>
         <Col xs={"auto"}>
           <Row>
-            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0", fontSize: "15px"}}>
+            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0", fontSize: "12px"}}>
               Likes
             </Col>
             <Col xs="auto">
-              <Form.Select size="sm" defaultValue={this.state.likesSort} onChange={this.changeStateOnEvent("likesSort")}>
+              <Form.Select style={{fontSize: "12px"}} 
+                          size="sm"
+                          defaultValue={this.state.likesSort} 
+                          onChange={this.changeStateOnEvent("likesSort")}>
                 <option value="DESC">Most to Fewest</option>
                 <option value="ASC">Fewest to Most</option>
                 <option value="null">No Sort</option>
@@ -152,11 +158,14 @@ class SearchPanel extends Component {
         </Col>
         <Col xs={"auto"}>
           <Row>
-            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0", fontSize: "15px"}}>
+            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0", fontSize: "12px"}}>
               Creation Time
             </Col>
             <Col xs="auto">
-              <Form.Select size="sm" defaultValue={this.state.gmtCreateSort} onChange={this.changeStateOnEvent("gmtCreateSort")}>
+              <Form.Select style={{fontSize: "12px"}} 
+                          size="sm"
+                          defaultValue={this.state.gmtCreateSort} 
+                          onChange={this.changeStateOnEvent("gmtCreateSort")}>
                 <option value="DESC">Latest to Oldest</option>
                 <option value="ASC">Oldest to Latest</option>
                 <option value="null">No Sort</option>
@@ -166,11 +175,14 @@ class SearchPanel extends Component {
         </Col>
         <Col xs={"auto"}>
           <Row>
-            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0", fontSize: "15px"}}>
+            <Col xs="auto" style={{alignSelf: "center", padding: "0", margin: "0", fontSize: "12px"}}>
               Update Time
             </Col>
             <Col xs="auto">
-              <Form.Select size="sm" defaultValue={this.state.gmtUpdateSort} onChange={this.changeStateOnEvent("gmtUpdateSort")}>
+              <Form.Select style={{fontSize: "12px"}} 
+                          size="sm"
+                          defaultValue={this.state.gmtUpdateSort} 
+                          onChange={this.changeStateOnEvent("gmtUpdateSort")}>
                 <option value="DESC">Latest to Oldest</option>
                 <option value="ASC">Oldest to Latest</option>
                 <option value="null">No Sort</option>

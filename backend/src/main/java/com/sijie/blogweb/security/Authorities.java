@@ -13,7 +13,7 @@ public class Authorities {
             AuthorityType.BLOG_ALL, AuthorityType.CATEGORY_GET, AuthorityType.USER_GET
     ));
     public static final Set<AuthorityType> ADMIN_ROLE_AUTHORITY_TYPES = Collections.unmodifiableSet(Sets.newHashSet(
-            AuthorityType.BLOG_ALL, AuthorityType.CATEGORY_ALL, AuthorityType.ROLE_ALL, AuthorityType.USER_ALL
+            AuthorityType.BLOG_ALL, AuthorityType.CATEGORY_ALL, AuthorityType.ROLE_ALL, AuthorityType.USER_ALL, AuthorityType.ADMIN_FULL_ACCESS
     ));
     public static Set<Privilege> getPrivilegesOfGivenRoleType(RoleType roleType) {
         switch (roleType) {
@@ -42,6 +42,8 @@ public class Authorities {
     }
 
     public enum AuthorityType {
+        ADMIN_FULL_ACCESS("ADMIN_FULL_ACCESS"),
+
         BLOG_ALL("BLOG_ALL"),
         BLOG_CREATE("BLOG_CREATE"),
         BLOG_UPDATE("BLOG_UPDATE"),

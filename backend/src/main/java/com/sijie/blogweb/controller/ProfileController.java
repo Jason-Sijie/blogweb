@@ -6,6 +6,7 @@ import com.sijie.blogweb.exception.InvalidParameterException;
 import com.sijie.blogweb.exception.ResourceAlreadyExistsException;
 import com.sijie.blogweb.exception.ResourceNotFoundException;
 import com.sijie.blogweb.exception.UserCredentialsAbsenceException;
+import com.sijie.blogweb.exception.UserUnauthorziedException;
 import com.sijie.blogweb.helper.AuthPrincipalHelper;
 import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.model.Profile;
@@ -27,7 +28,6 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -88,12 +88,14 @@ public class ProfileController {
     @RedisTransaction(type = RedisTransactionType.ReadThenWrite)
     public Profile updateProfile(@PathVariable("id") Long userId, @RequestBody Profile inputProfile) {
         CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
-        if (userDetails != null) {
-            inputProfile.setUserId(userDetails.getId());
-        } else {
+        if (userDetails == null) {
             throw new UserCredentialsAbsenceException("You must be logged in to update your profile");
+        } else if (!AuthPrincipalHelper.hasAdminFullAccessPriviledges(userDetails) 
+                && userDetails.getId() != userId) {
+            throw new UserUnauthorziedException("User " + userDetails.getUsername() + " is Unauthorized to update user: " + userId + " profile");
         }
 
+        inputProfile.setUserId(userDetails.getId());
         Profile internalProfile = profileRepository.getProfileContent(userId);
         if (internalProfile == null) {
             throw new ResourceNotFoundException("Profile with user id: " + userId + " not found");

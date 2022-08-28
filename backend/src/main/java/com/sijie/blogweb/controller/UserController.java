@@ -10,24 +10,19 @@ import com.sijie.blogweb.helper.UserHelper;
 import com.sijie.blogweb.model.Blog;
 import com.sijie.blogweb.model.User;
 import com.sijie.blogweb.repository.BlogRepository;
-import com.sijie.blogweb.repository.TupleWrapper;
 import com.sijie.blogweb.repository.UserRepository;
 import com.sijie.blogweb.security.CustomUserDetails;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.*;
 
-import javax.persistence.Tuple;
-import java.math.BigInteger;
 import java.util.*;
-import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/users")
@@ -36,19 +31,13 @@ public class UserController {
     private static Integer DEFAULT_PAGE_SIZE = 20;
 
     private final UserRepository userRepository;
-    private final BlogRepository blogRepository;
     private final UserHelper userHelper;
-    private final BlogHelper blogHelper;
 
     @Autowired
     public UserController(UserRepository userRepository,
-                          BlogRepository blogRepository,
-                          UserHelper userHelper,
-                          BlogHelper blogHelper) {
+                          UserHelper userHelper) {
         this.userRepository = userRepository;
-        this.blogRepository = blogRepository;
         this.userHelper = userHelper;
-        this.blogHelper = blogHelper;
     }
 
     @PostMapping("/guest")
@@ -132,7 +121,8 @@ public class UserController {
         CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails == null) {
             throw new UserCredentialsAbsenceException("User credentials are required to get user details");
-        } else if (userDetails.getId() != id) {
+        } else if (!AuthPrincipalHelper.hasAdminFullAccessPriviledges(userDetails) 
+                && userDetails.getId() != id) {
             throw new UserUnauthorziedException("Not authorized to get the user details");
         }
 
@@ -151,7 +141,8 @@ public class UserController {
         CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails == null) {
             throw new UserCredentialsAbsenceException("User credentials are required to get user details");
-        } else if (!userDetails.getUid().equals(uid)) {
+        } else if (!AuthPrincipalHelper.hasAdminFullAccessPriviledges(userDetails) 
+                && !userDetails.getUid().equals(uid)) {
             throw new UserUnauthorziedException("Not authorized to get the user details");
         }
 
@@ -170,7 +161,8 @@ public class UserController {
         CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails == null) {
             throw new UserCredentialsAbsenceException("User credentials are required to get user details");
-        } else if (!userDetails.getUsername().equals(username)) {
+        } else if (!AuthPrincipalHelper.hasAdminFullAccessPriviledges(userDetails) 
+                && !userDetails.getUsername().equals(username)) {
             throw new UserUnauthorziedException("Not authorized to get the user details");
         }
 

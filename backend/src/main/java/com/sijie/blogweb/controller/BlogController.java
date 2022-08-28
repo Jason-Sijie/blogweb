@@ -94,7 +94,8 @@ public class BlogController {
         CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails == null) {
             throw new UserCredentialsAbsenceException("User credentials are required to create new blog");
-        } else if (userDetails.getId() != internalBlog.getAuthorId()){
+        } else if (!AuthPrincipalHelper.hasAdminFullAccessPriviledges(userDetails) 
+                    && userDetails.getId() != internalBlog.getAuthorId()) {
             throw new UserUnauthorziedException("User " + userDetails.getUsername() + " is Unauthorized to perform update operation on blog " + internalBlog.getId());
         }
 
@@ -122,7 +123,8 @@ public class BlogController {
         CustomUserDetails userDetails = AuthPrincipalHelper.getAuthenticationPrincipal();
         if (userDetails == null) {
             throw new UserCredentialsAbsenceException("User credentials are required to delete a blog");
-        } else if (userDetails.getId() != internalBlog.getAuthorId()){
+        } else if (!AuthPrincipalHelper.hasAdminFullAccessPriviledges(userDetails) 
+                    && userDetails.getId() != internalBlog.getAuthorId()) {
             throw new UserUnauthorziedException("User " + userDetails.getUsername() + " is Unauthorized to perform delete operation on blog " + internalBlog.getId());
         }
 

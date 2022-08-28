@@ -3,11 +3,9 @@
 // localStorage.js
 import {appConfig} from "../config";
 
-const KEY='redux'
-
 export const loadState = () => {
   try {
-    const serializedState = localStorage.getItem(KEY);
+    const serializedState = localStorage.getItem(appConfig.reduxKey);
     if (serializedState === null) {
       return undefined;
     }
@@ -38,7 +36,7 @@ export const saveState = (state) => {
       expiry: new Date().getTime() + appConfig.pageStaleTimeInMS
     };
     console.log("save state: ", item)
-    localStorage.setItem(KEY, JSON.stringify(item));
+    localStorage.setItem(appConfig.reduxKey, JSON.stringify(item));
 
     localStorage.setItem(appConfig.tokenKey, JSON.stringify(state.userReducer.token));
   } catch {

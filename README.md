@@ -1,31 +1,60 @@
-# A Simple Blog Web 
+# Markdown Blog Web 
 
 ## Description
-A simple Blog Web that support Markdown content edit and preview. Using Framework:
-- Backend server: Spring Boot + JWT Authentication
-- Database: MySQL & Redis
-- Frontend: React Web + Redux
+A simple **Markdown** Blog website that supports Markdown content edit and preview. It provides each user with a home page to arrange all their blogs with custom **tags**. And then everyone can search all blogs on the website with tags filetering. The functionality of this project is simple. But the backend implementation is robust and extendible for any new features that require 1) Role-based access control, 2) JWT auth, 3) Transaction management on multiple datasources (MySQL and Redis) 4) Spring Data JPA native SQL query ORM support. 
 
-## Design
+In addition, the project has Kubernetes setup to AWS EKS. It deploys react frontend, spring backend, MySQL and Redis to a k8s cluster with *prod* configuration separate from the *dev* environment config. With k8s cluster, we can easily scale our service components independently and have automatic application health check and replacement. 
 
-### Spring Boot Server
+Here is a demo website: http://markitdown.jason-sijie.com
 
-Apply Spring Boot Starter to build a simple Restful API server. Integrate JWT with Spring Security for Authentication and Authorization. 
+## Architecture
 
-### Database
-
-Spring Boot Server connects to multiple data sources. One relational DB and One NoSQL DB. 
-
-- MySQL: all information other than "files" 
-- Redis: store blog content, dedicated as a file storage. 
-
-### React Web App
-
-Integrate Redux with React Web App to manage the entire states at one central "store". Every React Component consumes a specific part of the global states. And to mutate states, each component can send "action event" to the global store, which would dispatch the action to the corresponding "reducer" to perform the mutating operation. 
+Here is the diagram of the production architecture on AWS EKS. 
+[![architecture.png](https://i.postimg.cc/fy88Gf0D/Screen-Shot-2022-08-27-at-6-42-01-PM.png)](https://postimg.cc/hQ78xxr5)
+- Web frontend: React & Redux
+- Backend: Spring Boot, Spring Data JPA, Spring Security, Custom JWT. 
+- Data layer: Standalone MySQL and Redis DB.  
 
 
-## Installation
+## Motivation
+Besides developing a Markdown blog website, I took this chance to play around with some popular techniques and frameworks to build and delopy a full-stack web application, even though some are unnecessary for this simple website. For example, you can see that I applied two different types of data source and tried to use a single transaction manager to control transactions on multiple data sources. 
 
-Environment Setup and service installation are documented in each sub-directory.
+If you are new to the web application full-stack development, this is a great hands-on project for you to learn different aspects of web applications. Moreover, there are non-trivial example components for you to dive deeper into the framework. 
+
+If you are interested, please fork this repo. Detailed docs of each component can be found in this README and README files in the sub-directories 
 
 
+## Set up
+
+### Local set up
+
+- The backend server and databases set up instructions are in `/backend/README.md`
+- The react frontend set up instructions are in `/frontend/README.md`
+
+### Kubernetes set up
+
+The AWS EKS set up instructions are in `/kubernetes/aws_eks_setup.md`
+
+## Components
+
+### Spring Backend
+
+We apply *Spring Boot* to bootstrap a HTTP server with *Spring MVC*, *Spring Security*, *Spring Data JPA*, and *Spring Data Redis*. And it has following supports
+- Role-based access control and JWT auth
+- Single Transaction Management on both MySQL and Redis data sources
+- Custom ORM support for Sprign Data JPA native query. 
+
+Details can be found in `/backend/README.md`
+
+
+### React APP
+
+We uses *React Bootstrap* components for basic UI and *Redux* for global state management. 
+
+Details can be found in `/frontend/README.md`
+
+
+
+## Contributors
+
+This is a personal project owned by [Sijie Yu](https://github.com/Jason-Sijie). 

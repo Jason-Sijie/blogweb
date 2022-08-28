@@ -70,10 +70,6 @@ jobs:
       with:
         node-version: 16
 
-    - name: npm install
-      run: npm install
-      working-directory: ${{env.frontend-dir}}
-
     - name: Set up Docker Buildx
       uses: docker/setup-buildx-action@v1
 

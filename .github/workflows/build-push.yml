@@ -51,7 +51,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: ysjason/blogweb-backend:latest
+        tags: ysjason/blogweb-backend:1.0.0
         context: ${{env.backend-dir}}
 
   build-frontend:
@@ -84,5 +84,5 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         push: true
-        tags: ysjason/blogweb-frontend:latest
+        tags: ysjason/blogweb-frontend:1.0.0
         context: ${{env.frontend-dir}}

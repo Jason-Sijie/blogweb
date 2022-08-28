@@ -13,7 +13,7 @@ export const loadState = () => {
     const item = JSON.parse(serializedState);
     console.log("load state", item)
     if (new Date().getTime() > item.expiry) {
-      localStorage.removeItem(KEY);
+      localStorage.removeItem(appConfig.reduxKey);
       return undefined;
     }
     return item.state;

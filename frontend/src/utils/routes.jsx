@@ -4,6 +4,7 @@ import {Route, Routes} from "react-router-dom";
 import BlogDetailPage from "../components/stateless/blog/BlogDetailPage";
 import LoginPage from "../components/stateless/login/LoginPage";
 import UserHomePage from "../components/stateless/home/UserHomePage";
+import UserHome from "../components/stateful/home/UserHome";
 import BlogListPage from "../components/stateless/blog/BlogListPage";
 import LogoutPage from "../components/stateless/login/LogoutPage";
 import HomePage from "../components/stateless/home/HomePage";
@@ -53,6 +54,12 @@ export function AppRoutes(props){
         <UserHomePage currentUser={props.user.currentUser}
                       handleModalShow={props.action.modal.handleModalShow}/>
       }/>
+      <Route path="/yusijie/home" element={
+        <UserHome userId={8}
+                  currentUser={props.user.currentUser}
+                  handleModalShow={props.action.modal.handleModalShow}/>
+      }/>
+      {/* A hacky way to display my home page. kk */}
       <Route path="/users/profile" element={
         <UserProfilePage currentUser={props.user.currentUser}
                          handleModalShow={props.action.modal.handleModalShow}/>
